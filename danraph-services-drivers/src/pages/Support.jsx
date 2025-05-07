@@ -1,6 +1,6 @@
 import React from 'react'
 
-const support = () => {
+const Support = () => {
   return (
     <div className=' mb-10'>
      <div className='max-w-[558px] w-full border border-gray-300 rounded-lg sm:p-5 p-[18px] lg:mx-6 mt-4'>
@@ -20,4 +20,4 @@ const support = () => {
   )
 }
 
-export default support
+export default Support
