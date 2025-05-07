@@ -3,7 +3,7 @@ import Drivers from "./components/drivers";
 import Dashboard from "./pages/Dashboard";
 import Ride from "./pages/ride";
 import Settings from "./pages/Settings";
-import Support from "./pages/Support";
+import Support from "./pages/support";
 import Wallet from "./pages/wallet";
 import Trips from "./pages/trips";
 
