@@ -1,0 +1,149 @@
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+/* Hide only the flag icon */
+.PhoneInputCountryIcon {
+  display: none !important;
+}
+
+/* Remove the border from the country select area */
+.PhoneInputInput {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* Also remove border from the country selector wrapper */
+.PhoneInput {
+  border: none !important;
+  box-shadow: none !important;
+}
+
+
+
+
+/* Optional: shift text input padding to the left */
+.phone-input input {
+  padding-left: 2px !important;
+  padding-top: 2px !important;
+}
+
+.slide-in-right {
+  animation: slideInRight 0.4s forwards;
+}
+.slide-out-left {
+  animation: slideOutLeft 0.4s forwards;
+}
+
+@keyframes slideInRight {
+  from { transform: translateX(100%); opacity: 0; }
+  to   { transform: translateX(0); opacity: 1; }
+}
+@keyframes slideOutLeft {
+  from { transform: translateX(0); opacity: 1; }
+  to   { transform: translateX(-100%); opacity: 0; }
+}
+
+
+@keyframes slideOutLeft {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(-100vw);
+    opacity: 0;
+  }
+}
+
+.slide-out-left {
+  animation: slideOutLeft 400ms ease-in-out forwards;
+}
+
+
+
+
+
+
+@keyframes spinIn {
+    from {
+      opacity: 0;
+      transform: scale(0.5) rotate(-360deg);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1) rotate(0deg);
+    }
+  }
+  
+  @keyframes spinOut {
+    from {
+      opacity: 1;
+      transform: scale(1) rotate(360deg);
+    }
+    to {
+      opacity: 0;
+      transform: scale(0.5) rotate(0deg);
+    }
+  }
+  
+  .animate-spinIn {
+    animation: spinIn 0.8s ease forwards;
+  }
+  
+  .animate-spinOut {
+    animation: spinOut 0.5s ease forwards;
+  }
+
+
+
+
+
+  @keyframes balance {
+    0% {
+      transform: rotate(0deg);
+    }
+    25% {
+      transform: rotate(-3deg); /* Tilt left, moves left up */
+    }
+    50% {
+      transform: rotate(3deg);  /* Tilt right, moves right up */
+    }
+    75% {
+      transform: rotate(-3deg); /* Tilt left again */
+    }
+    100% {
+      transform: rotate(3deg);  /* Tilt right again */
+    }
+  }
+  
+  .vibrate-button {
+    animation: balance 0.5s ease-in-out infinite;
+  }
+
+
+
+  @keyframes bounceBreath {
+    0%, 100% {
+      transform: translateY(0) scale(1);
+    }
+    25% {
+      transform: translateY(-6px) scale(1.03);
+    }
+    50% {
+      transform: translateY(3px) scale(0.97);
+    }
+    75% {
+      transform: translateY(-4px) scale(1.01);
+    }
+  }
+  
+  .animated-image {
+    animation: bounceBreath 3s ease-in-out infinite;
+    display: inline-block;
+  }
+
+

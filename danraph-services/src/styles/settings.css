@@ -1,0 +1,26 @@
+
+.react-tel-input {
+    width: 100% !important;
+    
+  }
+  .react-tel-input .form-control {
+    width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box;
+   height: 55px !important;
+   border-radius: 12px !important;
+  }
+
+ .react-tel-input .flag-dropdown,
+.react-tel-input .selected-flag {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding-left: 7px !important;
+}
+
+@media (max-width: 450px) {
+  .react-tel-input .form-control {
+   height: 45px !important;
+  }
+}

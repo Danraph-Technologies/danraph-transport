@@ -1,0 +1,237 @@
+
+import React, { useEffect, useState } from "react";
+import img1 from "../images/danraph-logo.png";
+import img2 from "../images/Danraph-services9.jpg";
+import { Link } from 'react-router-dom';
+import PhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/style.css";
+import { FaArrowLeft } from 'react-icons/fa';
+import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/solid";
+
+const signup = () => {
+  const [countryCode, setCountryCode] = useState('us');
+
+  useEffect(() => {
+    // Fetch the country code immediately when the user accesses the site (on page load)
+    fetch('https://ipwho.is/')
+      .then(res => res.json())
+      .then(data => {
+        if (data.success && data.country_code) {
+          const newCountryCode = data.country_code.toLowerCase();
+          const cachedCountryCode = localStorage.getItem('countryCode');
+
+          // Check if the country is Nigeria (NG)
+          if (newCountryCode === 'ng') {
+            setCountryCode('ng');  // Set country code to 'ng' for Nigeria
+            localStorage.setItem('countryCode', 'ng');
+          } else {
+            // If country code is different, update it
+            if (newCountryCode !== cachedCountryCode) {
+              setCountryCode(newCountryCode);
+              localStorage.setItem('countryCode', newCountryCode);
+            }
+          }
+        }
+      })
+      .catch(err => {
+        console.error('Failed to fetch country code:', err);
+      });
+  }, []);
+
+  const [showPassword, setShowPassword] = useState(false);
+
+  const togglePassword = () => {
+    setShowPassword(!showPassword);
+  };
+
+  return (
+    <div className="w-full min-h-screen bg-white overflow-x-hidden">
+      <div className="flex flex-col lg:flex-row w-full max-w-full min-h-screen log:items-center">
+        {/* Left Image Section */}
+        <div className="hidden lg:block flex-1 w-full max-w-full relative">
+          <img src={img2} alt="" className="w-full h-full object-cover max-w-full" />
+          <div className="absolute top-0 left-0 w-full max-w-full lg:max-w-[580px] px-6 py-8">
+            <img src={img1} alt="" className="max-w-[165px] w-full" />
+            <div className="w-[48px] h-[48px] bg-blue-800 rounded-full mt-14 mb-2"></div>
+            <p className="text-[32px] xl:text-[52px] text-white font-semibold py-[5px]">Lets Get You Moving</p>
+            <p className="text-[18px] xl:text-[22px] font-normal text-white">
+              Sign up to easily plan your trips and enjoy smooth campus rides. Get access to personalized routes and real-time updates.
+            </p>
+          </div>
+        </div>
+
+        {/* Right Form Section */}
+        <div className="flex-1 w-full max-w-full bg-[#F6F9F6] py-6 min-h-screen flex flex-col">
+          <p className="text-right p-6 pt-3 hidden lg:block">
+            Already have an account?{" "}
+            <Link to="/login">
+              <span className="font-medium underline cursor-pointer">Log in</span>
+            </Link>
+          </p>
+          <p className="m-4 lg:hidden">
+            <Link to="/" className="inline-block">
+              <FaArrowLeft className="text-xl" />
+            </Link>
+          </p>
+
+          <div className="flex flex-col items-center justify-center flex-1 w-full px-2">
+            <div className="flex flex-col justify-center items-center lg:items-start w-full">
+              <img src={img1} alt="" className="max-w-[146px] w-full lg:hidden" />
+              <p className="text-[28px] lg:text-[32px] font-medium py-4 px-16 text-center lg:text-left">Get Started</p>
+              <div className="w-full flex justify-center">
+                <form
+                  action=""
+                  className="flex flex-col gap-3 justify-center items-center w-full max-w-[510px] lg:max-w-[510px] px-2 sm:px-3"
+                >
+                  <div className="flex gap-3 w-full">
+                    <div className="flex flex-col flex-1">
+                      <label htmlFor="firstName">First Name</label>
+                      <input
+                        type="text"
+                        name="firstName"
+                        id="firstName"
+                        required
+                        className="outline-none border border-gray-400 py-2 sm:py:3 px-3 rounded-lg w-full"
+                      />
+                    </div>
+                    <div className="flex flex-col flex-1">
+                      <label htmlFor="lastName">Last Name</label>
+                      <input
+                        type="text"
+                        name="lastName"
+                        id="lastName"
+                        required
+                        className="outline-none border border-gray-400 py-2 sm:py:3 px-3 rounded-lg w-full"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="flex flex-col w-full">
+                    <label htmlFor="userType">User Type</label>
+                    <select
+                      name="userType"
+                      id="userType"
+                      required
+                      className="outline-none cursor-pointer border border-gray-400 py-3 px-3 rounded-lg w-full"
+                    >
+                      <option value="" className="cursor-pointer">
+                        Select user type
+                      </option>
+                      <option value="driver" className="cursor-pointer">
+                        Driver
+                      </option>
+                      <option value="rider" className="cursor-pointer">
+                        Rider
+                      </option>
+                    </select>
+                  </div>
+
+                  <div className="flex flex-col w-full">
+                    <label htmlFor="email">Email Address</label>
+                    <input
+                      type="email"
+                      name="email"
+                      id="email"
+                      required
+                      className="outline-none border border-gray-400 py-3 px-3 rounded-lg w-full"
+                    />
+                  </div>
+
+                  <div className="flex flex-col w-full">
+                    <label htmlFor="phone">Phone Number</label>
+                    <div className="w-full">
+                      <PhoneInput
+                        country={countryCode}
+                        enableAreaCodes
+                        disableCountryCode={false}
+                        disableDropdown={false}
+                        countryCodeEditable={false}
+                        required
+                        enableSearch
+                        inputProps={{
+                          name: "phone",
+                          required: true,
+                        }}
+                        inputClass="outline-none border !border-gray-400 py-6 px-3 rounded-lg !w-full"
+                        buttonClass="!bg-transparent w-[48px]"
+                        containerClass="!w-full"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="flex flex-col w-full">
+                    <label htmlFor="password" className="flex items-center justify-between pr-2">
+                      <p>Your Password</p>
+                      <p
+                        onClick={togglePassword}
+                        className="flex items-center cursor-pointer gap-1"
+                      >
+                        {showPassword ? (
+                          <EyeSlashIcon className="h-5 w-5 text-gray-600" />
+                        ) : (
+                          <EyeIcon className="h-5 w-5 text-gray-600" />
+                        )}{" "}
+                        Hide
+                      </p>
+                    </label>
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      name="password"
+                      id="password"
+                      required
+                      className="outline-none border border-gray-400 py-3 px-3 rounded-lg w-full"
+                    />
+                    <p className="text-sm">
+                      Use 8 or more characters with a mix of letters, numbers & symbols
+                    </p>
+                  </div>
+
+                  <div className="flex w-full items-start pt-1 pb-1 gap-2">
+                    <input
+                      type="checkbox"
+                      name="terms"
+                      id="terms"
+                      required
+                      className="cursor-pointer outline-none translate-y-1 text-black accent-black"
+                    />
+                    <p>
+                      By creating an account, I agree to our{" "}
+                      <span className="underline cursor-pointer">Terms of use</span> and{" "}
+                      <span className="underline cursor-pointer">Privacy Policy</span>
+                    </p>
+                  </div>
+
+                  <div className="flex w-full items-start pt-1 pb-1 lg:hidden gap-2">
+                    <input
+                      type="checkbox"
+                      name="consent"
+                      id="consent"
+                      required
+                      className="cursor-pointer outline-none translate-y-1 text-black accent-black"
+                    />
+                    <p>
+                      By creating an account, I am also consenting to receive SMS messages and emails, including product new feature updates, events, and marketing promotions.
+                    </p>
+                  </div>
+
+                  <Link to="/users/dashboard" className="w-full">
+                    <button className="bg-blue-800 w-full px-10 py-2 my-2 rounded-3xl border-2 border-blue-800 hover:bg-transparent transition duration-500 text-white hover:text-blue-800">
+                      Sign Up
+                    </button>
+                  </Link>
+                  <Link to="/login">
+                    <p>
+                      Already have an account? <span className="font-medium underline">Log in</span>
+                    </p>
+                  </Link>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default signup;
