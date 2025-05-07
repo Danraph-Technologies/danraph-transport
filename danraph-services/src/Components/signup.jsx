@@ -306,9 +306,9 @@ const signup = () => {
                     </p>
                   </div>
 
-                  <button type="submit" className="bg-blue-800 w-full px-10 py-2 my-2 rounded-3xl border-2 border-blue-800 hover:bg-transparent transition duration-500 text-white hover:text-blue-800">
+                 <Link to='/users/dashboard' className="w-full"><button type="submit" className="bg-blue-800 w-full px-10 py-2 my-2 rounded-3xl border-2 border-blue-800 hover:bg-transparent transition duration-500 text-white hover:text-blue-800">
                     Sign Up
-                  </button>
+                  </button></Link> 
                   <Link to="/login">
                     <p>
                       Already have an account? <span className="font-medium underline">Log in</span>
