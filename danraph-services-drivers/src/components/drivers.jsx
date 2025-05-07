@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import Navbar from './Navbar'
 import Sidebar from './sidebar'
 import { Outlet } from 'react-router-dom'
+import Footer from './footer'
 
 const Drivers = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false)
@@ -38,6 +39,7 @@ const Drivers = () => {
           <Outlet />
         </div>
       </div>
+      <Footer />
     </div>
   )
 }

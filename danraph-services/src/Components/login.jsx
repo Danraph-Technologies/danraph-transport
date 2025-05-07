@@ -121,6 +121,7 @@ const login = () => {
       <input type={showPassword ? "text" : "password"} name="password" id="password" required minLength={8} autoComplete="new-password" value={form.password} onChange={handleInputChange} className="outline-none w-full px-4 py-2 rounded-lg bg-white border border-gray-400" />
       <p className='text-right underline py-2 cursor-pointer'>Forget your password?</p>
     </div>
+    
     <button className='bg-blue-800 w-full px-10 py-2 my-3 rounded-3xl border-2 border-blue-800 hover:bg-transparent transition duration-500 text-white hover:text-blue-800'>Sign in</button>
     <p className=' '>Dont't have an account? <Link to="/signup"><span className='font-medium underline cursor-pointer'>Sign up</span></Link></p>
   </form>
