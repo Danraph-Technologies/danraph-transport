@@ -1,0 +1,13 @@
+# Node modules
+node_modules/
+# Build output
+dist/
+# Environment variables
+.env
+.env.*
+# Vercel/Netlify/other deploy configs
+.vercel/
+.netlify/
+# OS files
+.DS_Store
+Thumbs.db

@@ -53,7 +53,14 @@ const Settings = () => {
           type="file"
           id="file-upload"
           className="hidden"
-         
+          accept="image/*"
+          onChange={e => {
+            const file = e.target.files[0];
+            if (file && file.size > 2 * 1024 * 1024) {
+              alert('File size must be less than 2MB');
+              e.target.value = '';
+            }
+          }}
         />
       </label>
 
@@ -109,4 +116,4 @@ const Settings = () => {
 }
 
 export default Settings
- 
+

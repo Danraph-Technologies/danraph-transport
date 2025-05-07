@@ -8,8 +8,25 @@ import { FaArrowLeft } from 'react-icons/fa';
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/solid";
 import ImageWithSkeleton from "./skeleton";
 
+const validatePassword = (password) => {
+  // At least 8 chars, 1 uppercase, 1 lowercase, 1 number, 1 special char
+  return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{8,}$/.test(password);
+};
+
 const signup = () => {
   const [countryCode, setCountryCode] = useState('us');
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [form, setForm] = useState({
+    firstName: '',
+    lastName: '',
+    userType: '',
+    email: '',
+    phone: '',
+    password: '',
+    terms: false,
+    consent: false
+  });
+  const [error, setError] = useState('');
 
   useEffect(() => {
     // Fetch the country code immediately when the user accesses the site (on page load)
@@ -44,20 +61,67 @@ const signup = () => {
     setShowPassword(!showPassword);
   };
 
+  const handleInputChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setForm((prev) => ({
+      ...prev,
+      [name]: type === 'checkbox' ? checked : value.trim()
+    }));
+  };
+
+  const handlePhoneChange = (value) => {
+    setForm((prev) => ({ ...prev, phone: value }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setError('');
+    // Basic client-side validation
+    if (!form.firstName || !form.lastName || !form.userType || !form.email || !form.phone || !form.password) {
+      setError('All fields are required.');
+      return;
+    }
+    if (!validatePassword(form.password)) {
+      setError('Password must be at least 8 characters and include uppercase, lowercase, number, and special character.');
+      return;
+    }
+    if (!form.terms) {
+      setError('You must agree to the Terms of use and Privacy Policy.');
+      return;
+    }
+    // Never log sensitive info
+    // Submit to backend (actual submission handled elsewhere)
+    // ...
+  };
+
   return (
     <div className="w-full min-h-screen bg-white overflow-x-hidden">
       <div className="flex flex-col lg:flex-row w-full max-w-full min-h-screen log:items-center">
         {/* Left Image Section */}
         <div className="hidden lg:block flex-1 w-full max-w-full relative">
-        <ImageWithSkeleton src={img2} alt="" className="w-full h-full object-cover max-w-full" skeletonSize={600} />
-          <div className="absolute top-0 left-0 w-full max-w-full lg:max-w-[580px] px-6 py-8">
-            <img src={img1} alt="" className="max-w-[165px] w-full" />
-            <div className="w-[48px] h-[48px] bg-blue-800 rounded-full mt-14 mb-2"></div>
-            <p className="text-[32px] xl:text-[52px] text-white font-semibold py-[5px]">Lets Get You Moving</p>
-            <p className="text-[18px] xl:text-[22px] font-normal text-white">
-              Sign up to easily plan your trips and enjoy smooth campus rides. Get access to personalized routes and real-time updates.
-            </p>
-          </div>
+          {/* Skeleton overlay */}
+          {!isLoaded && (
+            <div className="w-full h-full bg-gray-200 animate-pulse rounded-lg" style={{ minHeight: 600, position: "absolute", inset: 0, zIndex: 2 }} />
+          )}
+          {/* Always render the image */}
+          <img
+            src={img2}
+            alt=""
+            className="w-full h-full object-cover max-w-full"
+            onLoad={() => setIsLoaded(true)}
+            style={{ display: isLoaded ? "block" : "none" }}
+          />
+          {/* Overlay content */}
+          {isLoaded && (
+            <div className="absolute top-0 left-0 w-full max-w-full lg:max-w-[580px] px-6 py-8">
+              <img src={img1} alt="" className="max-w-[165px] w-full" />
+              <div className="w-[48px] h-[48px] bg-blue-800 rounded-full mt-14 mb-2"></div>
+              <p className="text-[32px] xl:text-[52px] text-white font-semibold py-[5px]">Lets Get You Moving</p>
+              <p className="text-[18px] xl:text-[22px] font-normal text-white">
+                Sign up to easily plan your trips and enjoy smooth campus rides. Get access to personalized routes and real-time updates.
+              </p>
+            </div>
+          )}
         </div>
 
         {/* Right Form Section */}
@@ -80,9 +144,11 @@ const signup = () => {
               <p className="text-[28px] lg:text-[32px] font-medium py-4 px-16 text-center lg:text-left">Get Started</p>
               <div className="w-full flex justify-center">
                 <form
-                  action=""
+                  onSubmit={handleSubmit}
                   className="flex flex-col gap-3 justify-center items-center w-full max-w-[510px] lg:max-w-[510px] px-2 sm:px-3"
+                  autoComplete="off"
                 >
+                  {error && <div className="text-red-600 text-sm mb-2">{error}</div>}
                   <div className="flex gap-3 w-full">
                     <div className="flex flex-col flex-1">
                       <label htmlFor="firstName">First Name</label>
@@ -91,6 +157,11 @@ const signup = () => {
                         name="firstName"
                         id="firstName"
                         required
+                        minLength={2}
+                        maxLength={30}
+                        autoComplete="off"
+                        value={form.firstName}
+                        onChange={handleInputChange}
                         className="outline-none border border-gray-400 py-2 sm:py:3 px-3 rounded-lg w-full"
                       />
                     </div>
@@ -101,6 +172,11 @@ const signup = () => {
                         name="lastName"
                         id="lastName"
                         required
+                        minLength={2}
+                        maxLength={30}
+                        autoComplete="off"
+                        value={form.lastName}
+                        onChange={handleInputChange}
                         className="outline-none border border-gray-400 py-2 sm:py:3 px-3 rounded-lg w-full"
                       />
                     </div>
@@ -112,6 +188,8 @@ const signup = () => {
                       name="userType"
                       id="userType"
                       required
+                      value={form.userType}
+                      onChange={handleInputChange}
                       className="outline-none cursor-pointer border border-gray-400 py-3 px-3 rounded-lg w-full"
                     >
                       <option value="" className="cursor-pointer">
@@ -133,6 +211,9 @@ const signup = () => {
                       name="email"
                       id="email"
                       required
+                      autoComplete="off"
+                      value={form.email}
+                      onChange={handleInputChange}
                       className="outline-none border border-gray-400 py-3 px-3 rounded-lg w-full"
                     />
                   </div>
@@ -148,9 +229,12 @@ const signup = () => {
                         countryCodeEditable={false}
                         required
                         enableSearch
+                        value={form.phone}
+                        onChange={handlePhoneChange}
                         inputProps={{
                           name: "phone",
                           required: true,
+                          autoComplete: "off"
                         }}
                         inputClass="outline-none border !border-gray-400 py-6 px-3 rounded-lg !w-full"
                         buttonClass="!bg-transparent w-[48px]"
@@ -179,6 +263,10 @@ const signup = () => {
                       name="password"
                       id="password"
                       required
+                      minLength={8}
+                      autoComplete="new-password"
+                      value={form.password}
+                      onChange={handleInputChange}
                       className="outline-none border border-gray-400 py-3 px-3 rounded-lg w-full"
                     />
                     <p className="text-sm">
@@ -192,6 +280,8 @@ const signup = () => {
                       name="terms"
                       id="terms"
                       required
+                      checked={form.terms}
+                      onChange={handleInputChange}
                       className="cursor-pointer outline-none translate-y-1 text-black accent-black"
                     />
                     <p>
@@ -207,6 +297,8 @@ const signup = () => {
                       name="consent"
                       id="consent"
                       required
+                      checked={form.consent}
+                      onChange={handleInputChange}
                       className="cursor-pointer outline-none translate-y-1 text-black accent-black"
                     />
                     <p>
@@ -214,11 +306,9 @@ const signup = () => {
                     </p>
                   </div>
 
-                  <Link to="/users/dashboard" className="w-full">
-                    <button className="bg-blue-800 w-full px-10 py-2 my-2 rounded-3xl border-2 border-blue-800 hover:bg-transparent transition duration-500 text-white hover:text-blue-800">
-                      Sign Up
-                    </button>
-                  </Link>
+                  <button type="submit" className="bg-blue-800 w-full px-10 py-2 my-2 rounded-3xl border-2 border-blue-800 hover:bg-transparent transition duration-500 text-white hover:text-blue-800">
+                    Sign Up
+                  </button>
                   <Link to="/login">
                     <p>
                       Already have an account? <span className="font-medium underline">Log in</span>

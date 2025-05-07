@@ -9,29 +9,65 @@ import ImageWithSkeleton from "./skeleton";
 
 const login = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [form, setForm] = useState({
+    username: '',
+    password: ''
+  });
+  const [error, setError] = useState('');
 
   const togglePassword = () => {
     setShowPassword(!showPassword);
   };
 
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value.trim() }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setError('');
+    if (!form.username || !form.password) {
+      setError('All fields are required.');
+      return;
+    }
+    if (form.password.length < 8) {
+      setError('Password must be at least 8 characters.');
+      return;
+    }
+    // Never log sensitive info
+    // Submit to backend (actual submission handled elsewhere)
+  };
+
   return (
     <div className=' '>
-      <div className='max-w-[100%] flex justify-center  log:items-center '>
-        <div className=' flex-1 relative hidden lg:block'>
-          <ImageWithSkeleton src={img1} alt="" className='w-full  brightness-50' skeletonSize={600} />
-
+    <div className='max-w-[100%] flex justify-center  log:items-center '>
+      <div className=' flex-1 relative hidden lg:block'>
+        {/* Skeleton overlay */}
+        {!isLoaded && (
+          <div className="w-full h-full bg-gray-200 animate-pulse rounded-lg" style={{ minHeight: 600, position: "absolute", inset: 0, zIndex: 2 }} />
+        )}
+        {/* Always render the image */}
+        <img
+          src={img1}
+          alt=""
+          className='w-full brightness-50'
+          style={{ minHeight: 600, display: isLoaded ? "block" : "none" }}
+          onLoad={() => setIsLoaded(true)}
+        />
+        {/* Overlay content */}
+        {isLoaded && (
           <div className='absolute top-5 left-8 '>
             <ImageWithSkeleton src={img2} alt="Danraph Logo" className='max-w-[214px] w-full' skeletonSize={214} />
             <div className='max-w-[530px]'>
-            <div style={{ backgroundColor: "#F80B0B" }} className='w-[48px] h-[48px] rounded-full my-7'></div>
-            <p className='text-white font-semibold text-[52px]'>Lets Get Moving</p>
-            <p className='text-[22px] font-normal text-white'>Log in to plan your trips and enjoy hassle. free campus rides. Access your personalized routes and real-time updates.</p>
+              <div style={{ backgroundColor: "#F80B0B" }} className='w-[48px] h-[48px] rounded-full my-7'></div>
+              <p className='text-white font-semibold text-[52px]'>Lets Get Moving</p>
+              <p className='text-[22px] font-normal text-white'>Log in to plan your trips and enjoy hassle. free campus rides. Access your personalized routes and real-time updates.</p>
             </div>
-            
-            
           </div>
-
-        </div>
+        )}
+      </div>
        
        <div style={{ backgroundColor: '#F6F9F6' }} className='  flex-1 w-full pb-5 '>
         <div className='flex items-center justify-between pt-9  px-5'>
@@ -73,16 +109,16 @@ const login = () => {
   </div>
 </div>
         <div className="flex justify-center items-center w-full">
-  <form action="" className="flex flex-col justify-center items-center w-full max-w-[510px] px-3">
-    
+  <form onSubmit={handleSubmit} autoComplete="off" className="flex flex-col justify-center items-center w-full max-w-[510px] px-3">
+    {error && <div className="text-red-600 text-sm mb-2">{error}</div>}
     <div className="flex flex-col justify-center w-full">
       <label htmlFor="Username or email address">Username or email address</label>
-      <input type="text" name="" id="" required className="outline-none w-full px-4 py-2 rounded-lg bg-white border border-gray-400" />
+      <input type="text" name="username" id="username" required autoComplete="off" value={form.username} onChange={handleInputChange} className="outline-none w-full px-4 py-2 rounded-lg bg-white border border-gray-400" />
     </div>
 
     <div className="flex flex-col pt-3 justify-center w-full">
       <label htmlFor="password" className='flex items-center justify-between pr-2'><p>Your Password</p> <p onClick={togglePassword} className='flex items-center cursor-pointer gap-1 '> {showPassword ? ( <EyeSlashIcon className="h-5 w-5 text-gray-600" /> ) : ( <EyeIcon className="h-5 w-5 text-gray-600" />)} Hide</p></label>
-      <input type={showPassword ? "text" : "password"} name="password" id="" required className="outline-none w-full px-4 py-2 rounded-lg bg-white border border-gray-400" />
+      <input type={showPassword ? "text" : "password"} name="password" id="password" required minLength={8} autoComplete="new-password" value={form.password} onChange={handleInputChange} className="outline-none w-full px-4 py-2 rounded-lg bg-white border border-gray-400" />
       <p className='text-right underline py-2 cursor-pointer'>Forget your password?</p>
     </div>
     <button className='bg-blue-800 w-full px-10 py-2 my-3 rounded-3xl border-2 border-blue-800 hover:bg-transparent transition duration-500 text-white hover:text-blue-800'>Sign in</button>
