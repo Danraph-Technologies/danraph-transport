@@ -4,7 +4,7 @@ import img1 from "../images/danraph-services15.jpg"
 import { Link } from 'react-router-dom'
 import Comfirm from './comfirm'
 import Success from './success';
-
+import ImageWithSkeleton from "../Components/skeleton";
 
 
 const Ride = () => {
@@ -62,7 +62,7 @@ const Ride = () => {
         <div className='flex flex-wrap  my-5 gap-4 justify-center items-center'>
         <div className='flex gap-4  max-w-[500px]  flex:max-w-[340px]  flexx:max-w-[400px] fle:max-w-[370px] bg-[#d5deef57] rounded-xl border border-[#d5deefa4] my-0 px-3 py-1 pb-3' >
             <div className='flex flex-col items-center gap-1  text-center max-w-[65px]  py-4'> 
-               <img src={img1} alt="" className='sm:max-w-[60px] max-w-[39px] sm:translate-y-0  w-full rounded-[100%] object-cover h-[39px] sm:h-[60px]'/>
+               <ImageWithSkeleton src={img1} alt="" className='sm:max-w-[60px] max-w-[39px] sm:translate-y-0  w-full rounded-[100%] object-cover h-[39px] sm:h-[60px]' skeletonSize={60} />
               <svg className='sm:w-[60px] w-[55px]' viewBox="0 0 65 13" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M6.50001 9.35454L8.74792 10.7141C9.15959 10.9633 9.66334 10.595 9.55501 10.1291L8.95918 7.57245L10.9471 5.84995C11.31 5.53579 11.115 4.93995 10.6383 4.90204L8.02209 4.67995L6.99834 2.26412C6.81418 1.82537 6.18584 1.82537 6.00168 2.26412L4.97793 4.67454L2.36168 4.89662C1.88501 4.93454 1.69001 5.53037 2.05293 5.84454L4.04084 7.56704L3.44501 10.1237C3.33668 10.5895 3.84043 10.9579 4.25209 10.7087L6.50001 9.35454Z" fill="#FEC003"/>
               <path d="M19.5 9.35454L21.7479 10.7141C22.1596 10.9633 22.6633 10.595 22.555 10.1291L21.9592 7.57245L23.9471 5.84995C24.31 5.53579 24.115 4.93995 23.6383 4.90204L21.0221 4.67995L19.9983 2.26412C19.8142 1.82537 19.1858 1.82537 19.0017 2.26412L17.9779 4.67454L15.3617 4.89662C14.885 4.93454 14.69 5.53037 15.0529 5.84454L17.0408 7.56704L16.445 10.1237C16.3367 10.5895 16.8404 10.9579 17.2521 10.7087L19.5 9.35454Z" fill="#FEC003"/>
@@ -132,7 +132,7 @@ const Ride = () => {
 
           <div className='flex gap-4  max-w-[500px]  flex:max-w-[340px]  flexx:max-w-[400px] fle:max-w-[370px] bg-[#f80b0b11] border-[#f80b0b27] rounded-xl border  my-0 px-3 py-1 pb-3' >
             <div className='flex flex-col items-center gap-1  text-center max-w-[65px]  py-4'> 
-               <img src={img1} alt="" className='sm:max-w-[60px] max-w-[39px] sm:translate-y-0  w-full rounded-[100%] object-cover h-[39px] sm:h-[60px]'/>
+               <ImageWithSkeleton src={img1} alt="" className='sm:max-w-[60px] max-w-[39px] sm:translate-y-0  w-full rounded-[100%] object-cover h-[39px] sm:h-[60px]' skeletonSize={60} />
               <svg className='sm:w-[60px] w-[55px]' viewBox="0 0 65 13" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M6.50001 9.35454L8.74792 10.7141C9.15959 10.9633 9.66334 10.595 9.55501 10.1291L8.95918 7.57245L10.9471 5.84995C11.31 5.53579 11.115 4.93995 10.6383 4.90204L8.02209 4.67995L6.99834 2.26412C6.81418 1.82537 6.18584 1.82537 6.00168 2.26412L4.97793 4.67454L2.36168 4.89662C1.88501 4.93454 1.69001 5.53037 2.05293 5.84454L4.04084 7.56704L3.44501 10.1237C3.33668 10.5895 3.84043 10.9579 4.25209 10.7087L6.50001 9.35454Z" fill="#FEC003"/>
               <path d="M19.5 9.35454L21.7479 10.7141C22.1596 10.9633 22.6633 10.595 22.555 10.1291L21.9592 7.57245L23.9471 5.84995C24.31 5.53579 24.115 4.93995 23.6383 4.90204L21.0221 4.67995L19.9983 2.26412C19.8142 1.82537 19.1858 1.82537 19.0017 2.26412L17.9779 4.67454L15.3617 4.89662C14.885 4.93454 14.69 5.53037 15.0529 5.84454L17.0408 7.56704L16.445 10.1237C16.3367 10.5895 16.8404 10.9579 17.2521 10.7087L19.5 9.35454Z" fill="#FEC003"/>
@@ -204,7 +204,7 @@ const Ride = () => {
 
           <div className='flex gap-4  max-w-[500px]  flex:max-w-[340px]  flexx:max-w-[400px] fle:max-w-[370px] bg-[#d5deef57] rounded-xl border border-[#d5deefa4] my-0 px-3 py-1 pb-3' >
             <div className='flex flex-col items-center gap-1  text-center max-w-[65px]  py-4'> 
-               <img src={img1} alt="" className='sm:max-w-[60px] max-w-[39px] sm:translate-y-0  w-full rounded-[100%] object-cover h-[39px] sm:h-[60px]'/>
+               <ImageWithSkeleton src={img1} alt="" className='sm:max-w-[60px] max-w-[39px] sm:translate-y-0  w-full rounded-[100%] object-cover h-[39px] sm:h-[60px]' skeletonSize={60} />
               <svg className='sm:w-[60px] w-[55px]' viewBox="0 0 65 13" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M6.50001 9.35454L8.74792 10.7141C9.15959 10.9633 9.66334 10.595 9.55501 10.1291L8.95918 7.57245L10.9471 5.84995C11.31 5.53579 11.115 4.93995 10.6383 4.90204L8.02209 4.67995L6.99834 2.26412C6.81418 1.82537 6.18584 1.82537 6.00168 2.26412L4.97793 4.67454L2.36168 4.89662C1.88501 4.93454 1.69001 5.53037 2.05293 5.84454L4.04084 7.56704L3.44501 10.1237C3.33668 10.5895 3.84043 10.9579 4.25209 10.7087L6.50001 9.35454Z" fill="#FEC003"/>
               <path d="M19.5 9.35454L21.7479 10.7141C22.1596 10.9633 22.6633 10.595 22.555 10.1291L21.9592 7.57245L23.9471 5.84995C24.31 5.53579 24.115 4.93995 23.6383 4.90204L21.0221 4.67995L19.9983 2.26412C19.8142 1.82537 19.1858 1.82537 19.0017 2.26412L17.9779 4.67454L15.3617 4.89662C14.885 4.93454 14.69 5.53037 15.0529 5.84454L17.0408 7.56704L16.445 10.1237C16.3367 10.5895 16.8404 10.9579 17.2521 10.7087L19.5 9.35454Z" fill="#FEC003"/>
@@ -277,7 +277,7 @@ const Ride = () => {
 
           <div className='flex gap-4  max-w-[500px]  flex:max-w-[340px]  flexx:max-w-[400px] fle:max-w-[370px]  bg-[#f80b0b11] border-[#f80b0b27] rounded-xl border  my-0 px-3 py-1 pb-3' >
             <div className='flex flex-col items-center gap-1  text-center max-w-[65px]  py-4'> 
-               <img src={img1} alt="" className='sm:max-w-[60px] max-w-[39px] sm:translate-y-0  w-full rounded-[100%] object-cover h-[39px] sm:h-[60px]'/>
+               <ImageWithSkeleton src={img1} alt="" className='sm:max-w-[60px] max-w-[39px] sm:translate-y-0  w-full rounded-[100%] object-cover h-[39px] sm:h-[60px]' skeletonSize={60} />
               <svg className='sm:w-[60px] w-[55px]' viewBox="0 0 65 13" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M6.50001 9.35454L8.74792 10.7141C9.15959 10.9633 9.66334 10.595 9.55501 10.1291L8.95918 7.57245L10.9471 5.84995C11.31 5.53579 11.115 4.93995 10.6383 4.90204L8.02209 4.67995L6.99834 2.26412C6.81418 1.82537 6.18584 1.82537 6.00168 2.26412L4.97793 4.67454L2.36168 4.89662C1.88501 4.93454 1.69001 5.53037 2.05293 5.84454L4.04084 7.56704L3.44501 10.1237C3.33668 10.5895 3.84043 10.9579 4.25209 10.7087L6.50001 9.35454Z" fill="#FEC003"/>
               <path d="M19.5 9.35454L21.7479 10.7141C22.1596 10.9633 22.6633 10.595 22.555 10.1291L21.9592 7.57245L23.9471 5.84995C24.31 5.53579 24.115 4.93995 23.6383 4.90204L21.0221 4.67995L19.9983 2.26412C19.8142 1.82537 19.1858 1.82537 19.0017 2.26412L17.9779 4.67454L15.3617 4.89662C14.885 4.93454 14.69 5.53037 15.0529 5.84454L17.0408 7.56704L16.445 10.1237C16.3367 10.5895 16.8404 10.9579 17.2521 10.7087L19.5 9.35454Z" fill="#FEC003"/>
@@ -351,7 +351,7 @@ const Ride = () => {
 
           <div className='flex gap-4 md: max-w-[500px]  flex:max-w-[340px]  flexx:max-w-[400px] fle:max-w-[370px] bg-[#d5deef57] rounded-xl border border-[#d5deefa4] my-0 px-3 py-1 pb-3' >
             <div className='flex flex-col items-center gap-1  text-center max-w-[65px]  py-4'> 
-               <img src={img1} alt="" className='sm:max-w-[60px] max-w-[39px] sm:translate-y-0  w-full rounded-[100%] object-cover h-[39px] sm:h-[60px]'/>
+               <ImageWithSkeleton src={img1} alt="" className='sm:max-w-[60px] max-w-[39px] sm:translate-y-0  w-full rounded-[100%] object-cover h-[39px] sm:h-[60px]' skeletonSize={60} />
               <svg className='sm:w-[60px] w-[55px]' viewBox="0 0 65 13" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M6.50001 9.35454L8.74792 10.7141C9.15959 10.9633 9.66334 10.595 9.55501 10.1291L8.95918 7.57245L10.9471 5.84995C11.31 5.53579 11.115 4.93995 10.6383 4.90204L8.02209 4.67995L6.99834 2.26412C6.81418 1.82537 6.18584 1.82537 6.00168 2.26412L4.97793 4.67454L2.36168 4.89662C1.88501 4.93454 1.69001 5.53037 2.05293 5.84454L4.04084 7.56704L3.44501 10.1237C3.33668 10.5895 3.84043 10.9579 4.25209 10.7087L6.50001 9.35454Z" fill="#FEC003"/>
               <path d="M19.5 9.35454L21.7479 10.7141C22.1596 10.9633 22.6633 10.595 22.555 10.1291L21.9592 7.57245L23.9471 5.84995C24.31 5.53579 24.115 4.93995 23.6383 4.90204L21.0221 4.67995L19.9983 2.26412C19.8142 1.82537 19.1858 1.82537 19.0017 2.26412L17.9779 4.67454L15.3617 4.89662C14.885 4.93454 14.69 5.53037 15.0529 5.84454L17.0408 7.56704L16.445 10.1237C16.3367 10.5895 16.8404 10.9579 17.2521 10.7087L19.5 9.35454Z" fill="#FEC003"/>
@@ -418,7 +418,7 @@ const Ride = () => {
 
           <div className='flex gap-4  max-w-[500px]  flex:max-w-[340px]  flexx:max-w-[400px] fle:max-w-[370px] bg-[#f80b0b11] border-[#f80b0b27] rounded-xl border  my-0 px-3 py-1 pb-3' >
             <div className='flex flex-col items-center gap-1  text-center max-w-[65px]  py-4'> 
-               <img src={img1} alt="" className='sm:max-w-[60px] max-w-[39px] sm:translate-y-0  w-full rounded-[100%] object-cover h-[39px] sm:h-[60px]'/>
+               <ImageWithSkeleton src={img1} alt="" className='sm:max-w-[60px] max-w-[39px] sm:translate-y-0  w-full rounded-[100%] object-cover h-[39px] sm:h-[60px]' skeletonSize={60} />
               <svg className='sm:w-[60px] w-[55px]' viewBox="0 0 65 13" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M6.50001 9.35454L8.74792 10.7141C9.15959 10.9633 9.66334 10.595 9.55501 10.1291L8.95918 7.57245L10.9471 5.84995C11.31 5.53579 11.115 4.93995 10.6383 4.90204L8.02209 4.67995L6.99834 2.26412C6.81418 1.82537 6.18584 1.82537 6.00168 2.26412L4.97793 4.67454L2.36168 4.89662C1.88501 4.93454 1.69001 5.53037 2.05293 5.84454L4.04084 7.56704L3.44501 10.1237C3.33668 10.5895 3.84043 10.9579 4.25209 10.7087L6.50001 9.35454Z" fill="#FEC003"/>
               <path d="M19.5 9.35454L21.7479 10.7141C22.1596 10.9633 22.6633 10.595 22.555 10.1291L21.9592 7.57245L23.9471 5.84995C24.31 5.53579 24.115 4.93995 23.6383 4.90204L21.0221 4.67995L19.9983 2.26412C19.8142 1.82537 19.1858 1.82537 19.0017 2.26412L17.9779 4.67454L15.3617 4.89662C14.885 4.93454 14.69 5.53037 15.0529 5.84454L17.0408 7.56704L16.445 10.1237C16.3367 10.5895 16.8404 10.9579 17.2521 10.7087L19.5 9.35454Z" fill="#FEC003"/>
@@ -490,7 +490,7 @@ const Ride = () => {
 
           <div className='flex gap-4  max-w-[500px]  flex:max-w-[340px]  flexx:max-w-[400px] fle:max-w-[370px] bg-[#d5deef57] rounded-xl border border-[#d5deefa4] my-0 px-3 py-1 pb-3' >
             <div className='flex flex-col items-center gap-1  text-center max-w-[65px]  py-4'> 
-               <img src={img1} alt="" className='sm:max-w-[60px] max-w-[39px] sm:translate-y-0  w-full rounded-[100%] object-cover h-[39px] sm:h-[60px]'/>
+               <ImageWithSkeleton src={img1} alt="" className='sm:max-w-[60px] max-w-[39px] sm:translate-y-0  w-full rounded-[100%] object-cover h-[39px] sm:h-[60px]' skeletonSize={60} />
               <svg className='sm:w-[60px] w-[55px]' viewBox="0 0 65 13" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M6.50001 9.35454L8.74792 10.7141C9.15959 10.9633 9.66334 10.595 9.55501 10.1291L8.95918 7.57245L10.9471 5.84995C11.31 5.53579 11.115 4.93995 10.6383 4.90204L8.02209 4.67995L6.99834 2.26412C6.81418 1.82537 6.18584 1.82537 6.00168 2.26412L4.97793 4.67454L2.36168 4.89662C1.88501 4.93454 1.69001 5.53037 2.05293 5.84454L4.04084 7.56704L3.44501 10.1237C3.33668 10.5895 3.84043 10.9579 4.25209 10.7087L6.50001 9.35454Z" fill="#FEC003"/>
               <path d="M19.5 9.35454L21.7479 10.7141C22.1596 10.9633 22.6633 10.595 22.555 10.1291L21.9592 7.57245L23.9471 5.84995C24.31 5.53579 24.115 4.93995 23.6383 4.90204L21.0221 4.67995L19.9983 2.26412C19.8142 1.82537 19.1858 1.82537 19.0017 2.26412L17.9779 4.67454L15.3617 4.89662C14.885 4.93454 14.69 5.53037 15.0529 5.84454L17.0408 7.56704L16.445 10.1237C16.3367 10.5895 16.8404 10.9579 17.2521 10.7087L19.5 9.35454Z" fill="#FEC003"/>
@@ -561,9 +561,9 @@ const Ride = () => {
 
 
 
-          <div className='flex gap-4  max-w-[500px]  flex:max-w-[340px]  flexx:max-w-[400px] fle:max-w-[370px] bg-[#f80b0b11] border-[#f80b0b27] rounded-xl border my-0 px-3 py-1 pb-3' >
+          <div className='flex gap-4  max-w-[500px]  flex:max-w-[340px]  flexx:max-w-[400px] fle:max-w-[370px] bg-[#f80b0b11] border-[#f80b0b27] rounded-xl border  my-0 px-3 py-1 pb-3' >
             <div className='flex flex-col items-center gap-1  text-center max-w-[65px]  py-4'> 
-               <img src={img1} alt="" className='sm:max-w-[60px] max-w-[39px] sm:translate-y-0  w-full rounded-[100%] object-cover h-[39px] sm:h-[60px]'/>
+               <ImageWithSkeleton src={img1} alt="" className='sm:max-w-[60px] max-w-[39px] sm:translate-y-0  w-full rounded-[100%] object-cover h-[39px] sm:h-[60px]' skeletonSize={60} />
               <svg className='sm:w-[60px] w-[55px]' viewBox="0 0 65 13" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M6.50001 9.35454L8.74792 10.7141C9.15959 10.9633 9.66334 10.595 9.55501 10.1291L8.95918 7.57245L10.9471 5.84995C11.31 5.53579 11.115 4.93995 10.6383 4.90204L8.02209 4.67995L6.99834 2.26412C6.81418 1.82537 6.18584 1.82537 6.00168 2.26412L4.97793 4.67454L2.36168 4.89662C1.88501 4.93454 1.69001 5.53037 2.05293 5.84454L4.04084 7.56704L3.44501 10.1237C3.33668 10.5895 3.84043 10.9579 4.25209 10.7087L6.50001 9.35454Z" fill="#FEC003"/>
               <path d="M19.5 9.35454L21.7479 10.7141C22.1596 10.9633 22.6633 10.595 22.555 10.1291L21.9592 7.57245L23.9471 5.84995C24.31 5.53579 24.115 4.93995 23.6383 4.90204L21.0221 4.67995L19.9983 2.26412C19.8142 1.82537 19.1858 1.82537 19.0017 2.26412L17.9779 4.67454L15.3617 4.89662C14.885 4.93454 14.69 5.53037 15.0529 5.84454L17.0408 7.56704L16.445 10.1237C16.3367 10.5895 16.8404 10.9579 17.2521 10.7087L19.5 9.35454Z" fill="#FEC003"/>
@@ -623,7 +623,7 @@ const Ride = () => {
 
 
               </div>
-              <button className='bg-blue-800 border-2 py-[2px] sm:text-[16px] text-[14px] max-w-[138px] w-full  items-center border-blue-800  hover:bg-transparent hover:text-blue-800 transition duration-500 rounded-full text-white'  onClick={handleOpenConfirm}>Select Driver</button>
+               <button className='bg-blue-800 border-2 py-[2px] sm:text-[16px] text-[14px] max-w-[138px] w-full  items-center border-blue-800  hover:bg-transparent hover:text-blue-800 transition duration-500 rounded-full text-white'  onClick={handleOpenConfirm}>Select Driver</button>
             
             </div>
           </div>

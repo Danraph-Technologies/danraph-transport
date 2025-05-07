@@ -1,5 +1,7 @@
 import React, {useRef} from 'react'
 import img from "../assets/danraph-arrow.png"
+import ImageWithSkeleton from "../components/skeleton"
+
 const trips = () => {
   const pastTripsRef = useRef(null)
   const scrollToBottom = () => {
@@ -21,7 +23,7 @@ const trips = () => {
           <div className='max-w-[330px] w-full border border-gray-300 rounded-lg px-4 py-3 my-5'>
             <div className=' flex justify-between items-center text-[18px] sm:text-[21px]'>
               <p>Main Gate</p>
-              <img src={img} alt=""  className='max-w-[18px] w-full'/>
+              <ImageWithSkeleton src={img} alt=""  className='max-w-[18px] w-full'/>
               <p>Hostel A</p>
             </div>
               <p className=' text-[#585858] font-light text-[17px] sm:text-[21px] py-3 sm:py-2'>1.2 miles</p>
@@ -45,7 +47,7 @@ const trips = () => {
         <div className='max-w-[330px] w-full border border-gray-300 rounded-lg px-4 py-3 my-5'>
             <div className=' flex justify-between items-center text-[18px] sm:text-[21px]'>
               <p>Main Gate</p>
-              <img src={img} alt=""  className='max-w-[18px] w-full'/>
+              <ImageWithSkeleton src={img} alt=""  className='max-w-[18px] w-full'/>
               <p>Hostel A</p>
             </div>
               <p className=' text-[#585858] font-light text-[17px] sm:text-[21px] py-3 sm:py-2'>1.2 miles</p>
@@ -68,7 +70,7 @@ const trips = () => {
         <div className='max-w-[330px] w-full border border-gray-300 rounded-lg px-4 py-3 my-5'>
             <div className=' flex justify-between items-center text-[18px] sm:text-[21px]'>
               <p>Main Gate</p>
-              <img src={img} alt=""  className='max-w-[18px] w-full'/>
+              <ImageWithSkeleton src={img} alt=""  className='max-w-[18px] w-full'/>
               <p>Hostel A</p>
             </div>
               <p className=' text-[#585858] font-light text-[17px] sm:text-[21px] py-3 sm:py-2'>1.2 miles</p>
@@ -98,7 +100,7 @@ const trips = () => {
         <div className='max-w-[330px] w-full border border-gray-300 rounded-lg px-4 py-3 pb-8 my-5'>
           <div className=' flex justify-between items-center text-[18px] sm:text-[21px]'>
             <p>Main Gate</p>
-            <img src={img} alt=""  className='max-w-[18px] w-full'/>
+            <ImageWithSkeleton src={img} alt=""  className='max-w-[18px] w-full'/>
             <p>Hostel A</p>
           </div>
           <p className=' text-[#585858] font-light text-[18px] sm:text-[21px] sm:py-2 py-3'>1.2 miles</p>
@@ -120,7 +122,7 @@ const trips = () => {
          <div className='max-w-[330px] w-full border border-gray-300 rounded-lg px-4 py-3 pb-8 my-5'>
           <div className=' flex justify-between items-center text-[18px] sm:text-[21px]'>
             <p>Main Gate</p>
-            <img src={img} alt=""  className='max-w-[18px] w-full'/>
+            <ImageWithSkeleton src={img} alt=""  className='max-w-[18px] w-full'/>
             <p>Hostel A</p>
           </div>
           <p className=' text-[#585858] font-light text-[18px] sm:text-[21px] sm:py-2 py-3'>1.2 miles</p>
@@ -141,7 +143,7 @@ const trips = () => {
          <div className='max-w-[330px] w-full border border-gray-300 rounded-lg px-4 py-3 pb-8 my-5'>
           <div className=' flex justify-between items-center text-[18px] sm:text-[21px]'>
             <p>Main Gate</p>
-            <img src={img} alt=""  className='max-w-[18px] w-full'/>
+            <ImageWithSkeleton src={img} alt=""  className='max-w-[18px] w-full'/>
             <p>Hostel A</p>
           </div>
           <p className=' text-[#585858] font-light text-[18px] sm:text-[21px] sm:py-2 py-3'>1.2 miles</p>
@@ -162,7 +164,7 @@ const trips = () => {
          <div className='max-w-[330px] w-full border border-gray-300 rounded-lg px-4 py-3 pb-8 my-5'>
           <div className=' flex justify-between items-center text-[18px] sm:text-[21px]'>
             <p>Main Gate</p>
-            <img src={img} alt=""  className='max-w-[18px] w-full'/>
+            <ImageWithSkeleton src={img} alt=""  className='max-w-[18px] w-full'/>
             <p>Hostel A</p>
           </div>
           <p className=' text-[#585858] font-light text-[18px] sm:text-[21px] sm:py-2 py-3'>1.2 miles</p>
@@ -183,7 +185,7 @@ const trips = () => {
          <div className='max-w-[330px] w-full border border-gray-300 rounded-lg px-4 py-3 pb-8 my-5'>
           <div className=' flex justify-between items-center text-[18px] sm:text-[21px]'>
             <p>Main Gate</p>
-            <img src={img} alt=""  className='max-w-[18px] w-full'/>
+            <ImageWithSkeleton src={img} alt=""  className='max-w-[18px] w-full'/>
             <p>Hostel A</p>
           </div>
           <p className=' text-[#585858] font-light text-[18px] sm:text-[21px] sm:py-2 py-3'>1.2 miles</p>
@@ -204,7 +206,7 @@ const trips = () => {
          <div className='max-w-[330px] w-full border border-gray-300 rounded-lg px-4 py-3 pb-8 my-5'>
           <div className=' flex justify-between items-center text-[18px] sm:text-[21px]'>
             <p>Main Gate</p>
-            <img src={img} alt=""  className='max-w-[18px] w-full'/>
+            <ImageWithSkeleton src={img} alt=""  className='max-w-[18px] w-full'/>
             <p>Hostel A</p>
           </div>
           <p className=' text-[#585858] font-light text-[18px] sm:text-[21px] sm:py-2 py-3'>1.2 miles</p>
@@ -225,7 +227,7 @@ const trips = () => {
          <div className='max-w-[330px] w-full border border-gray-300 rounded-lg px-4 py-3 pb-8 my-5'>
           <div className=' flex justify-between items-center text-[18px] sm:text-[21px]'>
             <p>Main Gate</p>
-            <img src={img} alt=""  className='max-w-[18px] w-full'/>
+            <ImageWithSkeleton src={img} alt=""  className='max-w-[18px] w-full'/>
             <p>Hostel A</p>
           </div>
           <p className=' text-[#585858] font-light text-[18px] sm:text-[21px] sm:py-2 py-3'>1.2 miles</p>
@@ -246,7 +248,7 @@ const trips = () => {
          <div className='max-w-[330px] w-full border border-gray-300 rounded-lg px-4 py-3 pb-8 my-5'>
           <div className=' flex justify-between items-center text-[18px] sm:text-[21px]'>
             <p>Main Gate</p>
-            <img src={img} alt=""  className='max-w-[18px] w-full'/>
+            <ImageWithSkeleton src={img} alt=""  className='max-w-[18px] w-full'/>
             <p>Hostel A</p>
           </div>
           <p className=' text-[#585858] font-light text-[18px] sm:text-[21px] sm:py-2 py-3'>1.2 miles</p>

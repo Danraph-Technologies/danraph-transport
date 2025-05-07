@@ -7,6 +7,7 @@ import img5 from "../images/danraph-services22.png"
 import img6 from "../images/danraph-services23.png"
 import img7 from "../images/danraph-services24.png"
 import img8 from "../images/danraph-services25.png"
+import ImageWithSkeleton from "../Components/skeleton"
 
 const wallet = () => {
   return (
@@ -50,21 +51,21 @@ const wallet = () => {
           <div className='px-4 '>
               <p className=' py-2 pb-5 sm:text-[16px] text-[13px]'>Quick transfer</p>
               <div className='flex flex-wrap sm:gap-[10px] gap-1 med:gap-2 pb-2 justify-center items-center'>
-                <img src={img1} alt="" className='sm:max-w-[42px] med:max-w-[36px] max-w-[32px] w-full cursor-pointer'/>
-                <img src={img2} alt="" className='sm:max-w-[42px] med:max-w-[36px] max-w-[32px] w-full cursor-pointer'/>
-                <img src={img3} alt="" className='sm:max-w-[42px] med:max-w-[36px] max-w-[32px] w-full cursor-pointer'/>
-                <img src={img7} alt="" className='sm:max-w-[42px] med:max-w-[36px] max-w-[32px] w-full cursor-pointer'/>
-                <img src={img5} alt="" className='sm:max-w-[42px] med:max-w-[36px] max-w-[32px] w-full cursor-pointer'/>
-                <img src={img6} alt="" className='sm:max-w-[42px] med:max-w-[36px] max-w-[32px] w-full cursor-pointer'/>
-                <img src={img4} alt="" className='sm:max-w-[42px] med:max-w-[36px] max-w-[32px] w-full cursor-pointer'/>
+                <ImageWithSkeleton src={img1} alt="" className='sm:max-w-[42px] med:max-w-[36px] max-w-[32px] w-full cursor-pointer' skeletonSize={42} />
+                <ImageWithSkeleton src={img2} alt="" className='sm:max-w-[42px] med:max-w-[36px] max-w-[32px] w-full cursor-pointer' skeletonSize={42} />
+                <ImageWithSkeleton src={img3} alt="" className='sm:max-w-[42px] med:max-w-[36px] max-w-[32px] w-full cursor-pointer' skeletonSize={42} />
+                <ImageWithSkeleton src={img7} alt="" className='sm:max-w-[42px] med:max-w-[36px] max-w-[32px] w-full cursor-pointer' skeletonSize={42} />
+                <ImageWithSkeleton src={img5} alt="" className='sm:max-w-[42px] med:max-w-[36px] max-w-[32px] w-full cursor-pointer' skeletonSize={42} />
+                <ImageWithSkeleton src={img6} alt="" className='sm:max-w-[42px] med:max-w-[36px] max-w-[32px] w-full cursor-pointer' skeletonSize={42} />
+                <ImageWithSkeleton src={img4} alt="" className='sm:max-w-[42px] med:max-w-[36px] max-w-[32px] w-full cursor-pointer' skeletonSize={42} />
               </div>
 
-             <p className='flex gap-1 items-center py-3'><span>Notification</span> <img src={img8} alt="" className='max-w-[8px] w-full h-[8px] rounded-full '/></p>
+             <p className='flex gap-1 items-center py-3'><span>Notification</span> <ImageWithSkeleton src={img8} alt="" className='max-w-[8px] w-full h-[8px] rounded-full ' skeletonSize={8} /></p>
              <div>
               <div className='flex gap-3 pb-3 justify-between items-center'>
                
                 <div className='flex gap-2 items-center  '>
-                <img src={img1} alt="" className='max-w-[42px] w-full'/>
+                <ImageWithSkeleton src={img1} alt="" className='max-w-[42px] w-full' skeletonSize={42} />
                   <div>
                   
                   <p className='text-[13px] text-[#231F20]'>Dandave</p>
@@ -83,7 +84,7 @@ const wallet = () => {
               <div className='flex gap-3 pb-3 justify-between items-center'>
                
                <div className='flex gap-2 items-center  '>
-               <img src={img2} alt="" className='max-w-[42px] w-full'/>
+               <ImageWithSkeleton src={img2} alt="" className='max-w-[42px] w-full' skeletonSize={42} />
                  <div>
                  
                  <p className='text-[13px] text-[#231F20]'>Adaeze Obi</p>
@@ -103,7 +104,7 @@ const wallet = () => {
              <div className='flex gap-3 pb-3 justify-between items-center'>
                
                 <div className='flex gap-2 items-center  '>
-                <img src={img3} alt="" className='max-w-[42px] w-full'/>
+                <ImageWithSkeleton src={img3} alt="" className='max-w-[42px] w-full' skeletonSize={42} />
                   <div>
                   
                   <p className='text-[13px] text-[#231F20]'>Oluchi</p>
@@ -123,7 +124,7 @@ const wallet = () => {
              <div className='flex gap-3 pb-3 justify-between items-center'>
                
                 <div className='flex gap-2 items-center  '>
-                <img src={img6} alt="" className='max-w-[42px] w-full'/>
+                <ImageWithSkeleton src={img6} alt="" className='max-w-[42px] w-full' skeletonSize={42} />
                   <div>
                   
                   <p className='text-[13px] text-[#231F20]'>Josep akbar</p>

@@ -4,6 +4,7 @@ import img1 from "../assets/danraph-services1.png"
 import img2 from "../assets/danraph-services2.jpg"
 import { FaRegBell, FaSearch } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import ImageWithSkeleton from "./skeleton";
 
 const Navbar = ({ onHamburgerClick }) => {
   return (
@@ -26,7 +27,7 @@ const Navbar = ({ onHamburgerClick }) => {
           </div>
           <div className='flex items-center gap-8'>
             <div className='max-w-[48px] border border-gray-300 rounded-full p-2'>
-              <img src={img1} alt="" className='w-full' />
+              <img src={img1} alt="" className='w-full rounded-full' />
             </div>
             
             <div className='w-[50px] h-[50px]'>
@@ -43,9 +44,9 @@ const Navbar = ({ onHamburgerClick }) => {
             </svg>
           </button>
           <a href="http://localhost:5174/">
-              <img src={img} alt="" className='max-w-[125px] w-full' />
+              <ImageWithSkeleton src={img} alt="" className='max-w-[125px] w-full' />
             </a>
-            <Link to="/drivers/settings"><img src={img2} alt="" className='w-[45px] h-[45px] rounded-full' /></Link> 
+            <Link to="/drivers/settings"><ImageWithSkeleton src={img2} alt="" className='w-[45px] h-[45px] rounded-full' /></Link> 
         </div>
       </div>
     </div>

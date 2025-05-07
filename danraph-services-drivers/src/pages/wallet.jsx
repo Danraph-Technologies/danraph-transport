@@ -4,6 +4,7 @@ import img2 from "../assets/danraph-services19.png"
 import img3 from "../assets/danraph-services20.png"
 import img6 from "../assets/danraph-services23.png"
 import img8 from "../assets/danraph-services25.png"
+import ImageWithSkeleton from "../components/skeleton";
 
 const wallet = () => {
   return (
@@ -40,12 +41,12 @@ const wallet = () => {
           <div className='px-4 '>
               
 
-             <p className='flex gap-1 items-center py-3'><span>Notification</span> <img src={img8} alt="" className='max-w-[8px] w-full h-[8px] rounded-full '/></p>
+             <p className='flex gap-1 items-center py-3'><span>Notification</span> <ImageWithSkeleton src={img8} alt="" className='max-w-[8px] w-full h-[8px] rounded-full '/></p>
              <div>
               <div className='flex gap-3 pb-3 justify-between items-center'>
                
                 <div className='flex gap-2 items-center  '>
-                <img src={img1} alt="" className='max-w-[42px] w-full'/>
+                <ImageWithSkeleton src={img1} alt="" className='max-w-[42px] w-full'/>
                   <div>
                   
                   <p className='text-[13px] text-[#231F20]'>Dandave</p>
@@ -64,7 +65,7 @@ const wallet = () => {
               <div className='flex gap-3 pb-3 justify-between items-center'>
                
                <div className='flex gap-2 items-center  '>
-               <img src={img2} alt="" className='max-w-[42px] w-full'/>
+               <ImageWithSkeleton src={img2} alt="" className='max-w-[42px] w-full'/>
                  <div>
                  
                  <p className='text-[13px] text-[#231F20]'>Adaeze Obi</p>
@@ -84,7 +85,7 @@ const wallet = () => {
              <div className='flex gap-3 pb-3 justify-between items-center'>
                
                 <div className='flex gap-2 items-center  '>
-                <img src={img3} alt="" className='max-w-[42px] w-full'/>
+                <ImageWithSkeleton src={img3} alt="" className='max-w-[42px] w-full'/>
                   <div>
                   
                   <p className='text-[13px] text-[#231F20]'>Oluchi</p>
@@ -104,7 +105,7 @@ const wallet = () => {
              <div className='flex gap-3 pb-3 justify-between items-center'>
                
                 <div className='flex gap-2 items-center  '>
-                <img src={img6} alt="" className='max-w-[42px] w-full'/>
+                <ImageWithSkeleton src={img6} alt="" className='max-w-[42px] w-full'/>
                   <div>
                   
                   <p className='text-[13px] text-[#231F20]'>Josep akbar</p>

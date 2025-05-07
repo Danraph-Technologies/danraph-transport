@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import img1 from "../images/danraph-logo.png";
 import img2 from "../images/Danraph-services9.jpg";
@@ -7,6 +6,7 @@ import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import { FaArrowLeft } from 'react-icons/fa';
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/solid";
+import ImageWithSkeleton from "./skeleton";
 
 const signup = () => {
   const [countryCode, setCountryCode] = useState('us');
@@ -49,7 +49,7 @@ const signup = () => {
       <div className="flex flex-col lg:flex-row w-full max-w-full min-h-screen log:items-center">
         {/* Left Image Section */}
         <div className="hidden lg:block flex-1 w-full max-w-full relative">
-          <img src={img2} alt="" className="w-full h-full object-cover max-w-full" />
+        <ImageWithSkeleton src={img2} alt="" className="w-full h-full object-cover max-w-full" skeletonSize={600} />
           <div className="absolute top-0 left-0 w-full max-w-full lg:max-w-[580px] px-6 py-8">
             <img src={img1} alt="" className="max-w-[165px] w-full" />
             <div className="w-[48px] h-[48px] bg-blue-800 rounded-full mt-14 mb-2"></div>

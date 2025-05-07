@@ -8,6 +8,7 @@ import img5 from "../images/Danraph-services4.jpg"
 import img6 from "../images/Danraph-services5.jpg"
 import img7 from "../images/Danraph-services6.jpg"
 import img8 from "../images/Danraph-services7.jpg"
+import ImageWithSkeleton from "../Components/skeleton";
 
 import { FaFacebookF, FaTwitter, FaInstagram, FaLinkedinIn } from 'react-icons/fa';
 
@@ -16,7 +17,9 @@ const home = () => {
     <div style={{ backgroundColor: '#F6F9F6' }} className='h-auto pb-16'>
      <div className='mx-6 hidden sm:flex items-center translate-y-3 justify-between'>
         <div className='flex items-center  gap-6'>
-          <div className='max-w-40'><img src={img1} alt="" className='w-full cursor-pointer'/></div>
+          <div className='max-w-40'>
+            <ImageWithSkeleton src={img1} alt="Danraph Logo" className='w-full cursor-pointer' skeletonSize={160} />
+          </div>
           <div>
             <button className='py-2 px-4 text-base bg-black border-black text-white font-medium rounded-3xl hover:bg-transparent  hover:text-black  border-2  transition duration-500'>Download App</button>
           </div>
@@ -159,7 +162,7 @@ const home = () => {
 
         <div className='flex flex-wrap gap-12 p-5 xl:gap-28 foot:mt-[15px] foot:gap-5 xl:mt-[150px] mt-[15px] mb-2 justify-left sm:justify-center items-center sm:items-start'>
           <div className='max-w-[217px]'>
-            <img src={img1} alt="" className='sm:max-w-[131px] max-w-[110px] w-full mb-3'/>
+            <ImageWithSkeleton src={img1} alt="Danraph Logo" className='sm:max-w-[131px] max-w-[110px] w-full mb-3' skeletonSize={131} />
             <p className='font-normal sm:text-[16px] text-[13px]'>Stay informed and in control with easy access to your recent rides, trip history, and account updates.</p>
           </div>
 

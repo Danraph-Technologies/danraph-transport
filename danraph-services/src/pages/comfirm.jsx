@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import img1 from "../images/dan.png"
 import img2 from "../images/danraph-services15.jpg"
 import { Link } from 'react-router-dom';
+import ImageWithSkeleton from "../Components/skeleton";
 
 const Confirm = ({ onClose, onSuccess,  className = "" }) => {
   const [isClosing, setIsClosing] = useState(false);
@@ -69,10 +70,10 @@ const Confirm = ({ onClose, onSuccess,  className = "" }) => {
 
         <p className='max-w-[394px] text-[14px] sm:text-[17px] py-3'>You are about to book this ride please comfirm before booking</p>
 
-        <p className='flex  items-center gap-2 '><span className='text-[#004AAD] '>Main Gate</span> <img src={img1} alt="" className='max-w-[19px] w-full'/> <span className='text-[#004AAD] '>Hostel A</span></p>
+        <p className='flex  items-center gap-2 '><span className='text-[#004AAD] '>Main Gate</span> <ImageWithSkeleton src={img1} alt="" className='max-w-[19px] w-full' skeletonSize={19} /> <span className='text-[#004AAD] '>Hostel A</span></p>
 
         <div className='flex py-3 gap-3   items-start sm:items-center '>
-        <img src={img2} alt="" className='sm:max-w-[60px] max-w-[39px] sm:translate-y-0 translate-y-3 w-full rounded-[100%] object-cover h-[39px] sm:h-[60px]'/>
+        <ImageWithSkeleton src={img2} alt="" className='sm:max-w-[60px] max-w-[39px] sm:translate-y-0 translate-y-3 w-full rounded-[100%] object-cover h-[39px] sm:h-[60px]' skeletonSize={60} />
         <div>
              <p className='font-semibold text-[18px] pt-2'>Michael Nguyen</p>
                <div className='flex flex-wrap gap-3 pb-3 leading-relaxed pt-1' >

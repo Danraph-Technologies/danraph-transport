@@ -2,6 +2,7 @@ import React from 'react'
 import img1 from "../images/danraph-services-11.png"
 import { FaArrowRight } from 'react-icons/fa'
 import { Link } from 'react-router-dom'
+import ImageWithSkeleton from "../components/skeleton";
 
 const dashboard = () => {
   return (
@@ -14,14 +15,14 @@ const dashboard = () => {
           </header>
 
           <section className='flex gap-3 items-center bg-[#F3F8FF] p-4 rounded-md mx-2 my-5' aria-label="Wallet">
-            <img src={img1} alt="Wallet" className='sm:max-w-[39px] max-w-[29px] w-full' />
+            <ImageWithSkeleton src={img1} alt="Wallet" className='sm:max-w-[39px] max-w-[29px] w-full' />
             <span className='font-medium sm:text-[20px] text-[16px]'>Wallet <span className='pr-[3px]'>₦</span>22,000.00</span>
           </section>
 
           <section aria-labelledby="book-ride-heading">
             <h2 id="book-ride-heading" className='sm:text-[27px] text-[22px] font-semibold py-3 px-3'>Book a Ride</h2>
             <div className='flex flex-col justify-center items-center'>
-              <ul className='flex flex-wrap max-w-[520px] justify-center items-center gap-6' style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+              <ul className='flex flex-wrap max-w-[520px] justify-center items-center gap-6' style={{ listStyle: 'none' }}>
                 <li className='border-[1px] rounded-md flex-1 border-gray-300 max-w-[360px] min-w-[220px] pr-5 p-3'>
                   <p className='flex items-center gap-3 sm:text-[18px] text-[16px]'>Main gate <FaArrowRight /></p>
                   <p className='sm:text-[18px] text-[16px]'>Hostel A</p>
@@ -72,7 +73,7 @@ const dashboard = () => {
 
         <section className='border flex-1 rounded-lg border-gray-300 max-w-[510px] min-w-[250px]' aria-labelledby="recent-rides-heading">
           <h2 id="recent-rides-heading" className='text-[26px] font-semibold px-3 py-2'>Recent Rides</h2>
-          <ul className='border-[2px] border-gray-30 mx-4 mt-1 mb-6 rounded-lg py-2' style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+          <ul className='border-[2px] border-gray-30 m-4 px-5 mt-1 mb-6 rounded-lg py-2' style={{ listStyle: 'none' }}>
             <li className='px-3'>
               <div className='flex flex-wrap items-center justify-between'>
                 <div>

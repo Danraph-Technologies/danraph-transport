@@ -2,6 +2,7 @@ import React, { useRef, useState } from 'react'
 import img1 from "../assets/danraph-arrow.png"
 import Confirm from './Confirm';
 import Success from './success';
+import ImageWithSkeleton from "../components/skeleton";
 
 const ride = () => {
   const scrollRef = useRef(null);
@@ -56,7 +57,7 @@ const ride = () => {
                 <div className='max-w-[290px] w-full border mt-5 border-gray-300  px-[17px] leading-loose  rounded-md'>
                   <div className='flex items-center sm:text-[18.1px] text-[15px] font-normal justify-between'>
                     <p>Main gate</p>
-                    <img src={img1} alt="" className='max-w-[16px]'/>
+                    <ImageWithSkeleton src={img1} alt="" className='max-w-[16px]' />
                     <p>Hostel A</p>
                     </div>
       
@@ -83,7 +84,7 @@ const ride = () => {
                 <div className='max-w-[290px] w-full border mt-5 border-gray-300  px-[17px] leading-loose  rounded-md'>
                   <div className='flex items-center sm:text-[18.1px] text-[15px] font-normal justify-between'>
                     <p>Main gate</p>
-                    <img src={img1} alt="" className='max-w-[16px]'/>
+                    <ImageWithSkeleton src={img1} alt="" className='max-w-[16px]' />
                     <p>Hostel A</p>
                     </div>
       
@@ -111,7 +112,7 @@ const ride = () => {
                 <div className='max-w-[290px] w-full border mt-5 border-gray-300  px-[17px] leading-loose  rounded-md'>
                   <div className='flex items-center sm:text-[18.1px] text-[15px] font-normal justify-between'>
                     <p>Main gate</p>
-                    <img src={img1} alt="" className='max-w-[16px]'/>
+                    <ImageWithSkeleton src={img1} alt="" className='max-w-[16px]' />
                     <p>Hostel A</p>
                     </div>
       
@@ -139,7 +140,7 @@ const ride = () => {
                 <div className='max-w-[290px] w-full border mt-5 border-gray-300  px-[17px] leading-loose  rounded-md'>
                   <div className='flex items-center sm:text-[18.1px] text-[15px] font-normal justify-between'>
                     <p>Main gate</p>
-                    <img src={img1} alt="" className='max-w-[16px]'/>
+                    <ImageWithSkeleton src={img1} alt="" className='max-w-[16px]' />
                     <p>Hostel A</p>
                     </div>
       
@@ -167,7 +168,7 @@ const ride = () => {
                 <div className='max-w-[290px] w-full border mt-5 border-gray-300  px-[17px] leading-loose  rounded-md'>
                   <div className='flex items-center sm:text-[18.1px] text-[15px] font-normal justify-between'>
                     <p>Main gate</p>
-                    <img src={img1} alt="" className='max-w-[16px]'/>
+                    <ImageWithSkeleton src={img1} alt="" className='max-w-[16px]' />
                     <p>Hostel A</p>
                     </div>
       

@@ -5,6 +5,7 @@ import img1 from "../images/danraph-services8.jpg"
 import img2 from "../images/danraph-logo.png"
 import { FaArrowLeft } from 'react-icons/fa';
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/solid";
+import ImageWithSkeleton from "./skeleton";
 
 const login = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -17,10 +18,10 @@ const login = () => {
     <div className=' '>
       <div className='max-w-[100%] flex justify-center  log:items-center '>
         <div className=' flex-1 relative hidden lg:block'>
-          <img src={img1} alt="" className='w-full  brightness-50'/>
+          <ImageWithSkeleton src={img1} alt="" className='w-full  brightness-50' skeletonSize={600} />
 
           <div className='absolute top-5 left-8 '>
-            <img src={img2} alt="" className='max-w-[214px] w-full '/>
+            <ImageWithSkeleton src={img2} alt="Danraph Logo" className='max-w-[214px] w-full' skeletonSize={214} />
             <div className='max-w-[530px]'>
             <div style={{ backgroundColor: "#F80B0B" }} className='w-[48px] h-[48px] rounded-full my-7'></div>
             <p className='text-white font-semibold text-[52px]'>Lets Get Moving</p>
@@ -40,7 +41,7 @@ const login = () => {
         </div>
         
         <div className='flex flex-col justify-center gap-3 md:mx-24 h-auto mx-3 pt-2 lg:pt-14 '>
-          <img src={img2} alt="" className='lg:hidden block max-w-[146px] w-full m-auto'/>
+          <ImageWithSkeleton src={img2} alt="Danraph Logo" className='lg:hidden block max-w-[146px] w-full m-auto' skeletonSize={146} />
         <p className='lg:text-left text-center text-[32px] font-medium py-3 '>Sign in</p>
         <div className='flex justify-center items-center'>
         <button className='flex items-center  max-w-[510px] w-full  gap-3 border px-5 py-2 border-gray-700 rounded-3xl justify-center md:text-[20px] text-[15px] hover:bg-gray-300 transition duration-500 '>

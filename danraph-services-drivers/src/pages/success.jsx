@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import img1 from "../assets/danrapph.png";
 import img2 from "../assets/danraph-arrow.png"
+import ImageWithSkeleton from "../components/skeleton";
 
 const Success = ({ onClose, className = "" }) => {
   const [isClosing, setIsClosing] = useState(false);
@@ -37,13 +38,13 @@ const Success = ({ onClose, className = "" }) => {
           &times;
         </p>
         <div className='flex flex-col justify-center items-center -translate-y-8'>
-          <img src={img1} alt="" className='max-w-[300px] w-full animated-image' />
+          <ImageWithSkeleton src={img1} alt="" className='sm:max-w-[300px] max-w-[250px] w-full animated-image' skeletonSize={300} />
           <p className='sm:text-[26px] text-[20px] font-semibold max-w-[489px] w-full text-center'>
           You have successfully accepted to take on this ride
           </p>
           <p className='flex items-center gap-2 py-5 sm:text-[21px] text-[18.5px]'>
             <span className='text-[#004AAD] font-medium '>Main Gate</span>
-             <img src={img2} alt="" className='max-w-[16px]'/>
+             <ImageWithSkeleton src={img2} alt="" className='max-w-[16px]' skeletonSize={16} />
             <span className='text-[#004AAD] font-medium '>Hostel A</span>
           </p>
           <p className='max-w-[489px] w-full text-center sm:text-[18px] text-[15.1px] pb-5'>
