@@ -12,7 +12,7 @@ const Navbar = ({ onHamburgerClick }) => {
         {/* Desktop Navbar */}
         <div className='hidden items-center  justify-between sm:flex px-10 py-5'>
           <div className='flex items-center flex-1 gap-16'>
-            <a href="https://danraph-transport.vercel.app/">
+            <a href="https://danraph-services-users.vercel.app/">
               <img src={img} alt="" className='max-w-[159px] w-full' />
             </a>
             <div className='relative max-w-[483px] w-full'>
