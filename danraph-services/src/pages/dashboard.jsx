@@ -2,7 +2,7 @@ import React from 'react'
 import img1 from "../images/danraph-services-11.png"
 import { FaArrowRight } from 'react-icons/fa'
 import { Link } from 'react-router-dom'
-import ImageWithSkeleton from "../components/skeleton";
+import ImageWithSkeleton from "../Components/skeleton";
 
 const dashboard = () => {
   return (
