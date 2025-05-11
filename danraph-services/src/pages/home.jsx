@@ -150,7 +150,7 @@ const home = () => {
           <p className='text-[15px] sm:text-base font-normal underline '>Monitor rides, manage users and drivers, schedule shuttles, and optimize campus transport operations with ease.</p>
         </div>
       </div>
-
+ 
         <div>
           <div className='max-w-[549px] mt-4 xl:mt-24 foot:mt-4 '>
             <h1 className='font-semibold text-[25px] sm:text-[40px] mb-2'>Log in to see your recent activity</h1>

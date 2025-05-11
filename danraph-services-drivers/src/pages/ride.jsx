@@ -44,8 +44,8 @@ const ride = () => {
   };
 
   return (
-    <div>
-       <div className='max-w-[500px] flex-1 w-full border relative mb-5 mt-3 border-gray-300 rounded-xl px-4 sm:mx-5'>
+    <div >
+       <div className='max-w-[500px] flex-1 w-full border relative mb-12  border-gray-300 rounded-xl px-4 sm:mx-5'>
              <div className="absolute top-0 left-0 right-0 flex justify-between items-center bg-white px-4 py-2 z-10 rounded-t-xl">
               <span className='sm:text-[26px] text-[19px] font-semibold'>Ride Requests</span>
               <span className='text-[#F80B0B] font-semibold cursor-pointer'>See all</span>

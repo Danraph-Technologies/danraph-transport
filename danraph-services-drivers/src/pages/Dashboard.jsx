@@ -46,7 +46,7 @@ const Dashboard = () => {
   };
 
   return (
-    <div>
+    <div className='pb-6'>
      <div className='sm:px-2  pb-8 flex flex-wrap items-start gap-7'>
       <div className='max-w-[576px] border  border-gray-300 px-4 py-1 rounded-xl '>
         <p className='sm:text-[26px] text-[20px] font-semibold'>Hi, Maduka</p>

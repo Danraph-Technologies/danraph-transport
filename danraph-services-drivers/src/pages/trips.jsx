@@ -14,7 +14,7 @@ const trips = () => {
   }
   
   return (
-    <div>
+    <div className='pb-12'>
      <div className='max-w-[510px] relative w-full border border-gray-300 rounded-lg px-4 lg:mx-5 py-4'>
       <p className='sm:text-[26px] text-[21px] font-semibold pb-2 '>Ongoing Trips</p>
 
