@@ -35,7 +35,7 @@ const Success = ({ onClose, className = "" }) => {
           &times;
         </p>
         <div className='flex flex-col justify-center items-center -translate-y-8'>
-        <ImageWithSkeleton src={img1} alt="" className='max-w-[400px] w-full animated-image' skeletonSize={400} />
+         <ImageWithSkeleton src={img1} alt="" className='max-w-[400px] w-full animated-image' skeletonSize={200} />
           
           <p className='sm:text-[26px] text-[20px] font-semibold max-w-[394px] w-full text-center'>
             You have successfully booked a ride

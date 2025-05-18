@@ -8,7 +8,7 @@ const dashboard = () => {
   return (
     <main>
       <div className='flex gap-8 items-start flex-wrap pb-14'>
-        <section className='max-w-[580px] border border-gray-300 px-3 flex-1 py-2 rounded-lg' aria-labelledby="dashboard-greeting">
+        <section className='max-w-[580px] min-w-[290px] border border-gray-300 px-3 flex-1 py-2 rounded-lg' aria-labelledby="dashboard-greeting">
           <header>
             <h1 id="dashboard-greeting" className='font-semibold sm:text-[30px] text-[22px]'>Hi David</h1>
             <p className='font-normal sm:text-[20px] text-[16px] text-[#8F9DAD]'>Ready to ride?</p>
@@ -16,7 +16,7 @@ const dashboard = () => {
 
           <section className='flex gap-3 items-center bg-[#F3F8FF] p-4 rounded-md mx-2 my-5' aria-label="Wallet">
             <ImageWithSkeleton src={img1} alt="Wallet" className='sm:max-w-[39px] max-w-[29px] w-full' />
-            <span className='font-medium sm:text-[20px] text-[16px]'>Wallet <span className='pr-[3px]'>₦</span>22,000.00</span>
+            <span className='font-medium sm:text-[20px] text-[19px]'>Wallet <span className='pr-[3px]'>₦</span>22,000.00</span>
           </section>
 
           <section aria-labelledby="book-ride-heading">
@@ -71,10 +71,10 @@ const dashboard = () => {
           </section>
         </section>
 
-        <section className='border flex-1 rounded-lg border-gray-300 max-w-[510px] min-w-[250px]' aria-labelledby="recent-rides-heading">
+        <section className='border flex-1 rounded-lg border-gray-300 max-w-[510px] min-w-[270px]' aria-labelledby="recent-rides-heading">
           <h2 id="recent-rides-heading" className='text-[26px] font-semibold px-3 py-2'>Recent Rides</h2>
-          <ul className='border-[2px] border-gray-30 m-4 px-5 mt-1 mb-6 rounded-lg py-2' style={{ listStyle: 'none' }}>
-            <li className='px-3'>
+          <ul className='border-[2px] border-gray-300 m-4 sm:px-4 px-3 mt-1 mb-6 rounded-lg py-2' style={{ listStyle: 'none' }}>
+            <li className=''>
               <div className='flex flex-wrap items-center justify-between'>
                 <div>
                   <p className='flex gap-2 items-center'><span>Main gate</span> <FaArrowRight /> <span>Hostel A</span></p>
@@ -87,7 +87,7 @@ const dashboard = () => {
               <p className='text-[14px] text-[#585858] p-1'>Apr 22, 2024</p>
             </li>
             <hr className='my-3' />
-            <li className='px-3'>
+            <li className=''>
               <div className='flex flex-wrap items-center justify-between'>
                 <div>
                   <p className='flex gap-2 items-center'><span>Main gate</span> <FaArrowRight /> <span>Hostel A</span></p>

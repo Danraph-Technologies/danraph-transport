@@ -6,22 +6,23 @@ import Charterr from './charterr';
 const Charter = () => {
   const [showCharterr, setShowCharterr] = useState(false);
   const [phoneValue, setPhoneValue] = useState('');
-  const [country, setCountry] = useState('US');
-
+  const [country, setCountry] = useState('US'); // default to US
 
   useEffect(() => {
-    fetch('https://ipwhois.app/json/')
+    fetch('https://ipwho.is/')
       .then(res => res.json())
       .then(data => {
-        if (data?.country_code) {
+        if (data.success && data.country_code) {
           setCountry(data.country_code.toUpperCase());
         }
       })
-      .catch(err => console.error('IP detection failed:', err));
+      .catch(() => {
+        setCountry('us'); // fallback
+      });
   }, []);
 
   return (
-    <div className="sm:p-4 p-0 mb-10">
+    <div className="sm:p-4  mb-10">
       <div className='max-w-[990px] w-full p-5 f:p-3  border border-gray-300 rounded-lg'>
         <p className='font-semibold text-[26px] pb-5'>Charter a Car</p>
         <form action="">
@@ -78,8 +79,7 @@ const Charter = () => {
           padding: '0 10px',
           display: 'flex',
           alignItems: 'center'
-        },
-        renderCountryName: () => null
+        }
       }}
     />
   </div>

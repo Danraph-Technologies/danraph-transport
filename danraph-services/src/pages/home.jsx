@@ -18,7 +18,7 @@ const home = () => {
      <div className='mx-6 hidden sm:flex items-center translate-y-3 justify-between'>
         <div className='flex items-center  gap-6'>
           <div className='max-w-40'>
-            <ImageWithSkeleton src={img1} alt="Danraph Logo" className='w-full cursor-pointer' skeletonSize={160} />
+            <ImageWithSkeleton src={img1} alt="Danraph Logo" className='w-full cursor-pointer' />
           </div>
           <div>
             <button className='py-2 px-4 text-base bg-black border-black text-white font-medium rounded-3xl hover:bg-transparent  hover:text-black  border-2  transition duration-500'>Download App</button>
@@ -35,7 +35,7 @@ const home = () => {
       <div className='flex sm:hidden items-center justify-between mx-2 '>
        
         <div><p className='cursor-pointer text-base'>Support</p></div>
-        <div className='max-w-32'> <ImageWithSkeleton src={img1} alt="Danraph Logo" className='w-full' skeletonSize={128} /> </div>
+        <div className='max-w-32'> <ImageWithSkeleton src={img1} alt="Danraph Logo" className='w-full' /> </div>
         <Link to="/signup"><div><button className='bg-blue-800 text-white py-1 text-sm sm:text-base border-2 border-blue-800  px-5 rounded-3xl hover:bg-transparent hover:text-blue-900 transition duration-500'>Register</button></div></Link>
        
       </div>
@@ -50,7 +50,7 @@ const home = () => {
 
 
       
-      <div className='flex gap-12 flex-wrap justify-between small:justify-center m-3 sm:m-9 '>
+      <div className='flex sm:gap-7 gap-7 flex-wrap justify-between small:justify-center m-3 sm:m-5 '>
         <div className='relative text-white bg-black max-w-[390px] rounded-t-[120px]  '>
           <div className='pt-16 px-6'>
             <h2 className=' font-bold text-xl sm:text-3xl' >Seamless Campus Rides, Just a Click Away!</h2> <br />
@@ -61,7 +61,7 @@ const home = () => {
           
       
           <div className='absolute bottom-0 left-1/2 -translate-x-1/2  max-w-[250px]'>
-            <ImageWithSkeleton src={img2} alt="Danraph Shuttle" className='w-full' skeletonSize={250} />
+            <ImageWithSkeleton src={img2} alt="Danraph Shuttle" className='w-full' />
           </div>
         </div>
 
@@ -74,7 +74,7 @@ const home = () => {
           </div>
 
           <div className='absolute bottom-0  left-10  max-w-[300px]'>
-            <ImageWithSkeleton src={img3} alt="Danraph Service" className='w-full' skeletonSize={300} />
+            <ImageWithSkeleton src={img3} alt="Danraph Service" className='w-full' />
           </div>
        </div>
         
@@ -84,13 +84,12 @@ const home = () => {
             src={img4}
             alt="Danraph Campus"
             className='w-full rounded-t-[120px] h-[400px] sm:h-[466px]'
-            skeletonSize={390}
           />
         </div>
       </div>
 
      <div>
-        <div className='flex-wrap justify-center  lg-custom:justify-center lg-custom:mr-1  flex items-center gap-4 my-12 sm:my-28 mx-2 sm:2xl-[90px] p:justify-center '>
+        <div className='flex-wrap justify-center  lg-custom:justify-center lg-custom:mr-1  flex items-center gap-3 my-12 sm:my-28 mx-2 sm:2xl-[90px] p:justify-center '>
 
           <div className=' '>
             <div className='flex  gap-8 sm:gap-11 items-center -translate-y-2 md:-translate-y-11'>
@@ -107,7 +106,7 @@ const home = () => {
           </div>
 
           <div className='max-w-[700px] lg:max-w-[645px] lg-custom:max-w-[640px] lg-custo:max-w-[530px] '>
-            <ImageWithSkeleton src={img5} alt="Danraph Service" className='w-full rounded-2xl' skeletonSize={700} />
+            <ImageWithSkeleton src={img5} alt="Danraph Service" className='w-full rounded-2xl' />
           </div>
         </div>
      </div>
@@ -118,9 +117,9 @@ const home = () => {
           <p className='sm:text-lg text-xs '>Smart, Efficient, and Eco-Friendly Campus Transportation at Your Fingertips.</p>
         </div>
       
-        <div className='flex items-start flex-wrap justify-center gap-10'>
+        <div className='flex items-start flex-wrap justify-center gap-5'>
         <div className=' max-w-[595px] border border-gray-400 rounded-xl'>
-        <ImageWithSkeleton src={img6} alt="Rider/Customer App" className='w-full max-w-[595px] rounded-t-xl' skeletonSize={595} />
+        <ImageWithSkeleton src={img6} alt="Rider/Customer App" className='w-full max-w-[595px] rounded-t-xl' />
         <div className='max-w-[558px] my-2 mb-4 sm:mb-6 px-[12px] sm:px-[19px]'> 
           <h2 className='text-lg sm:text-2xl  font-medium py-2 sm:py-5'>Rider/Customer App</h2>
           <p className='text-[15px] sm:text-base font-normal underline '>Book rides instantly, track shuttles in real time, and enjoy a cashless, hassle-free campus transport experience.</p>
@@ -128,7 +127,7 @@ const home = () => {
         </div>
           
         <div className=' max-w-[595px] border border-gray-400 rounded-xl lg:mt-28 mt-0 medium:mt-0 '>   
-          <ImageWithSkeleton src={img7} alt="Driver App" className='w-full rounded-t-xl' skeletonSize={595} />
+          <ImageWithSkeleton src={img7} alt="Driver App" className='w-full rounded-t-xl' />
           <div className='max-w-[558px] my-2 mb-4 sm:mb-6 px-[12px] sm:px-[19px]'> 
             <h2 className='text-lg sm:text-2xl  font-medium py-2 sm:py-5'>Driver App</h2>
             <p className='text-[15px] sm:text-base font-normal underline '>Accept ride requests, navigate campus routes, and manage trips efficiently with real-time updates and notifications.</p>
@@ -143,7 +142,7 @@ const home = () => {
       <div className='flex flex-wrap justify-center items-center gap-6 sm:gap-16 px-2'>
       <div className=' max-w-[595px] border border-gray-400 rounded-xl lg:mt-28 mt-0 medium:mt-0 '>  
         <div>
-          <ImageWithSkeleton src={img8} alt="Admin Dashboard" className='w-full rounded-t-xl' skeletonSize={595} />
+          <ImageWithSkeleton src={img8} alt="Admin Dashboard" className='w-full rounded-t-xl' />
         </div> 
         <div className='max-w-[558px] my-2 mb-4 sm:mb-6 px-[12px] sm:px-[19px]'> 
           <h2 className='text-lg sm:text-2xl  font-medium py-2 sm:py-5'>Admin Dashboard</h2>
@@ -163,9 +162,9 @@ const home = () => {
       </div>
 
 
-        <div className='flex flex-wrap gap-12 p-5 xl:gap-28 foot:mt-[15px] foot:gap-5 xl:mt-[150px] mt-[15px] mb-2 justify-left sm:justify-center items-center sm:items-start'>
+        <div className='flex flex-wrap gap-10 p-5 xl:gap-28 foot:mt-[15px] foot:gap-5 xl:mt-[130px] mt-[30px] mb-2 justify-left sm:justify-center items-center sm:items-start'>
           <div className='max-w-[217px]'>
-            <ImageWithSkeleton src={img1} alt="Danraph Logo" className='sm:max-w-[131px] max-w-[110px] w-full mb-3' skeletonSize={131} />
+            <ImageWithSkeleton src={img1} alt="Danraph Logo" className='sm:max-w-[131px] max-w-[110px] w-full mb-3' />
             <p className='font-normal sm:text-[16px] text-[13px]'>Stay informed and in control with easy access to your recent rides, trip history, and account updates.</p>
           </div>
 

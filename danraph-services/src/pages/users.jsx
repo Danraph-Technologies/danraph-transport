@@ -18,7 +18,7 @@ const Users = () => {
         <Sidebar  isMobileOpen={isMobileOpen} toggleMobileSidebar={toggleMobileSidebar} />
         
        
-        <div className={`flex-1 p-4 ${isMobileOpen ? 'ml-0' : ''} sm:ml-0`}>
+        <div className={`flex-1 sm:px-3 px-3 pb-5  ${isMobileOpen ? 'ml-0' : ''} sm:ml-0`}>
           <Outlet />
         </div>
       </div>

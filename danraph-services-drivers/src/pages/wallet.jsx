@@ -15,7 +15,7 @@ const wallet = () => {
           <div className='flex flex-col justify-center items-center'>
             <div className='pt-6'>
             <p className='sm:text-[20px] text-[18px] '>Total Balance</p>
-            <p className='sm:text-[32px] text-[27px] font-semibold'><span className='pr-[3px]'>₦</span>22,000</p>
+            <p className='sm:text-[32px] text-[27px] font-semibold'><span className='pr-[3px]'>₦</span>500,000,000.00</p>
             </div>
 
             <div className='pt-4 flex gap-4 justify-center'>
