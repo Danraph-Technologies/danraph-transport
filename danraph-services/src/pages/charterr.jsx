@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import img1 from "../images/danraph-services16.png"
+import img1 from "../images/danraph-services16.webp"
 import ImageWithSkeleton from "../Components/skeleton";
 
 const ANIMATION_DURATION = 500; // ms, must match your CSS

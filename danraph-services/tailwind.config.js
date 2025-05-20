@@ -25,7 +25,8 @@ export default {
         'g':{min: '561px'},
         'mm':{ max:'560px'},
         'med': {min:'342px', max:'639px'},
-        'me': {min:'384px', max:'639px'},
+        'me': {min:'530px', max:'639px'},
+
       },
 
      

@@ -1,13 +1,13 @@
 import React from 'react'
 import { Link } from 'react-router-dom';
-import img1 from "../images/danraph-logo.png"
-import img2 from "../images/Danraph-image1.png"
-import img3 from "../images/danraph-image3.png"
-import img4 from "../images/danraph-image2.jpg"
-import img5 from "../images/Danraph-services4.jpg"
-import img6 from "../images/Danraph-services5.jpg"
-import img7 from "../images/Danraph-services6.jpg"                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
-import img8 from "../images/Danraph-services7.jpg"
+import img1 from "../images/danraph-logo.webp"
+import img2 from "../images/Danraph-image1.webp"
+import img3 from "../images/danraph-image3.webp"
+import img4 from "../images/danraph-image2.webp"
+import img5 from "../images/Danraph-services4.webp"
+import img6 from "../images/Danraph-services5.webp"
+import img7 from "../images/Danraph-services6.webp"                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+import img8 from "../images/Danraph-services7.webp"
 import { FaFacebookF, FaTwitter, FaInstagram, FaLinkedinIn } from 'react-icons/fa';
 
 const home = () => {

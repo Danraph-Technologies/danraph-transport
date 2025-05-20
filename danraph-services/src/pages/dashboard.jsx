@@ -1,5 +1,5 @@
 import React from 'react'
-import img1 from "../images/danraph-services-11.png"
+import img1 from "../images/danraph-services-11.webp"
 import { FaArrowRight } from 'react-icons/fa'
 import { Link } from 'react-router-dom'
 import ImageWithSkeleton from "../Components/skeleton";

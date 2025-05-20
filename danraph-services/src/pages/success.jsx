@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import img1 from "../images/danraph-services14.png";
-import img2 from "../images/dan.png";
+import img1 from "../images/danraph-services14.webp";
+import img2 from "../images/dan.webp";
 import ImageWithSkeleton from "../Components/skeleton";
 
 const Success = ({ onClose, className = "" }) => {

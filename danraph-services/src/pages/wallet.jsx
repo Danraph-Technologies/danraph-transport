@@ -1,12 +1,12 @@
 import React from 'react'
-import img1 from "../images/danraph-service18.png"
-import img2 from "../images/danraph-services19.png"
-import img3 from "../images/danraph-services20.png"
-import img4 from "../images/danraph-services21.png"
-import img5 from "../images/danraph-services22.png"
-import img6 from "../images/danraph-services23.png"
-import img7 from "../images/danraph-services24.png"
-import img8 from "../images/danraph-services25.png"
+import img1 from "../images/danraph-service18.webp"
+import img2 from "../images/danraph-services19.webp"
+import img3 from "../images/danraph-services20.webp"
+import img4 from "../images/danraph-services21.webp"
+import img5 from "../images/danraph-services22.webp"
+import img6 from "../images/danraph-services23.webp"
+import img7 from "../images/danraph-services24.webp"
+import img8 from "../images/danraph-services25.webp"
 import ImageWithSkeleton from "../Components/skeleton"
 
 const wallet = () => {

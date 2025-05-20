@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import img1 from "../images/dan.png"
-import img2 from "../images/danraph-services15.jpg"
+import img1 from "../images/dan.webp"
+import img2 from "../images/danraph-services15.webp"
 import { Link } from 'react-router-dom';
 import ImageWithSkeleton from "../Components/skeleton";
 

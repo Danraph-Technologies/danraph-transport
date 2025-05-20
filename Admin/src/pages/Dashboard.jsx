@@ -10,8 +10,8 @@ import img6 from "../assets/melody.png"
 const Dashboard = () => {
   return (
     <div>
-      <div className='flex flex-wrap'>
-      <div className='max-w-[816px] w-full flex-1 border border-gray-300 rounded-lg p-2 px-4'>
+      <div className='flex flex-wrap leeee:justify-center'>
+      <div className='max-w-[816px] leeee:max-w-[100%] w-full  flex-1 border border-gray-300 rounded-lg p-2 px-4'>
         <div className='flex justify-between items-center'>
           <p className='text-[20px] font-semibold'>Overview</p>
           <p className='flex items-center gap-1'>
@@ -24,12 +24,13 @@ const Dashboard = () => {
           </p>
         </div>
 
-        <div className='flex flex-wrap sm:justify-between justify-center items-center sm:gap-3 gap-5 py-5'>
-        <div className='mm:max-w-[236px] le:max-w-[210px] w-full bg-[#EDEEFC] rounded-xl px-4 py-4 flex flex-col gap-2 '>
+        <div className='md:grid-cols-3 mm:grid-cols-2 le:grid-cols-2 grid grid-cols-1 items-center   gap-4 py-5'>
+        <div className='w-full bg-[#EDEEFC] rounded-xl px-4 py-4 flex  flex-col gap-2 '>
+          
             <p className='sm:text-[17px] text-[15px] le:text-[16px]'>Total Registered Users</p>
 
-            <div className='flex justify-between'>
-              <p className='sm:text-[28px] text-[20px] le:text-[22px] font-semibold'>700</p>
+            <div className='flex  flex-wrap gap-1 justify-between'>
+              <p className='sm:text-[25px] text-[20px]  font-semibold'>700</p>
               <p className='flex items-center gap-2 hover:-translate-x-2 transition duration-500 cursor-pointer'>
                 <span>+15.03%</span>
                 <span>
@@ -41,11 +42,12 @@ const Dashboard = () => {
             </div>
           </div>
 
-          <div className='mm:max-w-[236px] le:max-w-[210px] w-full bg-[#EDEEFC] rounded-xl px-4 py-4 flex flex-col gap-2 '>
+          <div className='w-full bg-[#EDEEFC] rounded-xl px-4 py-4 flex  flex-col gap-2 '>
+            
             <p className='sm:text-[17px] text-[15px] le:text-[16px]'>Total Active Drivers</p>
 
-            <div className='flex justify-between'>
-              <p className='sm:text-[28px] text-[20px] le:text-[22px] font-semibold'>500</p>
+            <div className='flex  flex-wrap gap-1 justify-between'>
+              <p className='sm:text-[25px] text-[20px]  font-semibold'>500</p>
               <p className='flex items-center gap-2 hover:-translate-x-2 transition duration-500 cursor-pointer'>
                 <span>+15.03%</span>
                 <span>
@@ -58,11 +60,11 @@ const Dashboard = () => {
           </div>
 
 
-          <div className='mm:max-w-[236px] le:max-w-[210px] w-full bg-[#EDEEFC] rounded-xl px-4 py-4 flex flex-col gap-2 '>
+          <div className='w-full bg-[#EDEEFC] rounded-xl px-4 py-4 flex  flex-col gap-2 '>
             <p className='sm:text-[17px] text-[15px] le:text-[16px]'>Total Rides Today</p>
 
-            <div className='flex justify-between'>
-              <p className='sm:text-[28px] text-[20px] le:text-[22px] font-semibold'>100</p>
+            <div className='flex  flex-wrap gap-1 justify-between'>
+              <p className='sm:text-[25px] text-[20px]  font-semibold'>100</p>
               <p className='flex items-center gap-2 hover:-translate-x-2 transition duration-500 cursor-pointer'>
                 <span>+15.03%</span>
                 <span>
@@ -75,11 +77,11 @@ const Dashboard = () => {
           </div>
 
 
-          <div className='mm:max-w-[236px] le:max-w-[210px] w-full bg-[#EDEEFC] rounded-xl px-4 py-4 flex flex-col gap-2 '>
+          <div className='w-full bg-[#EDEEFC] rounded-xl px-4 py-4 flex  flex-col gap-2 '>
             <p className='sm:text-[17px] text-[15px] le:text-[16px]'>Total Charters Today</p>
 
-            <div className='flex justify-between'>
-              <p className='sm:text-[28px] text-[20px] le:text-[22px] font-semibold'>60</p>
+            <div className='flex  flex-wrap gap-1 justify-between'>
+              <p className='sm:text-[25px] text-[20px]  font-semibold'>60</p>
               <p className='flex items-center gap-2 hover:-translate-x-2 transition duration-500 cursor-pointer'>
                 <span>+15.03%</span>
                 <span>
@@ -92,11 +94,11 @@ const Dashboard = () => {
           </div>
 
 
-          <div className='mm:max-w-[236px] le:max-w-[210px] w-full bg-[#EDEEFC] rounded-xl px-4 py-4 flex flex-col gap-2 '>
+          <div className='w-full bg-[#EDEEFC] rounded-xl px-4 py-4 flex  flex-col gap-2 '>
             <p className='sm:text-[17px] text-[15px] le:text-[16px]'>Wallet Balance</p>
 
-            <div className='flex justify-between'>
-              <p className='sm:text-[28px] text-[20px] le:text-[22px] font-semibold'>50,000</p>
+            <div className='flex  flex-wrap gap-1 justify-between'>
+              <p className='sm:text-[25px] text-[20px]  font-semibold'>50,000</p>
               <p className='flex items-center gap-2 hover:-translate-x-2 transition duration-500 cursor-pointer'>
                 <span>+15.03%</span>
                 <span>
@@ -109,11 +111,11 @@ const Dashboard = () => {
           </div>
 
 
-          <div className='mm:max-w-[236px] le:max-w-[210px] w-full bg-[#EDEEFC] rounded-xl px-4 py-4 flex flex-col gap-2 '>
+          <div className='w-full bg-[#EDEEFC] rounded-xl px-4 py-4 flex  flex-col gap-2 '>
             <p className='sm:text-[17px] text-[15px] le:text-[16px]'>Income Today</p>
 
-            <div className='flex justify-between'>
-              <p className='sm:text-[28px] text-[20px] le:text-[22px] font-semibold'>100,000</p>
+            <div className='flex  flex-wrap gap-1 justify-between'>
+              <p className='sm:text-[25px] text-[20px]  font-semibold'>100,000</p>
               <p className='flex items-center gap-2 hover:-translate-x-2 transition duration-500 cursor-pointer'>
                 <span>+15.03%</span>
                 <span>
@@ -144,66 +146,72 @@ const Dashboard = () => {
                   </thead>
                   <tbody className='text-[15px] text-[#616161]'>
                     <tr className='border-t border-[#dbdbdb7e]'>
-                      <td className='py-3 align-top'>
-                        Robert 0,12345
+                       <td className="py-3 align-top whitespace-nowrap ">
+                       <p className="w-[130px] min-w-[20px] max-w-[130px] break-words whitespace-normal">
+                          Robert 0,12345
+                        </p>
+
                         <div className='text-[13px] text-[#737478] font-light'>Ride Request</div>
                       </td>
-                      <td className='py-3 align-top'>
+                       <td className="py-3 align-top whitespace-nowrap ">
                         Main Gate
                         <div className='flex items-center gap-1 text-[13px] text-[#737478]'>
                           <img src={img} alt="" className='max-w-[10px] w-full pt-[4px]'/>
                           Hostel A
                         </div>
                       </td>
-                      <td className='py-3 align-top'>
+                       <td className="py-3 align-top whitespace-nowrap ">
                         4/4/2024
                         <div className='text-[13px] text-[#737478] font-light'>10:00AM</div>
                       </td>
                     </tr>
                     <tr className='border-t border-[#dbdbdb7e]'>
-                      <td className='py-3 align-top'>
-                        SamanthaP, 23456
+                       <td className="py-3 align-top whitespace-nowrap ">
+                        <p className="w-[130px] min-w-[20px] max-w-[130px] break-words whitespace-normal">SamanthaP, 23456</p>
+                       
                         <div className='text-[13px] text-[#737478] font-light'>Charter</div>
                       </td>
-                      <td className='py-3 align-top'>
+                       <td className="py-3 align-top whitespace-nowrap ">
                         Library
                         <div className='text-[13px] text-[#737478] font-light'>Sports Complex</div>
                       </td>
-                      <td className='py-3 align-top'>
+                       <td className="py-3 align-top whitespace-nowrap ">
                         4/3/2024
                         <div className='text-[13px] text-[#737478] font-light'>3:30PM</div>
                       </td>
                     </tr>
                     <tr className='border-t border-[#dbdbdb7e]'>
-                      <td className='py-3 align-top'>
-                        James M, 34567
+                       <td className="py-3 align-top whitespace-nowrap ">
+                         <p className="w-[130px] min-w-[20px] max-w-[130px] break-words whitespace-normal">James M, 34567</p>
+                        
                         <div className='text-[13px] text-[#737478] font-light'>Ride Request</div>
                       </td>
-                      <td className='py-3 align-top'>
+                       <td className="py-3 align-top whitespace-nowrap ">
                         Hostel B
                         <div className='flex items-center gap-1 text-[13px] text-[#737478]'>
                           <img src={img} alt="" className='max-w-[10px] w-full pt-[4px]'/>
                           Main Gate
                         </div>
                       </td>
-                      <td className='py-3 align-top'>
+                       <td className="py-3 align-top whitespace-nowrap ">
                         4/3/2024
                         <div className='text-[13px] text-[#737478] font-light'>12:15 PM</div>
                       </td>
                     </tr>
                     <tr className='border-t border-[#dbdbdb7e]'>
-                      <td className='py-3 align-top'>
-                        Ashley T., 45678
+                       <td className="py-3 align-top whitespace-nowrap ">
+                        <p className="w-[130px] min-w-[20px] max-w-[130px] break-words whitespace-normal">Ashley T., 45678</p>
+                        
                         <div className='text-[13px] text-[#737478] font-light'>Charter</div>
                       </td>
-                      <td className='py-3 align-top'>
+                       <td className="py-3 align-top whitespace-nowrap ">
                         Charter
                         <div className='flex items-center gap-1 text-[13px] text-[#737478]'>
                           <img src={img} alt="" className='max-w-[10px] w-full pt-[4px]'/>
                           North Lot
                         </div>
                       </td>
-                      <td className='py-3 align-top'>
+                       <td className="py-3 align-top whitespace-nowrap ">
                         4/2/2024
                         <div className='text-[13px] text-[#737478] font-light'>6:45 PM</div>
                       </td>
@@ -230,48 +238,48 @@ const Dashboard = () => {
                   </thead>
                   <tbody className='text-[15px] text-[#616161]'>
                     <tr className='border-t border-[#dbdbdb7e]'>
-                      <td className='py-3 align-top'>
+                       <td className="py-3 align-top whitespace-nowrap ">
                         Emily J.
                         <div className='text-[13px] text-[#737478] font-light'>Funding</div>
                       </td>
-                      <td className='py-3 align-top'>₦5,000.00</td>
-                      <td className='py-3 align-top'>
+                       <td className="py-3 align-top whitespace-nowrap ">₦5,000.00</td>
+                       <td className="py-3 align-top whitespace-nowrap ">
                         4/3/2024
                         <div className='text-[13px] text-[#737478] font-light'>9:15 PM</div>
                       </td>
                       <td className='py-3 align-top text-[#B1A100]'>Pending</td>
                     </tr>
                     <tr className='border-t border-[#dbdbdb7e]'>
-                      <td className='py-3 align-top'>
+                       <td className="py-3 align-top whitespace-nowrap ">
                         Oluchi A.
                         <div className='text-[13px] text-[#737478] font-light'>Payment</div>
                       </td>
-                      <td className='py-3 align-top'>₦400.00</td>
-                      <td className='py-3 align-top'>
+                       <td className="py-3 align-top whitespace-nowrap ">₦400.00</td>
+                       <td className="py-3 align-top whitespace-nowrap ">
                         4/3/2024
                         <div className='text-[13px] text-[#737478] font-light'>6:00 PM</div>
                       </td>
                       <td className='py-3 align-top text-[#D12B2B]'>Failed</td>
                     </tr>
                     <tr className='border-t border-[#dbdbdb7e]'>
-                      <td className='py-3 align-top'>
+                       <td className="py-3 align-top whitespace-nowrap ">
                         David K.
                         <div className='text-[13px] text-[#737478] font-light'>Transfer</div>
                       </td>
-                      <td className='py-3 align-top'>1,200.00</td>
-                      <td className='py-3 align-top'>
+                       <td className="py-3 align-top whitespace-nowrap ">1,200.00</td>
+                       <td className="py-3 align-top whitespace-nowrap ">
                         4/3/2024
                         <div className='text-[13px] text-[#737478] font-light'>6:45 PM</div>
                       </td>
                       <td className='py-3 align-top text-[#1A8F3B]'>Successful</td>
                     </tr>
                     <tr className='border-t border-[#dbdbdb7e]'>
-                      <td className='py-3 align-top'>
+                       <td className="py-3 align-top whitespace-nowrap ">
                         FatimaS.
                         <div className='text-[13px] text-[#737478] font-light'>Funded</div>
                       </td>
-                      <td className='py-3 align-top'>10,000.00</td>
-                      <td className='py-3 align-top'>
+                       <td className="py-3 align-top whitespace-nowrap ">10,000.00</td>
+                       <td className="py-3 align-top whitespace-nowrap ">
                         4/1/2024
                         <div className='text-[13px] text-[#737478] font-light'>11:30 AM</div>
                       </td>
@@ -291,7 +299,7 @@ const Dashboard = () => {
       <div className='max-w-[260px] w-full hidden lee:block py-3 border-l border-gray-300 mx-5 px-4'>
         <div className='flex justify-between items-center w-full'>
           <p className='text-[20px]'>Notification</p>
-          <p className='text-[16px] text-[#F80B0B] font-medium'>See all</p>
+          <p className='text-[16px] text-[#F80B0B] hover:text-[#f80b0bbb] cursor-pointer font-medium'>See all</p>
         </div>
       
         <div className='py-3 px-2 flex flex-col gap-4'>
@@ -419,7 +427,7 @@ const Dashboard = () => {
               <p className='text-[14px]'>Melody Macy</p>
             </div>
           </div>
-          <div><p className='text-[16px] text-[#F80B0B] cursor-pointer '>View all</p></div>
+          <div><p className='text-[16px] text-[#F80B0B] hover:text-[#f80b0bd2] cursor-pointer '>View all</p></div>
 
         </div>
       </div>

@@ -156,7 +156,7 @@ const Manage = () => {
 
 
 
-       <div className='pt-5 pb-3 flex flex-wrap items-center gap-4 justify-between overflow-x-auto min-h[100px] border-b border-gray-300 '>
+       <div className='pt-5 pb-3 flex flex-wrap items-center gap-4 justify-between overflow-x-auto min-h[100px] '>
         
         <div className='flex items-center gap-2 sm:text-[21.04px] text-[19px] font-medium'>
           <p>Main Gate</p> 
@@ -189,6 +189,10 @@ const Manage = () => {
         <div className='bg-[#EFEFEF] hover:bg-[#c7c7c7a9] transition-colors duration-200 px-2 py-1'>
           <p className='text-[#EE1D52] sm:text-[16px] text-[15px] font-medium cursor-pointer '>Delete Route</p>
         </div>
+      </div>
+
+      <div className='flex flex-col justify-center items-center pt-5 pb-3'>
+        <button className='bg-[#004AAD] text-white text-[18px] font-semibold sm:py-2 py-1 sm:px-10 px-6 rounded-full text border-2 border-[#004AAD] hover:bg-inherit hover:text-[#004AAD] transition-colors duration-500  '>Create Routes</button>
       </div>
       
      </div>

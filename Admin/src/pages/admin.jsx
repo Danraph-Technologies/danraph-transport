@@ -12,7 +12,7 @@ const Admin = () => {
       <div className="flex">
         {/* Sidebar: always visible on desktop, toggled on mobile */}
         <Sidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-        <div className="flex-1 px-4 pb-5 pt-5">
+        <div className="flex-1 px-4 pb-10 pt-5">
           <Outlet />
         </div>
       </div>

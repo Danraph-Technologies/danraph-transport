@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import img1 from "../images/Danraph-services10.jpg"
+import img1 from "../images/Danraph-services10.webp"
 import PhoneInput from 'react-phone-input-2'
 import 'react-phone-input-2/lib/style.css'
 import '../styles/settings.css'
