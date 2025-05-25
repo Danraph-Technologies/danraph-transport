@@ -24,7 +24,7 @@ const Dashboard = () => {
           </p>
         </div>
 
-        <div className='md:grid-cols-3 mm:grid-cols-2 le:grid-cols-2 grid grid-cols-1 items-center   gap-4 py-5'>
+        <div className='md:grid-cols-3 mm:grid-cols-2 le:grid-cols-2 grid grid-cols-1 items-center gap-4 py-5'>
         <div className='w-full bg-[#EDEEFC] rounded-xl px-4 py-4 flex  flex-col gap-2 '>
           
             <p className='sm:text-[17px] text-[15px] le:text-[16px]'>Total Registered Users</p>

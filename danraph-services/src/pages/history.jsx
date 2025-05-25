@@ -5,7 +5,7 @@ const history = () => {
   return (
     <div className=" flex items-center justify-center nav:justify-start">
       
-      <div className='border border-gray-300 rounded-lg  max-w-[650px] w-full sm:mx-5 mx-[2px] sm:mt-4 mb-12 px-5 py-4'>
+      <div className='border border-gray-300 rounded-lg  max-w-[650px] w-full sm:mx-5 mx-[2px]  mb-12 px-5 py-4'>
       <div >
         <p className='text-[26px] font-semibold pb-6'>Recent Rides</p>
         <div className='border-2 border-gray-200'></div>

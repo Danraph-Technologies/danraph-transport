@@ -27,6 +27,10 @@ export default {
         'med': {min:'342px', max:'639px'},
         'me': {min:'530px', max:'639px'},
 
+
+        'footi':{min:'640px', max:'885px'},
+        'mee': {min:'509px', max:'615px'},
+
       },
 
      

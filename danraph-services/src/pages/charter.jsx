@@ -22,7 +22,7 @@ const Charter = () => {
   }, []);
 
   return (
-    <div className="sm:p-4  mb-10">
+    <div className="sm:px-4  mb-10">
       <div className='max-w-[990px] w-full p-5 f:p-3  border border-gray-300 rounded-lg'>
         <p className='font-semibold text-[26px] pb-5'>Charter a Car</p>
         <form action="">

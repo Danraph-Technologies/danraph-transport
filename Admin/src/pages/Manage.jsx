@@ -3,7 +3,7 @@ import img from "../assets/danraph-arrow.png"
 
 const Manage = () => {
   return (
-    <div>
+    <div className='sm:px-5'>
      <div className='max-w-[933px] w-full border border-gray-300 rounded-lg sm:px-6 px-4 py-4 '>
       <p className='text-[20px] font-semibold'>Manage Locations</p>
       <div className='pt-5 pb-3 flex flex-wrap items-center gap-4 justify-between overflow-x-auto min-h[100px] border-b border-gray-300 '>

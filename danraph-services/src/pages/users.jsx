@@ -14,7 +14,7 @@ const Users = () => {
   return (
     <div>
       <Navbar toggleMobileSidebar={toggleMobileSidebar} />
-      <div className="flex pt-24 min-h-screen">
+      <div className="flex sm:pt-24 pt-[77px] min-h-screen">
         <Sidebar  isMobileOpen={isMobileOpen} toggleMobileSidebar={toggleMobileSidebar} />
         
        

@@ -11,7 +11,7 @@ import ImageWithSkeleton from "../Components/skeleton"
 
 const wallet = () => {
   return (
-    <div className='flex justify-center lg:justify-start lg:pb-5 pb-14 lg:px-4 lg:pt-4 '>
+    <div className='flex justify-center lg:justify-start lg:pb-5 pb-14 lg:px-4  '>
       <div className='max-w-[389px] w-full border pb-3 border-gray-300 rounded-md '>
         <div className=''>
           <p className='sm:text-[26px] text-[20px] font-semibold px-5 pt-6'>Wallet</p>

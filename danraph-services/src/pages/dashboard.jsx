@@ -22,41 +22,42 @@ const dashboard = () => {
           <section aria-labelledby="book-ride-heading">
             <h2 id="book-ride-heading" className='sm:text-[27px] text-[22px] font-semibold py-3 px-3'>Book a Ride</h2>
             <div className='flex flex-col justify-center items-center'>
-              <ul className='flex flex-wrap max-w-[520px] justify-center items-center gap-6' style={{ listStyle: 'none' }}>
-                <li className='border-[1px] rounded-md flex-1 border-gray-300 max-w-[360px] min-w-[220px] pr-5 p-3'>
+              <ul className=' grid sm:grid-cols-2 grid-cols-1 max-w-[530px] mee:grid-cols-2 footi:grid-cols-1 w-full justify-center items-center gap-6' style={{ listStyle: 'none' }}>
+
+                <li className='border-[1px] rounded-md flex-1 border-gray-300 pr-5 p-3'>
                   <p className='flex items-center gap-3 sm:text-[18px] text-[16px]'>Main gate <FaArrowRight /></p>
                   <p className='sm:text-[18px] text-[16px]'>Hostel A</p>
-                  <div className='flex items-center gap-5 justify-between py-3'>
+                  <div className='flex flex-wrap items-center gap-3 justify-between py-3'>
                     <span className='sm:text-[20px] text-[18px] font-medium'>₦500</span>
                     <Link to="/users/ride">
                       <button className='bg-blue-800 border-2 border-blue-800 px-4 py-0 hover:bg-transparent hover:text-blue-800 transition duration-500 rounded-full text-white'>Book ride</button>
                     </Link>
                   </div>
                 </li>
-                <li className='border-[1px] rounded-md flex-1 border-gray-300 max-w-[360px] min-w-[220px] pr-5 p-3'>
+                <li className='border-[1px] rounded-md flex-1 border-gray-300 pr-5 p-3'>
                   <p className='flex items-center gap-3 text-[18px]'>Hostel B <FaArrowRight /></p>
                   <p className='text-[18px]'>Science Building</p>
-                  <div className='flex items-center gap-5 justify-between py-3'>
+                  <div className='flex flex-wrap items-center gap-3 justify-between py-3'>
                     <span className='sm:text-[20px] text-[18px] font-medium'>₦500</span>
                     <Link to="/users/ride">
                       <button className='bg-blue-800 border-2 border-blue-800 px-4 py-0 hover:bg-transparent hover:text-blue-800 transition duration-500 rounded-full text-white'>Book ride</button>
                     </Link>
                   </div>
                 </li>
-                <li className='border-[1px] rounded-md flex-1 border-gray-300 max-w-[360px] min-w-[220px] pr-5 p-3'>
+                <li className='border-[1px] rounded-md flex-1 border-gray-300 pr-5 p-3'>
                   <p className='flex items-center gap-3 text-[18px]'>Main gate <FaArrowRight /></p>
                   <p className='text-[18px]'>Hostel A</p>
-                  <div className='flex items-center gap-5 justify-between py-3'>
+                  <div className='flex flex-wrap items-center gap-3 justify-between py-3'>
                     <span className='text-[20px] font-medium'>₦1,000</span>
                     <Link to="/users/ride">
                       <button className='bg-blue-800 border-2 border-blue-800 px-4 py-0 hover:bg-transparent hover:text-blue-800 transition duration-500 rounded-full text-white'>Book ride</button>
                     </Link>
                   </div>
                 </li>
-                <li className='border-[1px] rounded-md flex-1 border-gray-300 max-w-[360px] min-w-[220px] pr-5 p-3'>
+                <li className='border-[1px] rounded-md flex-1 border-gray-300 pr-5 p-3'>
                   <p className='flex items-center gap-3 text-[18px]'>Main gate <FaArrowRight /></p>
                   <p className='text-[18px]'>Science Building</p>
-                  <div className='flex items-center gap-5 justify-between py-3'>
+                  <div className='flex flex-wrap items-center gap-3 justify-between py-3'>
                     <span className='sm:text-[20px] text-[18px] font-medium'>₦500</span>
                     <Link to="/users/ride">
                       <button className='bg-blue-800 border-2 border-blue-800 px-4 py-0 hover:bg-transparent hover:text-blue-800 transition duration-500 rounded-full text-white'>Book ride</button>

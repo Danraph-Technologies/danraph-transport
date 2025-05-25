@@ -3,7 +3,7 @@ import React from 'react'
 const support = () => {
   return (
     <div className=' mb-10'>
-     <div className='max-w-[558px] w-full border border-gray-300 rounded-lg sm:p-5 p-[18px] lg:mx-6 mt-4'>
+     <div className='max-w-[558px] w-full border border-gray-300 rounded-lg sm:p-5 p-[18px] lg:mx-6 '>
       <p className='sm:text-[26px] text-[21px] font-semibold'>Support</p>
 
       <p className='sm:py-3 py-2 text-[17px] text-left sm:text-left sm:text-[20px]'>📧 Email: support@danralphecocruise.com</p>
