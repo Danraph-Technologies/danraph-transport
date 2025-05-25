@@ -14,6 +14,7 @@ export default {
         'leee':{ min:'1058px', max: '1307px'}, /* for the table in dashboard.jsx */
         'leeee':{ max:'1023px'}, /* for the table in dashboard.jsx */
         'f':{max: '450px'},
+        'fa':{min: '810px'},
       },
 
     },

@@ -69,7 +69,84 @@ const wallet = () => {
           
 
         </div>
+        <div className='grid fa:grid-cols-2 grid-cols-1 gap-5 py-5 '>
+          <div className='bg-[#FCFDFD] border border-gray-300 rounded-lg px-5 '>
+            <p className='pt-5 text-[20px] font-medium pb-2 '>Wallet Transfers</p>
+            
+            <div className="w-full overflow-x-auto whitespace-nowrap sm:px-5 py-1">
+              <table className="w-full whitespace-nowrap table-auto border-collapse">
+                <thead>
+                  <tr>
+                    <th className="font-normal pr-5 py-2 text-left whitespace-nowrap">Date/Time</th>
+                    <th className="font-normal pr-5 py-2 text-left whitespace-nowrap ">Sender</th>
+                    <th className="font-normal pr-5  py-2 text-left whitespace-nowrap ">Receiver</th>
+                    <th className="font-normal  py-2 text-left whitespace-nowrap ">Amount</th>
+                  </tr>
+                </thead>
 
+                <tbody>
+                  <tr className="text-sm text-gray-700">
+                    <td className=" py-2 pr-5 text-[#231F20] whitespace-nowrap text-[15.1px] "><span className='text-[#231F20] text-[15.4px] '>4/13/2025</span> <span className='text-[#818997] text-[15.3px] '>10:00</span></td>
+                    <td className=" py-2 pr-5 text-[#231F20] whitespace-nowrap text-[15.1px] ">Divine Umeh</td>
+                    <td className=" py-2 pr-5 text-[#231F20] whitespace-nowrap text-[15.1px] ">Mary Ibe</td>
+                    <td className=" py-2  text-[#231F20] whitespace-nowrap text-[15.1px] ">N600.00</td>
+                  </tr>
+
+                  <tr className="text-sm text-gray-700">
+                    <td className=" py-2 pr-5 text-[#231F20] whitespace-nowrap text-[15.1px] "><span className='text-[#231F20] text-[15.4px] '>4/13/2025</span> <span className='text-[#818997] text-[15.3px] '>10:00</span></td>
+                    <td className=" py-2 pr-5 text-[#231F20] whitespace-nowrap text-[15.1px] ">Divine Umeh</td>
+                    <td className=" py-2 pr-5 text-[#231F20] whitespace-nowrap text-[15.1px] ">Mary Ibe</td>
+                    <td className=" py-2  text-[#231F20] whitespace-nowrap text-[15.1px] ">N600.00</td>
+                  </tr>
+
+                  <tr className="text-sm text-gray-700">
+                    <td className=" py-2 pr-5 whitespace-nowrap "><span className='text-[#231F20] text-[15.4px] '>4/13/2025</span> <span className='text-[#818997] text-[15.3px] '>10:00</span></td>
+                    <td className=" py-2 pr-5 text-[#231F20] whitespace-nowrap text-[15.1px] ">Divine Umeh</td>
+                    <td className=" py-2 pr-5 text-[#231F20] whitespace-nowrap text-[15.1px] ">Mary Ibe</td>
+                    <td className=" py-2  text-[#231F20] whitespace-nowrap text-[15.1px] ">N600.00</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+         </div>
+
+
+         <div className='bg-[#FCFDFD] border border-gray-300 rounded-lg px-5 '>
+            <p className='pt-5 text-[20px] font-medium pb-2 '>Admin Action Logs</p>
+            
+            <div className="w-full overflow-x-auto whitespace-nowrap sm:px-5 py-1">
+              <table className="w-full whitespace-nowrap table-auto  border-collapse">
+                <thead>
+                  <tr>
+                    <th className="font-normal pr-5 py-2 text-left whitespace-nowrap">Date/Time</th>
+                    <th className="font-normal pr-5 py-2 text-left whitespace-nowrap ">Admin</th>
+                    <th className="font-normal pr-5  py-2 text-left whitespace-nowrap ">Action Type</th>
+                    <th className="font-normal  py-2 text-left whitespace-nowrap ">Affected User/Driver</th>
+                  </tr>
+                </thead>
+
+                <tbody className='' >
+                  <tr className="text-sm text-gray-700 border-b border-gray-300 ">
+                    <td className=" py-2 pr-5 text-[#231F20] whitespace-nowrap  "><span className='text-[#231F20] text-[15.4px] '>4/13/2025</span> <br /> <span className='text-[#818997] text-[15.3px] '>10:00</span></td>
+                    <td className=" py-2 pr-5 text-[#231F20] whitespace-nowrap text-[15.1px] ">Wallet <br /> Credit</td>
+                    <td className=" py-2 pr-5 text-[#231F20] whitespace-nowrap text-[15.1px]  "> Wallet <br /> Recieved</td>
+                    <td className=" py-2  text-[#231F20] whitespace-nowrap text-[15.1px] ">Olivia Adeoye</td>
+                  </tr>
+                    
+                   <tr className="text-sm text-gray-700 ">
+                    <td className=" py-2 pr-5 text-[#231F20] whitespace-nowrap "><span className='text-[#231F20] text-[15.4px] '>4/13/2025</span> <br /> <span className='text-[#818997] text-[15.3px] '>10:00</span></td>
+                    <td className=" py-2 pr-5 text-[#231F20] whitespace-nowrap text-[15.1px] ">Wallet <br /> Credit</td>
+                    <td className=" py-2 pr-5 text-[#231F20] whitespace-nowrap text-[15.1px] "> Wallet <br /> Recieved</td>
+                    <td className=" py-2  text-[#231F20] whitespace-nowrap text-[15.1px] ">Olivia Adeoye</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+         </div>
+
+
+        </div>
+       
       </div>
     </div>
   )

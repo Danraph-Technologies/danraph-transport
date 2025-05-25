@@ -8,7 +8,7 @@ import '../styles/settings.css'
 
 const Settings = () => {
   const [phone, setPhone] = useState('')
-  const [country, setCountry] = useState('us') // default to US
+  const [country, setCountry] = useState('ng') // default to US
 
   // Auto-detect country by IP
   useEffect(() => {
@@ -20,7 +20,7 @@ const Settings = () => {
         }
       })
       .catch(() => {
-        setCountry('us') // fallback
+        setCountry('ng') // fallback
       })
   }, [])
   return (

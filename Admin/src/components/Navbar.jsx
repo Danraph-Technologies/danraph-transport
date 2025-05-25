@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from "react-router-dom"
 import img from "../assets/danraph-logo1.png"
 import { FaSearch } from "react-icons/fa";
 import { FiBell } from "react-icons/fi";
@@ -13,7 +14,7 @@ const Navbar = ({ onMenuClick }) => {
       <div className=' items-center hidden lg:flex justify-between mx-10'>
         <div className=' flex items-center flex-1 gap-10 '>
           <div className='max-w-[153px]'>
-          <img src={img} alt="" className='w-full'/>
+         <Link to="/admin/dashboard"><img src={img} alt="" className='w-full'/></Link> 
           </div>
 
           <div className='flex-1 relative'>
@@ -35,8 +36,8 @@ const Navbar = ({ onMenuClick }) => {
         </div>
 
        <div className='flex items-center gap-4'>
-        <div> <FiBell className='text-[42px] border border-gray-300 rounded-full p-2'/></div>
-       <div><img src={img1} alt="" className='w-[42px]  rounded-full h-[42px] '/></div>
+        <div> <Link to="/admin/notifications"> <FiBell className='text-[42px] border border-gray-300 rounded-full p-2'/></Link></div>
+       <div>  <Link to="/admin/settings"> <img src={img1} alt="" className='w-[42px]  rounded-full h-[42px] '/></Link></div>
        
        </div>
         </div> 
@@ -49,10 +50,10 @@ const Navbar = ({ onMenuClick }) => {
             </svg>
           </button>
           <div>
-            <img src={img} alt="" className='max-w-[115px] w-full'/>
+            <Link to="/admin/dashboard"><img src={img} alt="" className='max-w-[115px] w-full'/></Link> 
           </div>
           <div>
-            <img src={img1} alt="" className='w-[40px] h-[40px] rounded-full'/>
+            <Link to="/admin/settings"><img src={img1} alt="" className='w-[40px] h-[40px] rounded-full'/></Link> 
           </div>
         </div>
       </div>
