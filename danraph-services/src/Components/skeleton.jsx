@@ -2,11 +2,23 @@ import React, { useState } from "react";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 
-const ImageWithSkeleton = ({ src, alt, className, skeletonSize = 42, ...props }) => {
+const ImageWithSkeleton = ({
+  src,
+  alt,
+  className,
+  skeletonSize = 42,
+  ...props
+}) => {
   const [loaded, setLoaded] = useState(false);
 
   return (
-    <div style={{ position: "relative", display: "inline-block", verticalAlign: "top" }}>
+    <div
+      style={{
+        position: "relative",
+        display: "inline-block",
+        verticalAlign: "top",
+      }}
+    >
       {!loaded && (
         <Skeleton
           height={skeletonSize}

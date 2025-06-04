@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react'
-import img1 from "../images/danraph-services16.webp"
+import React, { useEffect, useRef, useState } from "react";
+import img1 from "../images/danraph-services16.webp";
 import ImageWithSkeleton from "../Components/skeleton";
 
 const ANIMATION_DURATION = 500; // ms, must match your CSS
@@ -31,14 +31,14 @@ const Charterr = ({ onClose }) => {
 
   return (
     <div
-      className='fixed inset-0 flex justify-center px-[9px] items-center z-50 bg-black bg-opacity-50'
+      className="fixed inset-0 flex justify-center px-[9px] items-center z-50 bg-black bg-opacity-50"
       onClick={handleOutsideClick}
     >
       <div
         className={`bg-white max-w-[623px] overflow-y-auto max-h-[90vh] w-full rounded-xl ${
-          isVisible ? 'animate-spinIn' : 'animate-spinOut'
+          isVisible ? "animate-spinIn" : "animate-spinOut"
         }`}
-        onClick={e => e.stopPropagation()}
+        onClick={(e) => e.stopPropagation()}
       >
         <p
           onClick={handleClose}
@@ -48,18 +48,27 @@ const Charterr = ({ onClose }) => {
           X
         </p>
 
-         <div className='flex flex-col justify-center items-center '>
-         <ImageWithSkeleton src={img1} alt="" className='sm:max-w-[255px] max-w-[240px] w-full animated-image' skeletonSize={150} />
-            <div className='max-w-[394px] text-center'>
-            <p className='sm:text-[26px] text-[20px] font-semibold py-4'>Thanks for your request</p>
-            <p className='pb-16 sm:text-[18px]  font-normal'> A customer care will contact you in 5 minutes time or less. Kindly be patient</p>
-            </div>
-           
-        </div>  
-      
+        <div className="flex flex-col justify-center items-center ">
+          <ImageWithSkeleton
+            src={img1}
+            alt=""
+            className="sm:max-w-[255px] max-w-[240px] w-full animated-image"
+            skeletonSize={150}
+          />
+          <div className="max-w-[394px] text-center">
+            <p className="sm:text-[26px] text-[20px] font-semibold py-4">
+              Thanks for your request
+            </p>
+            <p className="pb-16 sm:text-[18px]  font-normal">
+              {" "}
+              A customer care will contact you in 5 minutes time or less. Kindly
+              be patient
+            </p>
+          </div>
+        </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Charterr
+export default Charterr;

@@ -1,57 +1,59 @@
 import React, { useEffect, useState } from "react";
 import img1 from "../images/danraph-logo.png";
 import img2 from "../images/Danraph-services9.jpg";
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
-import { FaArrowLeft } from 'react-icons/fa';
+import { FaArrowLeft } from "react-icons/fa";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/solid";
 import ImageWithSkeleton from "./skeleton";
 
 const validatePassword = (password) => {
   // At least 8 chars, 1 uppercase, 1 lowercase, 1 number, 1 special char
-  return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{8,}$/.test(password);
+  return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{8,}$/.test(
+    password
+  );
 };
 
 const signup = () => {
-  const [countryCode, setCountryCode] = useState('us');
+  const [countryCode, setCountryCode] = useState("us");
   const [isLoaded, setIsLoaded] = useState(false);
   const [form, setForm] = useState({
-    firstName: '',
-    lastName: '',
-    userType: '',
-    email: '',
-    phone: '',
-    password: '',
+    firstName: "",
+    lastName: "",
+    userType: "",
+    email: "",
+    phone: "",
+    password: "",
     terms: false,
-    consent: false
+    consent: false,
   });
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
   useEffect(() => {
     // Fetch the country code immediately when the user accesses the site (on page load)
-    fetch('https://ipwho.is/')
-      .then(res => res.json())
-      .then(data => {
+    fetch("https://ipwho.is/")
+      .then((res) => res.json())
+      .then((data) => {
         if (data.success && data.country_code) {
           const newCountryCode = data.country_code.toLowerCase();
-          const cachedCountryCode = localStorage.getItem('countryCode');
+          const cachedCountryCode = localStorage.getItem("countryCode");
 
           // Check if the country is Nigeria (NG)
-          if (newCountryCode === 'ng') {
-            setCountryCode('ng');  // Set country code to 'ng' for Nigeria
-            localStorage.setItem('countryCode', 'ng');
+          if (newCountryCode === "ng") {
+            setCountryCode("ng"); // Set country code to 'ng' for Nigeria
+            localStorage.setItem("countryCode", "ng");
           } else {
             // If country code is different, update it
             if (newCountryCode !== cachedCountryCode) {
               setCountryCode(newCountryCode);
-              localStorage.setItem('countryCode', newCountryCode);
+              localStorage.setItem("countryCode", newCountryCode);
             }
           }
         }
       })
-      .catch(err => {
-        console.error('Failed to fetch country code:', err);
+      .catch((err) => {
+        console.error("Failed to fetch country code:", err);
       });
   }, []);
 
@@ -65,7 +67,7 @@ const signup = () => {
     const { name, value, type, checked } = e.target;
     setForm((prev) => ({
       ...prev,
-      [name]: type === 'checkbox' ? checked : value.trim()
+      [name]: type === "checkbox" ? checked : value.trim(),
     }));
   };
 
@@ -75,18 +77,27 @@ const signup = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setError('');
+    setError("");
     // Basic client-side validation
-    if (!form.firstName || !form.lastName || !form.userType || !form.email || !form.phone || !form.password) {
-      setError('All fields are required.');
+    if (
+      !form.firstName ||
+      !form.lastName ||
+      !form.userType ||
+      !form.email ||
+      !form.phone ||
+      !form.password
+    ) {
+      setError("All fields are required.");
       return;
     }
     if (!validatePassword(form.password)) {
-      setError('Password must be at least 8 characters and include uppercase, lowercase, number, and special character.');
+      setError(
+        "Password must be at least 8 characters and include uppercase, lowercase, number, and special character."
+      );
       return;
     }
     if (!form.terms) {
-      setError('You must agree to the Terms of use and Privacy Policy.');
+      setError("You must agree to the Terms of use and Privacy Policy.");
       return;
     }
     // Never log sensitive info
@@ -101,7 +112,15 @@ const signup = () => {
         <div className="hidden lg:block flex-1 w-full max-w-full relative">
           {/* Skeleton overlay */}
           {!isLoaded && (
-            <div className="w-full h-full bg-gray-200 animate-pulse rounded-lg" style={{ minHeight: 600, position: "absolute", inset: 0, zIndex: 2 }} />
+            <div
+              className="w-full h-full bg-gray-200 animate-pulse rounded-lg"
+              style={{
+                minHeight: 600,
+                position: "absolute",
+                inset: 0,
+                zIndex: 2,
+              }}
+            />
           )}
           {/* Always render the image */}
           <img
@@ -116,9 +135,12 @@ const signup = () => {
             <div className="absolute top-0 left-0 w-full max-w-full lg:max-w-[580px] px-6 py-8">
               <img src={img1} alt="" className="max-w-[165px] w-full" />
               <div className="w-[48px] h-[48px] bg-blue-800 rounded-full mt-14 mb-2"></div>
-              <p className="text-[32px] xl:text-[52px] text-white font-semibold py-[5px]">Lets Get You Moving</p>
+              <p className="text-[32px] xl:text-[52px] text-white font-semibold py-[5px]">
+                Lets Get You Moving
+              </p>
               <p className="text-[18px] xl:text-[22px] font-normal text-white">
-                Sign up to easily plan your trips and enjoy smooth campus rides. Get access to personalized routes and real-time updates.
+                Sign up to easily plan your trips and enjoy smooth campus rides.
+                Get access to personalized routes and real-time updates.
               </p>
             </div>
           )}
@@ -129,7 +151,9 @@ const signup = () => {
           <p className="text-right p-6 pt-3 hidden lg:block">
             Already have an account?{" "}
             <Link to="/login">
-              <span className="font-medium underline cursor-pointer">Log in</span>
+              <span className="font-medium underline cursor-pointer">
+                Log in
+              </span>
             </Link>
           </p>
           <p className="m-4 lg:hidden">
@@ -140,15 +164,23 @@ const signup = () => {
 
           <div className="flex flex-col items-center justify-center flex-1 w-full px-2">
             <div className="flex flex-col justify-center items-center lg:items-start w-full">
-              <img src={img1} alt="" className="max-w-[146px] w-full lg:hidden" />
-              <p className="text-[28px] lg:text-[32px] font-medium py-4 px-16 text-center lg:text-left">Get Started</p>
+              <img
+                src={img1}
+                alt=""
+                className="max-w-[146px] w-full lg:hidden"
+              />
+              <p className="text-[28px] lg:text-[32px] font-medium py-4 px-16 text-center lg:text-left">
+                Get Started
+              </p>
               <div className="w-full flex justify-center">
                 <form
                   onSubmit={handleSubmit}
                   className="flex flex-col gap-3 justify-center items-center w-full max-w-[510px] lg:max-w-[510px] px-2 sm:px-3"
                   autoComplete="off"
                 >
-                  {error && <div className="text-red-600 text-sm mb-2">{error}</div>}
+                  {error && (
+                    <div className="text-red-600 text-sm mb-2">{error}</div>
+                  )}
                   <div className="flex gap-3 w-full">
                     <div className="flex flex-col flex-1">
                       <label htmlFor="firstName">First Name</label>
@@ -234,7 +266,7 @@ const signup = () => {
                         inputProps={{
                           name: "phone",
                           required: true,
-                          autoComplete: "off"
+                          autoComplete: "off",
                         }}
                         inputClass="outline-none border !border-gray-400 py-6 px-3 rounded-lg !w-full"
                         buttonClass="!bg-transparent w-[48px]"
@@ -244,7 +276,10 @@ const signup = () => {
                   </div>
 
                   <div className="flex flex-col w-full">
-                    <label htmlFor="password" className="flex items-center justify-between pr-2">
+                    <label
+                      htmlFor="password"
+                      className="flex items-center justify-between pr-2"
+                    >
                       <p>Your Password</p>
                       <p
                         onClick={togglePassword}
@@ -270,7 +305,8 @@ const signup = () => {
                       className="outline-none border border-gray-400 py-3 px-3 rounded-lg w-full"
                     />
                     <p className="text-sm">
-                      Use 8 or more characters with a mix of letters, numbers & symbols
+                      Use 8 or more characters with a mix of letters, numbers &
+                      symbols
                     </p>
                   </div>
 
@@ -286,8 +322,13 @@ const signup = () => {
                     />
                     <p>
                       By creating an account, I agree to our{" "}
-                      <span className="underline cursor-pointer">Terms of use</span> and{" "}
-                      <span className="underline cursor-pointer">Privacy Policy</span>
+                      <span className="underline cursor-pointer">
+                        Terms of use
+                      </span>{" "}
+                      and{" "}
+                      <span className="underline cursor-pointer">
+                        Privacy Policy
+                      </span>
                     </p>
                   </div>
 
@@ -302,16 +343,24 @@ const signup = () => {
                       className="cursor-pointer outline-none translate-y-1 text-black accent-black"
                     />
                     <p>
-                      By creating an account, I am also consenting to receive SMS messages and emails, including product new feature updates, events, and marketing promotions.
+                      By creating an account, I am also consenting to receive
+                      SMS messages and emails, including product new feature
+                      updates, events, and marketing promotions.
                     </p>
                   </div>
 
-                 <Link to='/users/dashboard' className="w-full"><button type="submit" className="bg-blue-800 w-full px-10 py-2 my-2 rounded-3xl border-2 border-blue-800 hover:bg-transparent transition duration-500 text-white hover:text-blue-800">
-                    Sign Up
-                  </button></Link> 
+                  <Link to="/users/dashboard" className="w-full">
+                    <button
+                      type="submit"
+                      className="bg-blue-800 w-full px-10 py-2 my-2 rounded-3xl border-2 border-blue-800 hover:bg-transparent transition duration-500 text-white hover:text-blue-800"
+                    >
+                      Sign Up
+                    </button>
+                  </Link>
                   <Link to="/login">
                     <p>
-                      Already have an account? <span className="font-medium underline">Log in</span>
+                      Already have an account?{" "}
+                      <span className="font-medium underline">Log in</span>
                     </p>
                   </Link>
                 </form>

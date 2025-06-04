@@ -1,14 +1,19 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom"
-import Admin from "./pages/admin"
-import Dashboard from "./pages/Dashboard"
-import Manage from "./pages/Manage"
-import Ride from "./pages/ride"
-import Charter from "./pages/charter"
-import Users from "./pages/users"
-import Driver from "./pages/driver"
-import Wallet from "./pages/wallet"
-import Notification from "./pages/Notification"
-import Settings from "./pages/Settings"
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
+import Admin from "./pages/admin";
+import Dashboard from "./pages/Dashboard";
+import Manage from "./pages/Manage";
+import Ride from "./pages/ride";
+import Charter from "./pages/charter";
+import Users from "./pages/users";
+import Driver from "./pages/driver";
+import Wallet from "./pages/wallet";
+import Notification from "./pages/Notification";
+import Settings from "./pages/Settings";
 
 function App() {
   return (
@@ -29,7 +34,7 @@ function App() {
         </Route>
       </Routes>
     </Router>
-  )
+  );
 }
 
-export default App
+export default App;

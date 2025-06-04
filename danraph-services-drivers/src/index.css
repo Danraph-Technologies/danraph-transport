@@ -3,66 +3,69 @@
 @tailwind utilities;
 
 @keyframes slide-in {
-    from { transform: translateX(-100%); }
-    to { transform: translateX(0); }
+  from {
+    transform: translateX(-100%);
   }
-  .animate-slide-in {
-    animation: slide-in 0.3s ease;
+  to {
+    transform: translateX(0);
   }
+}
+.animate-slide-in {
+  animation: slide-in 0.3s ease;
+}
 
-  @keyframes spinIn {
-    from {
-      opacity: 0;
-      transform: scale(0.5) rotate(-360deg);
-    }
-    to {
-      opacity: 1;
-      transform: scale(1) rotate(0deg);
-    }
+@keyframes spinIn {
+  from {
+    opacity: 0;
+    transform: scale(0.5) rotate(-360deg);
   }
-  
-  @keyframes spinOut {
-    from {
-      opacity: 1;
-      transform: scale(1) rotate(360deg);
-    }
-    to {
-      opacity: 0;
-      transform: scale(0.5) rotate(0deg);
-    }
+  to {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
   }
-  
-  .animate-spinIn {
-    animation: spinIn 0.8s ease forwards;
-  }
-  
-  .animate-spinOut {
-    animation: spinOut 0.5s ease forwards;
-  } 
+}
 
-  @keyframes balance {
-    0% {
-      transform: rotate(0deg);
-    }
-    25% {
-      transform: rotate(-3deg); /* Tilt left, moves left up */
-    }
-    50% {
-      transform: rotate(3deg);  /* Tilt right, moves right up */
-    }
-    75% {
-      transform: rotate(-3deg); /* Tilt left again */
-    }
-    100% {
-      transform: rotate(3deg);  /* Tilt right again */
-    }
+@keyframes spinOut {
+  from {
+    opacity: 1;
+    transform: scale(1) rotate(360deg);
   }
-  
-  .vibrate-button {
-    animation: balance 0.5s ease-in-out infinite;
+  to {
+    opacity: 0;
+    transform: scale(0.5) rotate(0deg);
   }
+}
 
-  
+.animate-spinIn {
+  animation: spinIn 0.8s ease forwards;
+}
+
+.animate-spinOut {
+  animation: spinOut 0.5s ease forwards;
+}
+
+@keyframes balance {
+  0% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(-3deg); /* Tilt left, moves left up */
+  }
+  50% {
+    transform: rotate(3deg); /* Tilt right, moves right up */
+  }
+  75% {
+    transform: rotate(-3deg); /* Tilt left again */
+  }
+  100% {
+    transform: rotate(3deg); /* Tilt right again */
+  }
+}
+
+.vibrate-button {
+  animation: balance 0.5s ease-in-out infinite;
+}
+
 .slide-in-right {
   animation: slideInRight 0.4s forwards;
 }
@@ -71,14 +74,25 @@
 }
 
 @keyframes slideInRight {
-  from { transform: translateX(100%); opacity: 0; }
-  to   { transform: translateX(0); opacity: 1; }
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
 }
 @keyframes slideOutLeft {
-  from { transform: translateX(0); opacity: 1; }
-  to   { transform: translateX(-100%); opacity: 0; }
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
 }
-
 
 @keyframes slideOutLeft {
   from {
@@ -96,7 +110,8 @@
 }
 
 @keyframes bounceBreath {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0) scale(1);
   }
   25% {
@@ -115,14 +130,13 @@
   display: inline-block;
 }
 
-
-  
-  @media (min-width: 640px) { /* sm and above */
-    .hide-scrollbar-sm {
-      scrollbar-width: none; /* Firefox */
-      -ms-overflow-style: none; /* IE 10+ */
-    }
-    .hide-scrollbar-sm::-webkit-scrollbar {
-      display: none; /* Chrome/Safari/Webkit */
-    }
+@media (min-width: 640px) {
+  /* sm and above */
+  .hide-scrollbar-sm {
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE 10+ */
   }
+  .hide-scrollbar-sm::-webkit-scrollbar {
+    display: none; /* Chrome/Safari/Webkit */
+  }
+}

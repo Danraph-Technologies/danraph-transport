@@ -1,11 +1,11 @@
-import React, { useState } from 'react'
-import Navbar from './Navbar'
-import Sidebar from './sidebar'
-import { Outlet } from 'react-router-dom'
-import Footer from './footer'
+import React, { useState } from "react";
+import Navbar from "./Navbar";
+import Sidebar from "./sidebar";
+import { Outlet } from "react-router-dom";
+import Footer from "./footer";
 
 const Drivers = () => {
-  const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
     <div>
@@ -17,12 +17,18 @@ const Drivers = () => {
         </div>
         {/* Mobile sidebar */}
         <div
-          className={`fixed inset-0 z-50  bg-black bg-opacity-30   sm:hidden transition-opacity duration-[0.4s] ${sidebarOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
+          className={`fixed inset-0 z-50  bg-black bg-opacity-30   sm:hidden transition-opacity duration-[0.4s] ${
+            sidebarOpen
+              ? "opacity-100 pointer-events-auto"
+              : "opacity-0 pointer-events-none"
+          }`}
           onClick={() => setSidebarOpen(false)}
         >
           <div
-            className={`fixed left-0 top-0 h-full py-12 w-[240px] overflow-y-auto bg-white shadow-lg transition-transform duration-[0.4s] transform ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}
-            onClick={e => e.stopPropagation()}
+            className={`fixed left-0 top-0 h-full py-12 w-[240px] overflow-y-auto bg-white shadow-lg transition-transform duration-[0.4s] transform ${
+              sidebarOpen ? "translate-x-0" : "-translate-x-full"
+            }`}
+            onClick={(e) => e.stopPropagation()}
           >
             {/* Close button */}
             <button
@@ -41,7 +47,7 @@ const Drivers = () => {
       </div>
       <Footer />
     </div>
-  )
-}
+  );
+};
 
-export default Drivers
+export default Drivers;

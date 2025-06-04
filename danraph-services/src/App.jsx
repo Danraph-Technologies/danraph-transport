@@ -38,9 +38,7 @@ function App() {
           <Route path="Comfirm" element={<Comfirm />} />
           <Route path="Success" element={<Success />} />
           <Route path="Charterr" element={<Charterr />} />
-
         </Route>
-
       </Routes>
     </Router>
   );
