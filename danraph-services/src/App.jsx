@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import SonnerToaster from "./Components/sonner-toast-setup";
 import "./App.css";
 import Home from "./pages/home";
 import Login from "./Components/login";
@@ -20,6 +21,7 @@ function App() {
   return (
     <Router>
       <ScrollToTop />
+      <SonnerToaster />
       <Routes>
         {/* Normal pages */}
         <Route path="/" element={<Home />} />

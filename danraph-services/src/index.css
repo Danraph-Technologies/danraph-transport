@@ -147,3 +147,28 @@
   }
 
 
+@keyframes slideInOut {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -40px);
+  }
+  10% {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+  90% {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -40px);
+  }
+}
+
+.animate-slideInOut {
+  animation: slideInOut 3s ease-in-out forwards;
+}
+
+
+

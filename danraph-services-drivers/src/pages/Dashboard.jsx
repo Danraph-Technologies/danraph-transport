@@ -1,4 +1,6 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import img1 from "../assets/danraph-arrow.png";
 import Confirm from "./Confirm";
 import Success from "./success";
@@ -10,6 +12,27 @@ const Dashboard = () => {
   const [showConfirm, setShowConfirm] = useState(false);
   const [animateOut, setAnimateOut] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
+  const [firstName, setFirstName] = useState("");
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
+  useEffect(() => {
+    axios
+      .get("https://danraphservices.com/danraph-backend/api/auth/getsfirstname", {
+        withCredentials: true,
+      })
+      .then((res) => {
+        setFirstName(res.data.firstName);
+        setLoading(false);
+      })
+      .catch(() => {
+        setLoading(false);
+        // Redirect to main app login if not authenticated
+        window.location.href = "https://danraph-transport.vercel.app/login";
+      });
+  }, []);
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   const handleAcceptClick = () => {
     setShowConfirm(true);
@@ -48,7 +71,9 @@ const Dashboard = () => {
     <div className="pb-6">
       <div className="sm:px-2  pb-8 flex flex-wrap items-start gap-7">
         <div className="max-w-[576px] border  border-gray-300 px-4 py-1 rounded-xl ">
-          <p className="sm:text-[26px] text-[20px] font-semibold">Hi, Maduka</p>
+          <p className="sm:text-[26px] text-[20px] font-semibold">
+            Hi{firstName ? `, ${firstName}` : ","}
+          </p>
           <p className="text-[#8F9DAD] sm:text-[18px] text-[15px]">
             You are online
           </p>

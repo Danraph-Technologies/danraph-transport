@@ -1,6 +1,6 @@
-import React from "react";
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import { toast } from "sonner";
+import { Link, useNavigate } from "react-router-dom";
 import img1 from "../images/danraph-services8.jpg";
 import img2 from "../images/danraph-logo.png";
 import { FaArrowLeft } from "react-icons/fa";
@@ -14,7 +14,8 @@ const login = () => {
     username: "",
     password: "",
   });
-  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const togglePassword = () => {
     setShowPassword(!showPassword);
@@ -25,19 +26,45 @@ const login = () => {
     setForm((prev) => ({ ...prev, [name]: value.trim() }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");
     if (!form.username || !form.password) {
-      setError("All fields are required.");
+      toast.error("All fields are required.");
       return;
     }
     if (form.password.length < 8) {
-      setError("Password must be at least 8 characters.");
+      toast.error("Password must be at least 8 characters.");
       return;
     }
-    // Never log sensitive info
-    // Submit to backend (actual submission handled elsewhere)
+    setLoading(true);
+    try {
+      const response = await fetch("https://danraphservices.com/danraph-backend/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include", // Allow cookies for JWT
+        body: JSON.stringify({
+          identifier: form.username,
+          password: form.password,
+        }),
+      });
+      const data = await response.json().catch(() => ({}));
+      if (response.ok) {
+        // No delay, redirect instantly based on userType
+        if (data.userType === "driver") {
+          window.location.href = "https://danraph-services-drivers.vercel.app/drivers/";
+        } else {
+          window.location.href = "https://danraph-transport.vercel.app/users/dashboard";
+        }
+      } else {
+        toast.error(
+          data.message || "Login failed. Please check your credentials."
+        );
+      }
+    } catch (err) {
+      toast.error("Network error. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -182,9 +209,6 @@ const login = () => {
               autoComplete="off"
               className="flex flex-col justify-center items-center w-full max-w-[510px] px-3"
             >
-              {error && (
-                <div className="text-red-600 text-sm mb-2">{error}</div>
-              )}
               <div className="flex flex-col justify-center w-full">
                 <label htmlFor="Username or email address">
                   Username or email address
@@ -236,8 +260,38 @@ const login = () => {
                 </p>
               </div>
 
-              <button className="bg-blue-800 w-full px-10 py-2 my-3 rounded-3xl border-2 border-blue-800 hover:bg-transparent transition duration-500 text-white hover:text-blue-800">
-                Sign in
+              <button
+                className="bg-blue-800 w-full px-10 py-2 my-3 rounded-3xl border-2 border-blue-800 hover:bg-transparent transition duration-500 text-white hover:text-blue-800 flex items-center justify-center"
+                disabled={loading}
+                type="submit"
+              >
+                {loading ? (
+                  <span className="flex items-center gap-2">
+                    <svg
+                      className="animate-spin h-5 w-5 text-white"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      ></circle>
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                      ></path>
+                    </svg>
+                    Signing In...
+                  </span>
+                ) : (
+                  "Sign in"
+                )}
               </button>
               <p className=" ">
                 Dont't have an account?{" "}

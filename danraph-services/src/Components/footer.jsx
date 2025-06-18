@@ -3,8 +3,8 @@ import { NavLink } from "react-router-dom";
 
 const footer = () => {
   return (
-    <div>
-      <div className=" lg:hidden fixed bottom-0 py-2 w-full flex flex-wrap  justify-between sm:px-5 px-3 bg-[#FFFFFF] gap-3 items-center">
+    <div >
+      <div className=" lg:hidden fixed   bottom-0 py-2 w-full flex flex-wrap  justify-between sm:px-5 px-3 bg-[#FFFFFF] gap-3 items-center">
         <NavLink
           to="/users/dashboard"
           className={({ isActive }) =>

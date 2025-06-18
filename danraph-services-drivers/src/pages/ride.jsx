@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import img1 from "../assets/danraph-arrow.png";
 import Confirm from "./Confirm";
 import Success from "./success";
@@ -9,6 +9,19 @@ const ride = () => {
   const [showConfirm, setShowConfirm] = useState(false);
   const [animateOut, setAnimateOut] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
+
+  useEffect(() => {
+    // Check authentication on mount
+    fetch("https://danraphservices.com/danraph-backend/api/auth/getsfirstname", {
+      credentials: "include",
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error();
+      })
+      .catch(() => {
+        window.location.href = "https://danraph-transport.vercel.app/login";
+      });
+  }, []);
 
   const handleAcceptClick = () => {
     setShowConfirm(true);

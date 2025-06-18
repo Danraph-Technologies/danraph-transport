@@ -12,7 +12,7 @@ const Users = () => {
   };
 
   return (
-    <div>
+    <div className="min-w-[200px] overflow-x-auto  ">
       <Navbar toggleMobileSidebar={toggleMobileSidebar} />
       <div className="flex sm:pt-24 pt-[77px] min-h-screen">
         <Sidebar

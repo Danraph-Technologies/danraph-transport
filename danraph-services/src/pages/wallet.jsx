@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { toast } from "sonner";
 import img1 from "../images/danraph-service18.webp";
 import img2 from "../images/danraph-services19.webp";
 import img3 from "../images/danraph-services20.webp";
@@ -10,6 +11,36 @@ import img8 from "../images/danraph-services25.webp";
 import ImageWithSkeleton from "../Components/skeleton";
 
 const wallet = () => {
+  const [balance, setBalance] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    fetch("https://www.danraphservices.com/ecocruise/api/wallet", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        // Add Authorization header if needed
+      },
+      credentials: "include", // if using cookies/session auth
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to fetch wallet balance");
+        return res.json();
+      })
+      .then((data) => {
+        console.log("Wallet API response:", data);
+        setBalance(data.balance); // Adjust if API returns a different key
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.log("Wallet API error:", err);
+        setError("Could not load wallet balance.");
+        toast.error("Could not load wallet balance.");
+        setLoading(false);
+      });
+  }, []);
+
   return (
     <div className="flex justify-center lg:justify-start lg:pb-5 pb-14 lg:px-4  ">
       <div className="max-w-[389px] w-full border pb-3 border-gray-300 rounded-md ">
@@ -21,7 +52,12 @@ const wallet = () => {
             <div className="pt-6">
               <p className="sm:text-[20px] text-[18px] ">Total Balance</p>
               <p className="sm:text-[32px] text-[27px] font-semibold">
-                <span className="pr-[3px]">₦</span>22,000
+                <span className="pr-[3px]">₦</span>
+                {loading
+                  ? "..."
+                  : error
+                  ? "N/A"
+                  : Number(balance).toLocaleString()}
               </p>
             </div>
 
@@ -45,6 +81,7 @@ const wallet = () => {
 
               <button className="group py-[6px] sm:px-7 px-5 bg-black text-white rounded-lg text-center flex items-center gap-4 border-2 border-black hover:bg-transparent hover:text-black transition duration-500 ">
                 <span className="sm:text-[19px]">Fund</span>
+
                 <svg
                   width="23"
                   height="23"
@@ -131,7 +168,7 @@ const wallet = () => {
               />
             </div>
 
-            <p className="flex gap-1 items-center py-3">
+            <div className="flex gap-1 items-center py-3">
               <span>Notification</span>{" "}
               <ImageWithSkeleton
                 src={img8}
@@ -139,7 +176,7 @@ const wallet = () => {
                 className="max-w-[8px] w-full h-[8px] rounded-full "
                 skeletonSize={8}
               />
-            </p>
+            </div>
             <div>
               <div className="flex gap-3 pb-3 justify-between items-center">
                 <div className="flex gap-2 items-center  ">

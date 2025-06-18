@@ -1,13 +1,77 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import img1 from "../images/danraph-logo.png";
 import img2 from "../images/Danraph-services10.jpg";
 import { FaSearch } from "react-icons/fa";
 import { BellIcon, Bars3Icon } from "@heroicons/react/24/outline";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
+
+const SkeletonCircle = () => (
+  <div
+    className="rounded-full bg-gray-200 animate-pulse"
+    style={{ width: 42, height: 42 }}
+  />
+);
+
+const PROFILE_IMAGE_KEY = "danraph_profile_image";
 
 const Navbar = ({ toggleMobileSidebar }) => {
+  const [profileImage, setProfileImage] = useState(img2);
+  const [imgLoading, setImgLoading] = useState(true);
+  const location = useLocation();
+
+  // Helper to update localStorage and state
+  const updateProfileImage = (url) => {
+    localStorage.setItem(PROFILE_IMAGE_KEY, url);
+    setProfileImage(url);
+  };
+
+  useEffect(() => {
+    setImgLoading(true);
+    // Try to get from localStorage first
+    const cached = localStorage.getItem(PROFILE_IMAGE_KEY);
+    if (cached) {
+      setProfileImage(cached);
+      setImgLoading(false);
+    } else {
+      axios
+        .get("https://danraphservices.com/danraph-backend/api/auth/userscurrentinformation", {
+          withCredentials: true,
+        })
+        .then((res) => {
+          if (res.data.profileImage) {
+            const imgUrl =
+              res.data.profileImage.startsWith("http") ||
+              res.data.profileImage.startsWith("blob")
+                ? res.data.profileImage
+                : `https://danraphservices.com/danraph-backend${res.data.profileImage}`;
+            updateProfileImage(imgUrl);
+          } else {
+            updateProfileImage(img2);
+          }
+        })
+        .catch(() => updateProfileImage(img2));
+    }
+    // Listen for profile image update event
+    const handleProfileImageUpdate = (e) => {
+      if (e.detail && e.detail.url) {
+        updateProfileImage(e.detail.url);
+      }
+    };
+    window.addEventListener(
+      "danraph-profile-image-updated",
+      handleProfileImageUpdate
+    );
+    return () => {
+      window.removeEventListener(
+        "danraph-profile-image-updated",
+        handleProfileImageUpdate
+      );
+    };
+  }, [location.pathname]);
+
   return (
-    <div className="border-b-[1px] bg-[#FFFFFF] border-gray-300 pb-3 fixed top-0 left-0 w-full z-50">
+    <div className="border-b-[1px]  bg-[#FFFFFF] border-gray-300 pb-3 fixed top-0 left-0 w-full z-50">
       <div className="items-center hidden nav:flex justify-between mx-5">
         <div className="flex items-center gap-9">
           <Link to="/">
@@ -31,11 +95,16 @@ const Navbar = ({ toggleMobileSidebar }) => {
           </div>
           <div>
             <Link to="/users/settings">
-              <img
-                src={img2}
-                alt=""
-                className="rounded-full w-[42px] h-[42px] cursor-pointer "
-              />{" "}
+              {imgLoading ? (
+                <SkeletonCircle />
+              ) : (
+                <img
+                  src={profileImage}
+                  alt=""
+                  className="rounded-full w-[42px] h-[42px] object-cover cursor-pointer "
+                  onLoad={() => setImgLoading(false)}
+                />
+              )}
             </Link>
           </div>
         </div>
@@ -49,11 +118,16 @@ const Navbar = ({ toggleMobileSidebar }) => {
           <img src={img1} alt="" className="max-w-[130px] w-full" />
         </Link>
         <Link to="/users/settings">
-          <img
-            src={img2}
-            alt=""
-            className="rounded-full w-[42px] h-[42px] cursor-pointer"
-          />
+          {imgLoading ? (
+            <SkeletonCircle />
+          ) : (
+            <img
+              src={profileImage}
+              alt=""
+              className="rounded-full w-[42px] h-[42px] object-cover cursor-pointer"
+              onLoad={() => setImgLoading(false)}
+            />
+          )}
         </Link>
       </div>
     </div>

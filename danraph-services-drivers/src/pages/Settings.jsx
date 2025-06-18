@@ -1,12 +1,40 @@
 import React, { useState, useEffect } from "react";
+import axios from "axios";
 import img1 from "../assets/Danraph-services10.jpg";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import "../styles/settings.css";
+import { toast } from "sonner";
+
+const PROFILE_IMAGE_KEY = "danraph_driver_profile_image";
 
 const Settings = () => {
-  const [phone, setPhone] = useState("");
-  const [country, setCountry] = useState("ng"); // default to US
+  const [form, setForm] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    username: "",
+    phone: "",
+    profileImage: null,
+  });
+  const [country, setCountry] = useState("ng");
+  const [loading, setLoading] = useState(false);
+  const [imgLoading, setImgLoading] = useState(true);
+  const [previewUrl, setPreviewUrl] = useState(null);
+
+  // Fetch user data on mount
+  useEffect(() => {
+    setImgLoading(true);
+    axios
+      .get("https://danraphservices.com/danraph-backend/api/auth/userscurrentinformation", {
+        withCredentials: true,
+      })
+      .then((res) => {
+        setForm((f) => ({ ...f, ...res.data }));
+      })
+      .catch(() => {})
+      .finally(() => setImgLoading(false));
+  }, []);
 
   // Auto-detect country by IP
   useEffect(() => {
@@ -18,25 +46,112 @@ const Settings = () => {
         }
       })
       .catch(() => {
-        setCountry("ng"); // fallback
+        setCountry("ng");
       });
   }, []);
+
+  // Clean up preview URL when component unmounts or file changes
+  useEffect(() => {
+    return () => {
+      if (previewUrl) {
+        URL.revokeObjectURL(previewUrl);
+      }
+    };
+  }, [previewUrl]);
+
+  // Helper to update localStorage and dispatch event
+  const updateProfileImage = (url) => {
+    localStorage.setItem(PROFILE_IMAGE_KEY, url);
+    window.dispatchEvent(
+      new CustomEvent("danraph-driver-profile-image-updated", {
+        detail: { url },
+      })
+    );
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value, files } = e.target;
+    if (files) {
+      if (previewUrl) {
+        URL.revokeObjectURL(previewUrl);
+      }
+      const file = files[0];
+      setForm((prev) => ({ ...prev, profileImage: file }));
+      setPreviewUrl(file ? URL.createObjectURL(file) : null);
+      setImgLoading(false);
+    } else {
+      setForm((prev) => ({ ...prev, [name]: value }));
+    }
+  };
+
+  const handlePhoneChange = (value) => {
+    setForm((prev) => ({ ...prev, phone: value }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    const formData = new FormData();
+    Object.entries(form).forEach(([key, value]) => {
+      if (value) formData.append(key, value);
+    });
+    try {
+      const res = await axios.post(
+        "https://danraphservices.com/danraph-backend/api/auth/changesettings",
+        formData,
+        {
+          withCredentials: true,
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );
+      // Update localStorage and notify navbar
+      if (res.data.user && res.data.user.profileImage) {
+        const backendUrl = "https://danraphservices.com/danraph-backend";
+        const imgUrl =
+          res.data.user.profileImage.startsWith("http") ||
+          res.data.user.profileImage.startsWith("/")
+            ? res.data.user.profileImage
+            : backendUrl + res.data.user.profileImage;
+        updateProfileImage(imgUrl);
+      }
+      toast.success("Settings updated successfully!");
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Failed to update settings");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="sm:px-8  pb-12 items-center flex justify-center sm:justify-start">
       <div className="max-w-[767px] w-full px-4 py-3 pt-5 pb-12 border rounded-lg border-gray-300">
         <div className="flex justify-between items-center gap-3">
           <p className="sm:text-[26px] text-[18px] font-semibold ">Settings</p>
-          <button className="text-white bg-[#F80B0B] px-7 sm:py-[6px] py-[4px] rounded-lg sm:text-[18px] text-[16px] font-semibold border-2 border-[#F80B0B] hover:bg-inherit hover:text-[#F80B0B] transition duration-500 ">
-            Save
+          <button
+            className="text-white bg-[#F80B0B] px-7 sm:py-[6px] py-[4px] rounded-lg sm:text-[18px] text-[16px] font-semibold border-2 border-[#F80B0B] hover:bg-inherit hover:text-[#F80B0B] transition duration-500 "
+            onClick={handleSubmit}
+            disabled={loading}
+          >
+            {loading ? "Saving..." : "Save"}
           </button>
         </div>
 
         <div className="flex items-center gap-7 py-5 ">
-          <img
-            src={img1}
-            alt=""
-            className="sm:max-w-[95px]  w-full sm:max-h-[95px] max-w-[70px] max-h-[70px] h-full rounded-full"
-          />
+          {imgLoading ? null : null}
+          {!imgLoading && (
+            <img
+              src={
+                previewUrl
+                  ? previewUrl
+                  : form.profileImage && typeof form.profileImage === "string"
+                  ? form.profileImage
+                  : img1
+              }
+              alt=""
+              className="sm:max-w-[95px]  w-full sm:max-h-[95px] max-w-[70px] max-h-[70px] h-full rounded-full"
+              onLoad={() => setImgLoading(false)}
+            />
+          )}
           <label
             htmlFor="file-upload"
             className="flex gap-2 items-center bg-[#F0F0F0] px-5 sm:py-2 py-[6px] hover:bg-inherit border-2 border-[#F0F0F0] hover:border-[#000000b6] transition duration-500 cursor-pointer"
@@ -58,89 +173,83 @@ const Settings = () => {
               id="file-upload"
               className="hidden"
               accept="image/*"
-              onChange={(e) => {
-                const file = e.target.files[0];
-                if (file && file.size > 2 * 1024 * 1024) {
-                  alert("File size must be less than 2MB");
-                  e.target.value = "";
-                }
-              }}
+              name="profileImage"
+              onChange={handleInputChange}
             />
           </label>
         </div>
 
-        <form action="" className="flex flex-col gap-5">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-5">
           <div className="lg:flex   gap-3">
             <div className="flex flex-wrap flex-col flex-1">
-              <label
-                htmlFor="First name"
-                className="text-[16px] text-[#666666]"
-              >
+              <label htmlFor="firstName" className="text-[16px] text-[#666666]">
                 First name
               </label>
               <input
                 type="text"
-                name=""
-                id=""
+                name="firstName"
+                id="firstName"
                 required
+                value={form.firstName}
+                onChange={handleInputChange}
                 className="border border-gray-300 sm:p-[13px] p-[10px]  rounded-xl outline-none "
               />
             </div>
 
             <div className="flex flex-col flex-1">
-              <label htmlFor="Last name" className="text-[16px] text-[#666666]">
-                Last name{" "}
+              <label htmlFor="lastName" className="text-[16px] text-[#666666]">
+                Last name
               </label>
               <input
                 type="text"
-                name=""
-                id=""
+                name="lastName"
+                id="lastName"
                 required
+                value={form.lastName}
+                onChange={handleInputChange}
                 className="border border-gray-300 sm:p-[13px] p-[10px]  rounded-xl outline-none "
               />
             </div>
           </div>
 
           <div className="flex flex-col flex-1">
-            <label
-              htmlFor="Email address"
-              className="text-[16px] text-[#666666]"
-            >
-              Email address{" "}
+            <label htmlFor="email" className="text-[16px] text-[#666666]">
+              Email address
             </label>
             <input
               type="email"
-              name=""
-              id=""
+              name="email"
+              id="email"
               required
+              value={form.email}
+              onChange={handleInputChange}
               className="border border-gray-300 sm:p-[13px] p-[10px]  rounded-xl outline-none "
             />
           </div>
 
           <div className="flex flex-col flex-1">
-            <label htmlFor="Username" className="text-[16px] text-[#666666]">
-              Username{" "}
+            <label htmlFor="username" className="text-[16px] text-[#666666]">
+              Username
             </label>
             <input
               type="text"
-              name=""
-              id=""
+              name="username"
+              id="username"
               required
+              value={form.username}
+              onChange={handleInputChange}
               className="border border-gray-300 sm:p-[13px] p-[10px]  rounded-xl outline-none "
             />
           </div>
 
           <div className="flex flex-col flex-1">
-            <label
-              htmlFor="Phone Number"
-              className="text-[16px] text-[#666666]"
-            >
-              Phone Number{" "}
+            <label htmlFor="phone" className="text-[16px] text-[#666666]">
+              Phone Number
             </label>
             <PhoneInput
               country={country}
-              value={phone}
-              onChange={setPhone}
+              value={form.phone}
+              onChange={handlePhoneChange}
               containerClass="w-full"
               inputClass="border border-gray-300 sm:p-[13px] p-[10px]  rounded-xl outline-none w-full"
               dropdownClass="!z-50"

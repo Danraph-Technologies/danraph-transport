@@ -7,6 +7,9 @@ import "react-phone-input-2/lib/style.css";
 import { FaArrowLeft } from "react-icons/fa";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/solid";
 import ImageWithSkeleton from "./skeleton";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 const validatePassword = (password) => {
   // At least 8 chars, 1 uppercase, 1 lowercase, 1 number, 1 special char
@@ -15,7 +18,7 @@ const validatePassword = (password) => {
   );
 };
 
-const signup = () => {
+const Signup = () => {
   const [countryCode, setCountryCode] = useState("us");
   const [isLoaded, setIsLoaded] = useState(false);
   const [form, setForm] = useState({
@@ -29,6 +32,10 @@ const signup = () => {
     consent: false,
   });
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+  const [successTrigger, setSuccessTrigger] = useState(0);
+  const [errorTrigger, setErrorTrigger] = useState(0);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     // Fetch the country code immediately when the user accesses the site (on page load)
@@ -75,9 +82,13 @@ const signup = () => {
     setForm((prev) => ({ ...prev, phone: value }));
   };
 
-  const handleSubmit = (e) => {
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
     setError("");
+    setLoading(true);
     // Basic client-side validation
     if (
       !form.firstName ||
@@ -87,27 +98,81 @@ const signup = () => {
       !form.phone ||
       !form.password
     ) {
-      setError("All fields are required.");
+      toast.error("All fields are required.");
+      setLoading(false);
       return;
     }
-    if (!validatePassword(form.password)) {
-      setError(
-        "Password must be at least 8 characters and include uppercase, lowercase, number, and special character."
-      );
+
+    if (form.password.length < 8) {
+      toast.error("Password must be at least 8 characters.");
+      setLoading(false);
       return;
     }
+
     if (!form.terms) {
-      setError("You must agree to the Terms of use and Privacy Policy.");
+      toast.error("You must agree to the Terms of use and Privacy Policy.");
+      setLoading(false);
       return;
     }
-    // Never log sensitive info
-    // Submit to backend (actual submission handled elsewhere)
-    // ...
+
+    if (window.innerWidth < 1024 && !form.consent) {
+      toast.error("You must consent to receive SMS messages and emails.");
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const response = await axios.post(
+        "https://danraphservices.com/danraph-backend/api/auth/register",
+        {
+          firstName: form.firstName,
+          lastName: form.lastName,
+          userType: form.userType,
+          email: form.email,
+          phone: form.phone,
+          password: form.password,
+          agreeToTerms: form.terms,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+          withCredentials: true, // Allow cookies for JWT
+        }
+      );
+      if (response.status === 200 || response.status === 201) {
+        localStorage.setItem("userType", form.userType);
+        toast.success("Signup successful! Redirecting...");
+        navigate("/login");
+      } else {
+        toast.error("Signup failed. Please check your details and try again.");
+      }
+    } catch (err) {
+      const apiMsg = err.response?.data?.message;
+      if (apiMsg === "Email already exists") {
+        toast.error("Email already exists. Please use a different email.");
+      } else if (apiMsg === "Phone number already registered") {
+        toast.error(
+          "Phone number already registered. Please use a different phone number."
+        );
+      } else if (apiMsg === "Password must be at least 8 characters") {
+        toast.error("Password must be at least 8 characters.");
+      } else if (apiMsg === "Invalid email or password") {
+        toast.error("Invalid email or password.");
+      } else if (apiMsg) {
+        toast.error(apiMsg);
+      } else {
+        toast.error("Signup failed. Please check your details and try again.");
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <div className="w-full min-h-screen bg-white overflow-x-hidden">
-      <div className="flex flex-col lg:flex-row w-full max-w-full min-h-screen log:items-center">
+    <div className="w-full  min-h-screen bg-white overflow-x-auto min-w-[300px] ">
+      <div className="flex  flex-col lg:flex-row w-full max-w-full min-h-screen log:items-center">
         {/* Left Image Section */}
         <div className="hidden lg:block flex-1 w-full max-w-full relative">
           {/* Skeleton overlay */}
@@ -178,9 +243,7 @@ const signup = () => {
                   className="flex flex-col gap-3 justify-center items-center w-full max-w-[510px] lg:max-w-[510px] px-2 sm:px-3"
                   autoComplete="off"
                 >
-                  {error && (
-                    <div className="text-red-600 text-sm mb-2">{error}</div>
-                  )}
+                  {/* No inline error message, only toast will show errors */}
                   <div className="flex gap-3 w-full">
                     <div className="flex flex-col flex-1">
                       <label htmlFor="firstName">First Name</label>
@@ -332,12 +395,11 @@ const signup = () => {
                     </p>
                   </div>
 
-                  <div className="flex w-full items-start pt-1 pb-1 lg:hidden gap-2">
+                  <div className="flex w-full items-start pt-1 pb-1 gap-2 lg:hidden">
                     <input
                       type="checkbox"
                       name="consent"
                       id="consent"
-                      required
                       checked={form.consent}
                       onChange={handleInputChange}
                       className="cursor-pointer outline-none translate-y-1 text-black accent-black"
@@ -349,14 +411,39 @@ const signup = () => {
                     </p>
                   </div>
 
-                  <Link to="/users/dashboard" className="w-full">
-                    <button
-                      type="submit"
-                      className="bg-blue-800 w-full px-10 py-2 my-2 rounded-3xl border-2 border-blue-800 hover:bg-transparent transition duration-500 text-white hover:text-blue-800"
-                    >
-                      Sign Up
-                    </button>
-                  </Link>
+                  <button
+                    type="submit"
+                    className="bg-blue-800 w-full px-10 py-2 my-2 rounded-3xl border-2 border-blue-800 hover:bg-transparent transition duration-500 text-white hover:text-blue-800 flex items-center justify-center"
+                    disabled={loading}
+                  >
+                    {loading ? (
+                      <span className="flex items-center gap-2">
+                        <svg
+                          className="animate-spin h-5 w-5 text-white"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                        >
+                          <circle
+                            className="opacity-25"
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke="currentColor"
+                            strokeWidth="4"
+                          ></circle>
+                          <path
+                            className="opacity-75"
+                            fill="currentColor"
+                            d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                          ></path>
+                        </svg>
+                        Signing Up...
+                      </span>
+                    ) : (
+                      "Sign Up"
+                    )}
+                  </button>
                   <Link to="/login">
                     <p>
                       Already have an account?{" "}
@@ -373,4 +460,4 @@ const signup = () => {
   );
 };
 
-export default signup;
+export default Signup;
