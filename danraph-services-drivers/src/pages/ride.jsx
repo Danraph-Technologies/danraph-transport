@@ -10,19 +10,7 @@ const ride = () => {
   const [animateOut, setAnimateOut] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
 
-  useEffect(() => {
-    // Check authentication on mount
-    fetch("https://danraphservices.com/danraph-backend/api/auth/getsfirstname", {
-      credentials: "include",
-    })
-      .then((res) => {
-        if (!res.ok) throw new Error();
-      })
-      .catch(() => {
-        window.location.href = "https://danraph-transport.vercel.app/login";
-      });
-  }, []);
-
+ 
   const handleAcceptClick = () => {
     setShowConfirm(true);
     setAnimateOut(false);

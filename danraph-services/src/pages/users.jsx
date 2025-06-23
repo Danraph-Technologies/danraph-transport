@@ -1,11 +1,24 @@
-import React, { useState } from "react";
-import { Outlet } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Outlet, useNavigate } from "react-router-dom";
 import Sidebar from "../Components/sidebar";
 import Navbar from "../Components/navbar";
 import Footer from "../Components/footer";
+import axios from "axios";
 
 const Users = () => {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
+  const navigate = useNavigate();
+
+  // Redirect to login if not authenticated
+  useEffect(() => {
+    axios
+      .get("http://localhost:3000/api/auth/userscurrentinformation", {
+        withCredentials: true,
+      })
+      .catch(() => {
+        navigate("/login");
+      });
+  }, [navigate]);
 
   const toggleMobileSidebar = () => {
     setIsMobileOpen(!isMobileOpen);

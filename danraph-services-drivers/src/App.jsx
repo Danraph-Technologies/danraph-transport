@@ -11,10 +11,14 @@ import Settings from "./pages/Settings";
 import Support from "./pages/Support";
 import Wallet from "./pages/wallet";
 import Trips from "./pages/trips";
+import Login from "./components/login";
+import SonnerToaster from "./sonner-toast-setup";
 
 const App = () => (
   <Router>
+    <SonnerToaster />
     <Routes>
+      {/* Add login route */}
       <Route path="/" element={<Navigate to="/drivers" replace />} />
       <Route path="/drivers" element={<Drivers />}>
         <Route index element={<Dashboard />} />
@@ -25,8 +29,10 @@ const App = () => (
         <Route path="support" element={<Support />} />
         <Route path="trips" element={<Trips />} />
       </Route>
+      <Route path="/login" element={<Login />} />
     </Routes>
   </Router>
 );
+
 
 export default App;

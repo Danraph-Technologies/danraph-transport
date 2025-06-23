@@ -4,10 +4,18 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
     <meta
       http-equiv="Content-Security-Policy"
-      content="default-src 'self'; img-src 'self' data: blob: https://danraphservices.com/danraph-backend https://danraph-services-drivers.vercel.app/drivers https://danraph-transport.vercel.app/users/dashboard  https://purecatamphetamine.github.io; script-src 'self'; style-src 'self' 'unsafe-inline'; connect-src 'self' https://ipwho.is https://danraphservices.com/danraph-backend https://ipapi.co/json/ https://danraphservices.com https://www.danraphservices.com;"
+      content="
+        default-src 'self';
+        script-src 'self';
+        style-src 'self' 'unsafe-inline';
+        img-src 'self' data: blob: http://localhost:3000 https://localhost:3000 https://danraph-services-drivers.vercel.app/drivers https://purecatamphetamine.github.io;
+        connect-src 'self' http://localhost:3000 https://localhost:3000 https://ipwho.is https://ipapi.co/json/ https://danraphservices.com https://danraphservices.com/danraph-backend https://www.danraphservices.com https://danraph-transport.vercel.app/users/dashboard;
+      "
     />
+
     <title>Danraph-Transport</title>
   </head>
   <body>

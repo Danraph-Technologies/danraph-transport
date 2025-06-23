@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { toast } from "sonner";
 import { Link, useNavigate } from "react-router-dom";
-import img1 from "../images/danraph-services8.jpg";
-import img2 from "../images/danraph-logo.png";
+import img1 from "../assets/danraph-services8.webp";
+import img2 from "../assets/danraph-logo1.png";
 import { FaArrowLeft } from "react-icons/fa";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/solid";
 import ImageWithSkeleton from "./skeleton";
@@ -41,29 +41,31 @@ const login = () => {
       const response = await fetch("http://localhost:3000/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        credentials: "include", // Allow cookies for JWT
+        credentials: "include",
         body: JSON.stringify({
           identifier: form.username,
           password: form.password,
         }),
       });
+
+      // Use .json().catch(() => ({})) like danraph-services
       const data = await response.json().catch(() => ({}));
+
       if (response.ok) {
-        // Only allow non-drivers to log in here
-        if (data.userType !== "driver") {
-          window.location.href = "http://localhost:5173/users/dashboard";
+        if (data.userType === "driver") {
+          window.location.href = "http://localhost:5174/drivers";
         } else {
           toast.error(
-            "Access denied. Only users can log in here. Redirecting to the correct login page..."
+            "Access denied. Only drivers can log in here. Redirecting to the correct login page..."
           );
           setTimeout(() => {
-            window.location.href = "http://localhost:5174/login";
-          }, 2000); // 2 seconds delay
+            window.location.href = "http://localhost:5173/login";
+          }, 2000);
         }
       } else {
-        // Show explicit error messages for login
+        // Show explicit error messages for login (same as danraph-services)
         if (data.message === "Email or username not found") {
-          toast.error("No account found with that email or username.");
+          toast.error("No driver account with that email or username found.");
         } else if (data.message === "Incorrect password") {
           toast.error("Incorrect password. Please try again.");
         } else {
@@ -272,6 +274,7 @@ const login = () => {
                 </p>
               </div>
 
+             
               <button
                 className="bg-blue-800 w-full px-10 py-2 my-3 rounded-3xl border-2 border-blue-800 hover:bg-transparent transition duration-500 text-white hover:text-blue-800 flex items-center justify-center group"
                 disabled={loading}
@@ -307,11 +310,14 @@ const login = () => {
               </button>
               <p className=" ">
                 Dont't have an account?{" "}
-                <Link to="/signup">
-                  <span className="font-medium underline cursor-pointer">
-                    Sign up
-                  </span>
-                </Link>
+                <span
+                  className="font-medium underline cursor-pointer"
+                  onClick={() =>
+                    (window.location.href = "http://localhost:5173/signup")
+                  }
+                >
+                  Sign up
+                </span>
               </p>
             </form>
           </div>

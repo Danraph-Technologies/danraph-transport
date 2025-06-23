@@ -28,30 +28,26 @@ const Navbar = ({ toggleMobileSidebar }) => {
 
   useEffect(() => {
     setImgLoading(true);
-    // Try to get from localStorage first
-    const cached = localStorage.getItem(PROFILE_IMAGE_KEY);
-    if (cached) {
-      setProfileImage(cached);
-      setImgLoading(false);
-    } else {
-      axios
-        .get("https://danraphservices.com/danraph-backend/api/auth/userscurrentinformation", {
-          withCredentials: true,
-        })
-        .then((res) => {
-          if (res.data.profileImage) {
-            const imgUrl =
-              res.data.profileImage.startsWith("http") ||
-              res.data.profileImage.startsWith("blob")
-                ? res.data.profileImage
-                : `https://danraphservices.com/danraph-backend${res.data.profileImage}`;
-            updateProfileImage(imgUrl);
-          } else {
-            updateProfileImage(img2);
-          }
-        })
-        .catch(() => updateProfileImage(img2));
-    }
+    // Always fetch user info from backend on mount/route change
+    axios
+      .get("http://localhost:3000/api/auth/userscurrentinformation", {
+        withCredentials: true,
+      })
+      .then((res) => {
+        if (res.data.profileImage) {
+          const imgUrl =
+            res.data.profileImage.startsWith("http") ||
+            res.data.profileImage.startsWith("blob")
+              ? res.data.profileImage
+              : `http://localhost:3000${res.data.profileImage}`;
+          updateProfileImage(imgUrl);
+        } else {
+          updateProfileImage(img2);
+        }
+      })
+      .catch(() => updateProfileImage(img2))
+      .finally(() => setImgLoading(false));
+
     // Listen for profile image update event
     const handleProfileImageUpdate = (e) => {
       if (e.detail && e.detail.url) {
@@ -133,5 +129,6 @@ const Navbar = ({ toggleMobileSidebar }) => {
     </div>
   );
 };
+
 
 export default Navbar;

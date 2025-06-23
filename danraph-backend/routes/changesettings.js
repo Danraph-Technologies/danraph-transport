@@ -28,11 +28,46 @@ router.post(
   async (req, res) => {
     try {
       const { firstName, lastName, email, username, phone } = req.body;
+      const userId = req.user.id;
+
+      // Check for duplicate email (exclude current user)
+      if (email) {
+        const existingEmail = await User.findOne({
+          email,
+          _id: { $ne: userId },
+        });
+        if (existingEmail) {
+          return res.status(409).json({ message: "Email already exists" });
+        }
+      }
+      // Check for duplicate username (exclude current user)
+      if (username) {
+        const existingUsername = await User.findOne({
+          username,
+          _id: { $ne: userId },
+        });
+        if (existingUsername) {
+          return res.status(409).json({ message: "Username already exists" });
+        }
+      }
+      // Check for duplicate phone (exclude current user)
+      if (phone) {
+        const existingPhone = await User.findOne({
+          phone,
+          _id: { $ne: userId },
+        });
+        if (existingPhone) {
+          return res
+            .status(409)
+            .json({ message: "Phone number already registered" });
+        }
+      }
+
       const updateFields = { firstName, lastName, email, username, phone };
       if (req.file) {
         updateFields.profileImage = `/uploads/${req.file.filename}`;
       }
-      const user = await User.findByIdAndUpdate(req.user.id, updateFields, {
+      const user = await User.findByIdAndUpdate(userId, updateFields, {
         new: true,
       });
       if (!user) return res.status(404).json({ message: "User not found" });

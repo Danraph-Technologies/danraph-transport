@@ -32,26 +32,32 @@ const Navbar = ({ onHamburgerClick }) => {
     if (cached) {
       setProfileImage(cached);
       setImgLoading(false);
-    } else {
-      // Fetch from backend
-      fetch("https://danraphservices.com/danraph-backend/api/auth/userscurrentinformation", {
-        credentials: "include",
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          if (data.profileImage) {
-            const imgUrl =
-              data.profileImage.startsWith("http") ||
-              data.profileImage.startsWith("blob")
-                ? data.profileImage
-                : `https://danraphservices.com/danraph-backend${data.profileImage}`;
-            updateProfileImage(imgUrl);
-          } else {
-            updateProfileImage(img2);
-          }
-        })
-        .catch(() => updateProfileImage(img2));
     }
+    // Always fetch from backend for freshness
+    fetch("http://localhost:3000/api/auth/userscurrentinformation", {
+      credentials: "include",
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (
+          data.profileImage &&
+          typeof data.profileImage === "string" &&
+          data.profileImage.startsWith("/uploads/")
+        ) {
+          const imgUrl = `http://localhost:3000${data.profileImage}`;
+          updateProfileImage(imgUrl);
+        } else if (
+          data.profileImage &&
+          typeof data.profileImage === "string" &&
+          data.profileImage.startsWith("http")
+        ) {
+          updateProfileImage(data.profileImage);
+        } else {
+          updateProfileImage(img2);
+        }
+      })
+      .catch(() => updateProfileImage(img2))
+      .finally(() => setImgLoading(false));
     // Listen for profile image update event
     const handleProfileImageUpdate = (e) => {
       if (e.detail && e.detail.url) {
@@ -103,9 +109,9 @@ const Navbar = ({ onHamburgerClick }) => {
                   <SkeletonCircle />
                 ) : (
                   <img
-                    src={profileImage}
+                    src={profileImage + "?t=" + Date.now()}
                     alt=""
-                    className="w-full h-full rounded-full"
+                    className="w-full h-full object-cover rounded-full"
                     onLoad={() => setImgLoading(false)}
                   />
                 )}
@@ -146,9 +152,9 @@ const Navbar = ({ onHamburgerClick }) => {
               <SkeletonCircle />
             ) : (
               <img
-                src={profileImage}
+                src={profileImage + "?t=" + Date.now()}
                 alt=""
-                className="w-[45px] h-[45px] rounded-full"
+                className="w-[45px] h-[45px] object-cover rounded-full"
                 onLoad={() => setImgLoading(false)}
               />
             )}

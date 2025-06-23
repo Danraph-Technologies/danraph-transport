@@ -15,15 +15,19 @@ router.post("/", async (req, res) => {
       .json({ message: "Identifier and password are required" });
   }
   try {
-    // Find user by email or username (assuming username is not implemented, so only email)
-    const user = await User.findOne({ email: identifier });
+    // Accept either username or email for login
+    const user = await User.findOne({
+      $or: [{ email: identifier }, { username: identifier }],
+    });
     if (!user) {
-      return res.status(401).json({ message: "Invalid email or password" });
+      // Explicit error for wrong email/username
+      return res.status(401).json({ message: "Email or username not found" });
     }
     // Compare password
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      return res.status(401).json({ message: "Invalid email or password" });
+      // Explicit error for wrong password
+      return res.status(401).json({ message: "Incorrect password" });
     }
     // Generate JWT
     const token = jwt.sign(
@@ -31,12 +35,12 @@ router.post("/", async (req, res) => {
       process.env.JWT_SECRET,
       { expiresIn: "7d" }
     );
-    // Set JWT as HttpOnly cookie
+    // Set JWT as HttpOnly cookie for localhost only
     res.cookie("token", token, {
       httpOnly: true,
       secure: false,
-      sameSite: "none",
-      domain: "localhost",
+      sameSite: "lax",
+      // domain: undefined, // do not set domain for localhost
       path: "/",
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
@@ -57,4 +61,5 @@ router.post("/", async (req, res) => {
   }
 });
 
+module.exports = router;
 module.exports = router;

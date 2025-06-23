@@ -11,14 +11,14 @@ const Drivers = () => {
 
   useEffect(() => {
     axios
-      .get("https://danraphservices.com/danraph-backend/api/auth/verifytoken", {
+      .get("http://localhost:3000/api/auth/verifytoken", {
         withCredentials: true,
       })
       .then(() => {
         setAuthChecked(true); // Authenticated, allow access
       })
       .catch(() => {
-        window.location.href = "https://danraph-transport.vercel.app/login"; // Not authenticated, redirect to login
+        window.location.href = "http://localhost:5174/login"; // Not authenticated, redirect to driver login
       });
   }, []);
 

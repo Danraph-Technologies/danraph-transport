@@ -24,6 +24,7 @@ const Signup = () => {
   const [form, setForm] = useState({
     firstName: "",
     lastName: "",
+    username: "", // <-- add this line
     userType: "",
     email: "",
     phone: "",
@@ -93,6 +94,7 @@ const Signup = () => {
     if (
       !form.firstName ||
       !form.lastName ||
+      !form.username || // <-- add this check
       !form.userType ||
       !form.email ||
       !form.phone ||
@@ -123,10 +125,11 @@ const Signup = () => {
 
     try {
       const response = await axios.post(
-        "https://danraphservices.com/danraph-backend/api/auth/register",
+        "http://localhost:3000/api/auth/register",
         {
           firstName: form.firstName,
           lastName: form.lastName,
+          username: form.username, // <-- add this line
           userType: form.userType,
           email: form.email,
           phone: form.phone,
@@ -144,12 +147,19 @@ const Signup = () => {
       if (response.status === 200 || response.status === 201) {
         localStorage.setItem("userType", form.userType);
         toast.success("Signup successful! Redirecting...");
-        navigate("/login");
+        if (form.userType === "driver") {
+          window.location.href = "http://localhost:5174/login";
+        } else {
+          navigate("/login");
+        }
       } else {
         toast.error("Signup failed. Please check your details and try again.");
+        console.error("Signup error:", response);
       }
     } catch (err) {
       const apiMsg = err.response?.data?.message;
+      // Log all error details for debugging
+      console.error("Signup error:", err, err?.response);
       if (apiMsg === "Email already exists") {
         toast.error("Email already exists. Please use a different email.");
       } else if (apiMsg === "Phone number already registered") {
@@ -275,6 +285,20 @@ const Signup = () => {
                         className="outline-none border border-gray-400 py-2 sm:py:3 px-3 rounded-lg w-full"
                       />
                     </div>
+                  </div>
+
+                  <div className="flex flex-col w-full">
+                    <label htmlFor="email">Username</label>
+                    <input
+                      type="text"
+                      name="username"
+                      id="username"
+                      required
+                      autoComplete="off"
+                      value={form.username}
+                      onChange={handleInputChange}
+                      className="outline-none border border-gray-400 py-3 px-3 rounded-lg w-full"
+                    />
                   </div>
 
                   <div className="flex flex-col w-full">
@@ -413,13 +437,13 @@ const Signup = () => {
 
                   <button
                     type="submit"
-                    className="bg-blue-800 w-full px-10 py-2 my-2 rounded-3xl border-2 border-blue-800 hover:bg-transparent transition duration-500 text-white hover:text-blue-800 flex items-center justify-center"
+                    className="bg-blue-800 w-full px-10 py-2 my-2 rounded-3xl border-2 border-blue-800 hover:bg-transparent transition duration-500 text-white hover:text-blue-800 flex items-center justify-center group"
                     disabled={loading}
                   >
                     {loading ? (
                       <span className="flex items-center gap-2">
                         <svg
-                          className="animate-spin h-5 w-5 text-white"
+                          className="animate-spin h-5 w-5 text-white group-hover:text-blue-800"
                           xmlns="http://www.w3.org/2000/svg"
                           fill="none"
                           viewBox="0 0 24 24"

@@ -67,25 +67,52 @@ const DashboardSkeleton = () => (
 );
 
 const dashboard = () => {
-  const [firstName, setFirstName] = useState("");
+  const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [username, setUsername] = useState("");
   const navigate = useNavigate();
+
   useEffect(() => {
     axios
-      .get("https://danraphservices.com/danraph-backend/api/auth/getsfirstname", {
+      .get("http://localhost:3000/api/auth/userscurrentinformation", {
         withCredentials: true,
       })
       .then((res) => {
-        setFirstName(res.data.firstName);
+        setUser(res.data);
         setLoading(false);
       })
       .catch(() => {
         setLoading(false);
         navigate("/login"); // Redirect to login if not authenticated
       });
+
+    // Fetch username for greeting
+    axios
+      .get("http://localhost:3000/api/auth/getusername", {
+        withCredentials: true,
+      })
+      .then((res) => {
+        setUsername(res.data.username);
+      })
+      .catch(() => {
+        setUsername("");
+      });
   }, [navigate]);
+
+  // Add greeting based on time of day
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour < 12) return "Good morning";
+    if (hour < 18) return "Good afternoon";
+    return "Good evening";
+  };
+
   if (loading) {
     return <DashboardSkeleton />;
+  }
+
+  if (!user) {
+    return null;
   }
 
   return (
@@ -98,9 +125,14 @@ const dashboard = () => {
           <header>
             <h1
               id="dashboard-greeting"
-              className="font-semibold sm:text-[30px] text-[22px]"
+              className="font-semibold sm:text-[27px] py-1 text-[22px]"
+              style={{
+                fontFamily: "'Poppins', 'Segoe UI', 'Arial', sans-serif",
+                letterSpacing: "1px",
+                lineHeight: 1.2,
+              }}
             >
-              {firstName ? `Hi ${firstName}` : "Hi"}
+              {username ? `${getGreeting()}, ${username}` : getGreeting()}
             </h1>
             <p className="font-normal sm:text-[20px] text-[16px] text-[#8F9DAD]">
               Ready to ride?

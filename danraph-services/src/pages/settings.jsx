@@ -5,12 +5,56 @@ import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import "../styles/settings.css";
 import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 
 const SkeletonCircle = () => (
   <div
     className="sm:max-w-[95px] w-full sm:max-h-[95px] max-w-[80px] max-h-[80px] h-full rounded-full bg-gray-200 animate-pulse"
     style={{ aspectRatio: 1 }}
   />
+);
+
+// Custom skeleton for settings page
+const SettingsSkeleton = () => (
+  <div className="sm:px-8 pb-12 flex justify-center sm:justify-start items-center">
+    <div className="max-w-[767px] w-full px-4 py-3 pt-5 border rounded-lg border-gray-300 animate-pulse">
+      <div className="flex justify-between items-center gap-3">
+        <div className="h-8 w-40 bg-gray-200 rounded mb-2" />
+        <div className="h-8 w-24 bg-gray-200 rounded" />
+      </div>
+      <div className="flex items-center gap-7 py-5">
+        <div className="sm:max-w-[95px] w-full sm:max-h-[95px] max-w-[80px] max-h-[80px] h-full rounded-full bg-gray-200" />
+        <div className="h-10 w-32 bg-gray-200 rounded" />
+      </div>
+      <form className="flex flex-col gap-5">
+        <div className="flex f:flex-col gap-3">
+          <div className="flex flex-col flex-1">
+            <div className="h-5 w-32 bg-gray-200 rounded mb-2" />
+            <div className="h-10 w-full bg-gray-200 rounded" />
+          </div>
+          <div className="flex flex-col flex-1">
+            <div className="h-5 w-32 bg-gray-200 rounded mb-2" />
+            <div className="h-10 w-full bg-gray-200 rounded" />
+          </div>
+        </div>
+        <div className="flex flex-col flex-1">
+          <div className="h-5 w-32 bg-gray-200 rounded mb-2" />
+          <div className="h-10 w-full bg-gray-200 rounded" />
+        </div>
+        <div className="flex flex-col flex-1">
+          <div className="h-5 w-32 bg-gray-200 rounded mb-2" />
+          <div className="h-10 w-full bg-gray-200 rounded" />
+        </div>
+        <div className="flex flex-col flex-1">
+          <div className="h-5 w-32 bg-gray-200 rounded mb-2" />
+          <div className="h-10 w-full bg-gray-200 rounded" />
+        </div>
+      </form>
+      <div className="flex justify-center pt-6 pb-4 w-full">
+        <div className="h-10 w-40 bg-gray-200 rounded" />
+      </div>
+    </div>
+  </div>
 );
 
 const PROFILE_IMAGE_KEY = "danraph_profile_image";
@@ -28,7 +72,10 @@ const Settings = () => {
   const [loading, setLoading] = useState(false);
   const [imgLoading, setImgLoading] = useState(true);
   const [previewUrl, setPreviewUrl] = useState(null);
-  const backendUrl = "https://danraphservices.com/danraph-backend";
+  const [initialForm, setInitialForm] = useState(null);
+  const [fieldErrors, setFieldErrors] = useState({});
+  const backendUrl = "http://localhost:3000";
+  const navigate = useNavigate();
 
   // Helper to update localStorage and dispatch event
   const updateProfileImage = (url) => {
@@ -43,11 +90,12 @@ const Settings = () => {
     setImgLoading(true);
     const cached = localStorage.getItem(PROFILE_IMAGE_KEY);
     axios
-      .get("https://danraphservices.com/danraph-backend/api/auth/userscurrentinformation", {
+      .get("http://localhost:3000/api/auth/userscurrentinformation", {
         withCredentials: true,
       })
       .then((res) => {
         setForm((f) => ({ ...f, ...res.data }));
+        setInitialForm({ ...res.data }); // Save initial values for change detection
         if (res.data.profileImage) {
           const imgUrl = res.data.profileImage.startsWith("http")
             ? res.data.profileImage
@@ -110,6 +158,26 @@ const Settings = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setFieldErrors({}); // Reset field errors
+
+    // Check for changes before submitting
+    const fieldsToCheck = [
+      "firstName",
+      "lastName",
+      "email",
+      "username",
+      "phone",
+    ];
+    const hasChanges =
+      (initialForm &&
+        fieldsToCheck.some((key) => form[key] !== initialForm[key])) ||
+      !!previewUrl; // also check if a new image is selected
+
+    if (!hasChanges) {
+      toast.error("No changes made.");
+      return;
+    }
+
     setLoading(true);
     const formData = new FormData();
     Object.entries(form).forEach(([key, value]) => {
@@ -117,7 +185,7 @@ const Settings = () => {
     });
     try {
       const res = await axios.post(
-        "https://danraphservices.com/danraph-backend/api/auth/changesettings",
+        "http://localhost:3000/api/auth/changesettings",
         formData,
         {
           withCredentials: true,
@@ -136,15 +204,57 @@ const Settings = () => {
         window.location.reload();
       }, 900); // Show toast for 900ms before reload
     } catch (err) {
-      toast.error(err.response?.data?.message || "Failed to update settings");
+      // Enhanced error handling for field conflicts
+      const msg = err.response?.data?.message || "Failed to update settings";
+      if (msg.includes("Username already exists")) {
+        setFieldErrors((prev) => ({
+          ...prev,
+          username: "Username already exists",
+        }));
+      } else if (msg.includes("Email already exists")) {
+        setFieldErrors((prev) => ({ ...prev, email: "Email already exists" }));
+      } else if (msg.includes("Phone number already registered")) {
+        setFieldErrors((prev) => ({
+          ...prev,
+          phone: "Phone number already registered",
+        }));
+      } else {
+        toast.error(msg);
+      }
     } finally {
       setLoading(false);
     }
   };
 
+  const handleLogout = async () => {
+    try {
+      await axios.post(
+        "http://localhost:3000/api/auth/logout",
+        {},
+        { withCredentials: true }
+      );
+      localStorage.clear();
+      navigate("/login");
+    } catch (err) {
+      // Optionally show error
+    }
+  };
+
+  // Show skeleton while loading
+  if (
+    imgLoading &&
+    !form.firstName &&
+    !form.lastName &&
+    !form.email &&
+    !form.username &&
+    !form.phone
+  ) {
+    return <SettingsSkeleton />;
+  }
+
   return (
     <div className="sm:px-8  pb-12 items-center flex justify-center sm:justify-start">
-      <div className="max-w-[767px] w-full px-4 py-3 pt-5 pb-12 border rounded-lg border-gray-300">
+      <div className="max-w-[767px] w-full px-4 py-3 pt-5  border rounded-lg border-gray-300">
         <div className="flex justify-between items-center gap-3">
           <p className="sm:text-[26px] text-[18px] font-semibold ">Settings</p>
           <button
@@ -170,7 +280,7 @@ const Settings = () => {
                   : img1
               }
               alt=""
-              className="sm:max-w-[95px]  w-full sm:max-h-[95px] object-cover max-w-[80px] max-h-[80px] h-full rounded-full"
+              className="sm:max-w-[95px]   sm:max-h-[95px] sm:w-[95px] sm:h-[95px] object-cover max-w-[80px] w-[80px] h-[80px] max-h-[80px] rounded-full"
               onLoad={() => setImgLoading(false)}
             />
           )}
@@ -247,6 +357,9 @@ const Settings = () => {
               onChange={handleInputChange}
               className="border border-gray-300 sm:p-[13px] p-[10px]  rounded-xl outline-none "
             />
+            {fieldErrors.email && (
+              <span className="text-red-500 text-sm">{fieldErrors.email}</span>
+            )}
           </div>
 
           <div className="flex flex-col flex-1">
@@ -262,6 +375,11 @@ const Settings = () => {
               onChange={handleInputChange}
               className="border border-gray-300 sm:p-[13px] p-[10px]  rounded-xl outline-none "
             />
+            {fieldErrors.username && (
+              <span className="text-red-500 text-sm">
+                {fieldErrors.username}
+              </span>
+            )}
           </div>
 
           <div className="flex flex-col flex-1">
@@ -283,8 +401,19 @@ const Settings = () => {
                 autoFocus: false,
               }}
             />
+            {fieldErrors.phone && (
+              <span className="text-red-500 text-sm">{fieldErrors.phone}</span>
+            )}
           </div>
         </form>
+        <div className="flex justify-center pt-6 pb-4 w-full ">
+          <button
+            className="text-white max-w-[200px] w-full bg-[#F80B0B] px-7 sm:py-[6px] py-[4px] rounded-lg sm:text-[18px] text-[16px] font-semibold border-2 border-[#F80B0B] hover:bg-inherit hover:text-[#F80B0B] transition duration-500"
+            onClick={handleLogout}
+          >
+            Log out
+          </button>
+        </div>
       </div>
     </div>
   );
