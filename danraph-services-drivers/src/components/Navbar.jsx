@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import img from "../assets/danraph-logo1.png";
 import img1 from "../assets/danraph-services1.png";
 import img2 from "../assets/danraph-services2.jpg";
@@ -13,68 +13,11 @@ const SkeletonCircle = () => (
   />
 );
 
-const PROFILE_IMAGE_KEY = "danraph_driver_profile_image";
-
 const Navbar = ({ onHamburgerClick }) => {
-  const [profileImage, setProfileImage] = useState(img2);
-  const [imgLoading, setImgLoading] = useState(true);
+  const [profileImage] = useState(img2);
+  const [imgLoading, setImgLoading] = useState(false);
 
-  // Helper to update localStorage and state
-  const updateProfileImage = (url) => {
-    localStorage.setItem(PROFILE_IMAGE_KEY, url);
-    setProfileImage(url);
-  };
-
-  useEffect(() => {
-    setImgLoading(true);
-    // Try to get from localStorage first
-    const cached = localStorage.getItem(PROFILE_IMAGE_KEY);
-    if (cached) {
-      setProfileImage(cached);
-      setImgLoading(false);
-    }
-    // Always fetch from backend for freshness
-    fetch("http://localhost:3000/api/auth/userscurrentinformation", {
-      credentials: "include",
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (
-          data.profileImage &&
-          typeof data.profileImage === "string" &&
-          data.profileImage.startsWith("/uploads/")
-        ) {
-          const imgUrl = `http://localhost:3000${data.profileImage}`;
-          updateProfileImage(imgUrl);
-        } else if (
-          data.profileImage &&
-          typeof data.profileImage === "string" &&
-          data.profileImage.startsWith("http")
-        ) {
-          updateProfileImage(data.profileImage);
-        } else {
-          updateProfileImage(img2);
-        }
-      })
-      .catch(() => updateProfileImage(img2))
-      .finally(() => setImgLoading(false));
-    // Listen for profile image update event
-    const handleProfileImageUpdate = (e) => {
-      if (e.detail && e.detail.url) {
-        updateProfileImage(e.detail.url);
-      }
-    };
-    window.addEventListener(
-      "danraph-driver-profile-image-updated",
-      handleProfileImageUpdate
-    );
-    return () => {
-      window.removeEventListener(
-        "danraph-driver-profile-image-updated",
-        handleProfileImageUpdate
-      );
-    };
-  }, []);
+  // No backend integration, always use default image
 
   return (
     <div className="fixed top-0 left-0 w-full z-50 ">
@@ -109,7 +52,7 @@ const Navbar = ({ onHamburgerClick }) => {
                   <SkeletonCircle />
                 ) : (
                   <img
-                    src={profileImage + "?t=" + Date.now()}
+                    src={profileImage}
                     alt=""
                     className="w-full h-full object-cover rounded-full"
                     onLoad={() => setImgLoading(false)}
@@ -152,7 +95,7 @@ const Navbar = ({ onHamburgerClick }) => {
               <SkeletonCircle />
             ) : (
               <img
-                src={profileImage + "?t=" + Date.now()}
+                src={profileImage}
                 alt=""
                 className="w-[45px] h-[45px] object-cover rounded-full"
                 onLoad={() => setImgLoading(false)}

@@ -1,6 +1,4 @@
-import React, { useRef, useState, useEffect } from "react";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import React, { useRef, useState } from "react";
 import img1 from "../assets/danraph-arrow.png";
 import Confirm from "./Confirm";
 import Success from "./success";
@@ -26,32 +24,6 @@ const Dashboard = () => {
   const [showConfirm, setShowConfirm] = useState(false);
   const [animateOut, setAnimateOut] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
-  const [firstName, setFirstName] = useState("");
-  const [username, setUsername] = useState("");
-  const [loading, setLoading] = useState(true);
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    // Fetch user info (not for auth, but for display):
-    axios
-      .get("http://localhost:3000/api/auth/userscurrentinformation", {
-        withCredentials: true,
-      })
-      .then((res) => {
-        setFirstName(res.data.firstName);
-        setUsername(res.data.username);
-        setLoading(false);
-      })
-      .catch(() => {
-        setLoading(false);
-        // Optionally show an error, but do NOT redirect to login here
-      });
-  }, []);
-
-  // Simulate loading or fetch data
-  useEffect(() => {
-    setTimeout(() => setLoading(false), 1200);
-  }, []);
 
   // Helper to get greeting based on time
   const getGreeting = () => {
@@ -60,10 +32,6 @@ const Dashboard = () => {
     if (hour < 16) return "Good afternoon";
     return "Good evening";
   };
-
-  if (loading) {
-    return <DashboardSkeleton />;
-  }
 
   const handleAcceptClick = () => {
     setShowConfirm(true);
@@ -103,9 +71,9 @@ const Dashboard = () => {
       <div className="sm:px-2  pb-8 flex flex-wrap items-start gap-7">
         <div className="max-w-[576px] border  border-gray-300 px-4 py-1 rounded-xl ">
           <p className="sm:text-[26px] text-[20px] font-semibold">
-            {getGreeting()}
-            {username ? `, ${username}` : ""}
+            {getGreeting() + " Daniel"}
           </p>
+
           <p className="text-[#8F9DAD] sm:text-[18px] text-[15px]">
             You are online
           </p>

@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
+import React, { useState } from "react";
 import img1 from "../images/danraph-logo.png";
 import img2 from "../images/Danraph-services10.jpg";
 import { FaSearch } from "react-icons/fa";
@@ -13,58 +12,12 @@ const SkeletonCircle = () => (
   />
 );
 
-const PROFILE_IMAGE_KEY = "danraph_profile_image";
-
 const Navbar = ({ toggleMobileSidebar }) => {
-  const [profileImage, setProfileImage] = useState(img2);
-  const [imgLoading, setImgLoading] = useState(true);
+  const [profileImage] = useState(img2);
+  const [imgLoading, setImgLoading] = useState(false);
   const location = useLocation();
 
-  // Helper to update localStorage and state
-  const updateProfileImage = (url) => {
-    localStorage.setItem(PROFILE_IMAGE_KEY, url);
-    setProfileImage(url);
-  };
-
-  useEffect(() => {
-    setImgLoading(true);
-    // Always fetch user info from backend on mount/route change
-    axios
-      .get("http://localhost:3000/api/auth/userscurrentinformation", {
-        withCredentials: true,
-      })
-      .then((res) => {
-        if (res.data.profileImage) {
-          const imgUrl =
-            res.data.profileImage.startsWith("http") ||
-            res.data.profileImage.startsWith("blob")
-              ? res.data.profileImage
-              : `http://localhost:3000${res.data.profileImage}`;
-          updateProfileImage(imgUrl);
-        } else {
-          updateProfileImage(img2);
-        }
-      })
-      .catch(() => updateProfileImage(img2))
-      .finally(() => setImgLoading(false));
-
-    // Listen for profile image update event
-    const handleProfileImageUpdate = (e) => {
-      if (e.detail && e.detail.url) {
-        updateProfileImage(e.detail.url);
-      }
-    };
-    window.addEventListener(
-      "danraph-profile-image-updated",
-      handleProfileImageUpdate
-    );
-    return () => {
-      window.removeEventListener(
-        "danraph-profile-image-updated",
-        handleProfileImageUpdate
-      );
-    };
-  }, [location.pathname]);
+  // No backend integration, always use default image
 
   return (
     <div className="border-b-[1px]  bg-[#FFFFFF] border-gray-300 pb-3 fixed top-0 left-0 w-full z-50">
@@ -129,6 +82,5 @@ const Navbar = ({ toggleMobileSidebar }) => {
     </div>
   );
 };
-
 
 export default Navbar;

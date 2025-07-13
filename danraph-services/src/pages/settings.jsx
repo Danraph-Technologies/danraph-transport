@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import img1 from "../images/Danraph-services10.webp";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
@@ -57,8 +56,6 @@ const SettingsSkeleton = () => (
   </div>
 );
 
-const PROFILE_IMAGE_KEY = "danraph_profile_image";
-
 const Settings = () => {
   const [form, setForm] = useState({
     firstName: "",
@@ -70,50 +67,12 @@ const Settings = () => {
   });
   const [country, setCountry] = useState("ng");
   const [loading, setLoading] = useState(false);
-  const [imgLoading, setImgLoading] = useState(true);
+  const [imgLoading, setImgLoading] = useState(false);
   const [previewUrl, setPreviewUrl] = useState(null);
-  const [initialForm, setInitialForm] = useState(null);
   const [fieldErrors, setFieldErrors] = useState({});
-  const backendUrl = "http://localhost:3000";
   const navigate = useNavigate();
 
-  // Helper to update localStorage and dispatch event
-  const updateProfileImage = (url) => {
-    localStorage.setItem(PROFILE_IMAGE_KEY, url);
-    window.dispatchEvent(
-      new CustomEvent("danraph-profile-image-updated", { detail: { url } })
-    );
-  };
-
-  // Fetch user data on mount, use cache if available
-  useEffect(() => {
-    setImgLoading(true);
-    const cached = localStorage.getItem(PROFILE_IMAGE_KEY);
-    axios
-      .get("http://localhost:3000/api/auth/userscurrentinformation", {
-        withCredentials: true,
-      })
-      .then((res) => {
-        setForm((f) => ({ ...f, ...res.data }));
-        setInitialForm({ ...res.data }); // Save initial values for change detection
-        if (res.data.profileImage) {
-          const imgUrl = res.data.profileImage.startsWith("http")
-            ? res.data.profileImage
-            : backendUrl + res.data.profileImage;
-          if (!cached || cached !== imgUrl) {
-            updateProfileImage(imgUrl);
-          }
-        } else {
-          if (!cached || cached !== img1) {
-            updateProfileImage(img1);
-          }
-        }
-      })
-      .catch(() => {})
-      .finally(() => setImgLoading(false));
-  }, []);
-
-  // Auto-detect country by IP
+  // Remove backend integration, just set country by IP
   useEffect(() => {
     fetch("https://ipapi.co/json/")
       .then((res) => res.json())
@@ -127,7 +86,6 @@ const Settings = () => {
       });
   }, []);
 
-  // Clean up preview URL when component unmounts or file changes
   useEffect(() => {
     return () => {
       if (previewUrl) {
@@ -139,14 +97,13 @@ const Settings = () => {
   const handleInputChange = (e) => {
     const { name, value, files } = e.target;
     if (files) {
-      // Clean up previous preview URL
       if (previewUrl) {
         URL.revokeObjectURL(previewUrl);
       }
       const file = files[0];
       setForm((prev) => ({ ...prev, profileImage: file }));
       setPreviewUrl(file ? URL.createObjectURL(file) : null);
-      setImgLoading(false); // Show preview immediately, not skeleton
+      setImgLoading(false);
     } else {
       setForm((prev) => ({ ...prev, [name]: value }));
     }
@@ -156,88 +113,15 @@ const Settings = () => {
     setForm((prev) => ({ ...prev, phone: value }));
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    setFieldErrors({}); // Reset field errors
-
-    // Check for changes before submitting
-    const fieldsToCheck = [
-      "firstName",
-      "lastName",
-      "email",
-      "username",
-      "phone",
-    ];
-    const hasChanges =
-      (initialForm &&
-        fieldsToCheck.some((key) => form[key] !== initialForm[key])) ||
-      !!previewUrl; // also check if a new image is selected
-
-    if (!hasChanges) {
-      toast.error("No changes made.");
-      return;
-    }
-
-    setLoading(true);
-    const formData = new FormData();
-    Object.entries(form).forEach(([key, value]) => {
-      if (value) formData.append(key, value);
-    });
-    try {
-      const res = await axios.post(
-        "http://localhost:3000/api/auth/changesettings",
-        formData,
-        {
-          withCredentials: true,
-          headers: { "Content-Type": "multipart/form-data" },
-        }
-      );
-      // Update localStorage and notify navbar
-      if (res.data.user && res.data.user.profileImage) {
-        const imgUrl = res.data.user.profileImage.startsWith("http")
-          ? res.data.user.profileImage
-          : backendUrl + res.data.user.profileImage;
-        updateProfileImage(imgUrl);
-      }
-      toast.success("Settings updated successfully!");
-      setTimeout(() => {
-        window.location.reload();
-      }, 900); // Show toast for 900ms before reload
-    } catch (err) {
-      // Enhanced error handling for field conflicts
-      const msg = err.response?.data?.message || "Failed to update settings";
-      if (msg.includes("Username already exists")) {
-        setFieldErrors((prev) => ({
-          ...prev,
-          username: "Username already exists",
-        }));
-      } else if (msg.includes("Email already exists")) {
-        setFieldErrors((prev) => ({ ...prev, email: "Email already exists" }));
-      } else if (msg.includes("Phone number already registered")) {
-        setFieldErrors((prev) => ({
-          ...prev,
-          phone: "Phone number already registered",
-        }));
-      } else {
-        toast.error(msg);
-      }
-    } finally {
-      setLoading(false);
-    }
+    setFieldErrors({});
+    toast.error("No integration yet.");
   };
 
-  const handleLogout = async () => {
-    try {
-      await axios.post(
-        "http://localhost:3000/api/auth/logout",
-        {},
-        { withCredentials: true }
-      );
-      localStorage.clear();
-      navigate("/login");
-    } catch (err) {
-      // Optionally show error
-    }
+  const handleLogout = () => {
+    localStorage.clear();
+    navigate("/login");
   };
 
   // Show skeleton while loading
@@ -267,23 +151,11 @@ const Settings = () => {
         </div>
 
         <div className="flex items-center gap-7 py-5 ">
-          {imgLoading ? <SkeletonCircle /> : null}
-          {!imgLoading && (
-            <img
-              src={
-                previewUrl
-                  ? previewUrl
-                  : form.profileImage && typeof form.profileImage === "string"
-                  ? form.profileImage.startsWith("http")
-                    ? form.profileImage
-                    : backendUrl + form.profileImage
-                  : img1
-              }
-              alt=""
-              className="sm:max-w-[95px]   sm:max-h-[95px] sm:w-[95px] sm:h-[95px] object-cover max-w-[80px] w-[80px] h-[80px] max-h-[80px] rounded-full"
-              onLoad={() => setImgLoading(false)}
-            />
-          )}
+          <img
+            src={previewUrl ? previewUrl : img1}
+            alt=""
+            className="sm:max-w-[95px] sm:max-h-[95px] sm:w-[95px] sm:h-[95px] object-cover max-w-[80px] w-[80px] h-[80px] max-h-[80px] rounded-full"
+          />
           <label
             htmlFor="file-upload"
             className="flex gap-2 items-center bg-[#F0F0F0] px-5 sm:py-2 py-[6px] hover:bg-inherit border-2 border-[#F0F0F0] hover:border-[#000000b6] transition duration-500 cursor-pointer"

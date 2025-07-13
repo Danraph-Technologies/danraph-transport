@@ -1,50 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Navbar from "./Navbar";
 import Sidebar from "./sidebar";
 import { Outlet } from "react-router-dom";
 import Footer from "./footer";
-import axios from "axios";
 
 const Drivers = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [authChecked, setAuthChecked] = useState(false);
-
-  useEffect(() => {
-    axios
-      .get("http://localhost:3000/api/auth/verifytoken", {
-        withCredentials: true,
-      })
-      .then(() => {
-        setAuthChecked(true); // Authenticated, allow access
-      })
-      .catch(() => {
-        window.location.href = "http://localhost:5174/login"; // Not authenticated, redirect to driver login
-      });
-  }, []);
-
-  if (!authChecked) {
-    // Show a loading spinner while checking authentication
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <svg className="animate-spin h-8 w-8 text-gray-500" viewBox="0 0 24 24">
-          <circle
-            className="opacity-25"
-            cx="12"
-            cy="12"
-            r="10"
-            stroke="currentColor"
-            strokeWidth="4"
-            fill="none"
-          ></circle>
-          <path
-            className="opacity-75"
-            fill="currentColor"
-            d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
-          ></path>
-        </svg>
-      </div>
-    );
-  }
 
   return (
     <div>

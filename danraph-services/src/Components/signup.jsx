@@ -7,16 +7,6 @@ import "react-phone-input-2/lib/style.css";
 import { FaArrowLeft } from "react-icons/fa";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/solid";
 import ImageWithSkeleton from "./skeleton";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
-import { toast } from "sonner";
-
-const validatePassword = (password) => {
-  // At least 8 chars, 1 uppercase, 1 lowercase, 1 number, 1 special char
-  return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{8,}$/.test(
-    password
-  );
-};
 
 const Signup = () => {
   const [countryCode, setCountryCode] = useState("us");
@@ -83,101 +73,10 @@ const Signup = () => {
     setForm((prev) => ({ ...prev, phone: value }));
   };
 
-  const navigate = useNavigate();
-
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-
-    setError("");
-    setLoading(true);
-    // Basic client-side validation
-    if (
-      !form.firstName ||
-      !form.lastName ||
-      !form.username || // <-- add this check
-      !form.userType ||
-      !form.email ||
-      !form.phone ||
-      !form.password
-    ) {
-      toast.error("All fields are required.");
-      setLoading(false);
-      return;
-    }
-
-    if (form.password.length < 8) {
-      toast.error("Password must be at least 8 characters.");
-      setLoading(false);
-      return;
-    }
-
-    if (!form.terms) {
-      toast.error("You must agree to the Terms of use and Privacy Policy.");
-      setLoading(false);
-      return;
-    }
-
-    if (window.innerWidth < 1024 && !form.consent) {
-      toast.error("You must consent to receive SMS messages and emails.");
-      setLoading(false);
-      return;
-    }
-
-    try {
-      const response = await axios.post(
-        "http://localhost:3000/api/auth/register",
-        {
-          firstName: form.firstName,
-          lastName: form.lastName,
-          username: form.username, // <-- add this line
-          userType: form.userType,
-          email: form.email,
-          phone: form.phone,
-          password: form.password,
-          agreeToTerms: form.terms,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Accept: "application/json",
-          },
-          withCredentials: true, // Allow cookies for JWT
-        }
-      );
-      if (response.status === 200 || response.status === 201) {
-        localStorage.setItem("userType", form.userType);
-        toast.success("Signup successful! Redirecting...");
-        if (form.userType === "driver") {
-          window.location.href = "http://localhost:5174/login";
-        } else {
-          navigate("/login");
-        }
-      } else {
-        toast.error("Signup failed. Please check your details and try again.");
-        console.error("Signup error:", response);
-      }
-    } catch (err) {
-      const apiMsg = err.response?.data?.message;
-      // Log all error details for debugging
-      console.error("Signup error:", err, err?.response);
-      if (apiMsg === "Email already exists") {
-        toast.error("Email already exists. Please use a different email.");
-      } else if (apiMsg === "Phone number already registered") {
-        toast.error(
-          "Phone number already registered. Please use a different phone number."
-        );
-      } else if (apiMsg === "Password must be at least 8 characters") {
-        toast.error("Password must be at least 8 characters.");
-      } else if (apiMsg === "Invalid email or password") {
-        toast.error("Invalid email or password.");
-      } else if (apiMsg) {
-        toast.error(apiMsg);
-      } else {
-        toast.error("Signup failed. Please check your details and try again.");
-      }
-    } finally {
-      setLoading(false);
-    }
+    // No backend integration, no redirect logic
+    // You can add mock logic or leave empty
   };
 
   return (
@@ -440,33 +339,7 @@ const Signup = () => {
                     className="bg-blue-800 w-full px-10 py-2 my-2 rounded-3xl border-2 border-blue-800 hover:bg-transparent transition duration-500 text-white hover:text-blue-800 flex items-center justify-center group"
                     disabled={loading}
                   >
-                    {loading ? (
-                      <span className="flex items-center gap-2">
-                        <svg
-                          className="animate-spin h-5 w-5 text-white group-hover:text-blue-800"
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                        >
-                          <circle
-                            className="opacity-25"
-                            cx="12"
-                            cy="12"
-                            r="10"
-                            stroke="currentColor"
-                            strokeWidth="4"
-                          ></circle>
-                          <path
-                            className="opacity-75"
-                            fill="currentColor"
-                            d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
-                          ></path>
-                        </svg>
-                        Signing Up...
-                      </span>
-                    ) : (
-                      "Sign Up"
-                    )}
+                    Sign Up
                   </button>
                   <Link to="/login">
                     <p>
@@ -485,3 +358,4 @@ const Signup = () => {
 };
 
 export default Signup;
+                        

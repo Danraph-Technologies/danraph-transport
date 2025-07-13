@@ -1,9 +1,7 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
-import img1 from "../images/danraph-services-11.webp";
+import React from "react";
 import { FaArrowRight } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import img1 from "../images/danraph-services-11.webp";
 import ImageWithSkeleton from "../Components/skeleton";
 
 // Dashboard skeleton component
@@ -67,38 +65,6 @@ const DashboardSkeleton = () => (
 );
 
 const dashboard = () => {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [username, setUsername] = useState("");
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    axios
-      .get("http://localhost:3000/api/auth/userscurrentinformation", {
-        withCredentials: true,
-      })
-      .then((res) => {
-        setUser(res.data);
-        setLoading(false);
-      })
-      .catch(() => {
-        setLoading(false);
-        navigate("/login"); // Redirect to login if not authenticated
-      });
-
-    // Fetch username for greeting
-    axios
-      .get("http://localhost:3000/api/auth/getusername", {
-        withCredentials: true,
-      })
-      .then((res) => {
-        setUsername(res.data.username);
-      })
-      .catch(() => {
-        setUsername("");
-      });
-  }, [navigate]);
-
   // Add greeting based on time of day
   const getGreeting = () => {
     const hour = new Date().getHours();
@@ -107,13 +73,8 @@ const dashboard = () => {
     return "Good evening";
   };
 
-  if (loading) {
-    return <DashboardSkeleton />;
-  }
-
-  if (!user) {
-    return null;
-  }
+  // Use a static username or leave blank
+  const username = "";
 
   return (
     <main>
@@ -132,7 +93,7 @@ const dashboard = () => {
                 lineHeight: 1.2,
               }}
             >
-              {username ? `${getGreeting()}, ${username}` : getGreeting()}
+              {getGreeting() + ", Daniel"}
             </h1>
             <p className="font-normal sm:text-[20px] text-[16px] text-[#8F9DAD]">
               Ready to ride?

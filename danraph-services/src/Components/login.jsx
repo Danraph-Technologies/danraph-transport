@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { toast } from "sonner";
 import { Link, useNavigate } from "react-router-dom";
 import img1 from "../images/danraph-services8.jpg";
 import img2 from "../images/danraph-logo.png";
@@ -26,57 +25,10 @@ const login = () => {
     setForm((prev) => ({ ...prev, [name]: value.trim() }));
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    if (!form.username || !form.password) {
-      toast.error("All fields are required.");
-      return;
-    }
-    if (form.password.length < 8) {
-      toast.error("Password must be at least 8 characters.");
-      return;
-    }
-    setLoading(true);
-    try {
-      const response = await fetch("http://localhost:3000/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include", // Allow cookies for JWT
-        body: JSON.stringify({
-          identifier: form.username,
-          password: form.password,
-        }),
-      });
-      const data = await response.json().catch(() => ({}));
-      if (response.ok) {
-        // Only allow non-drivers to log in here
-        if (data.userType !== "driver") {
-          window.location.href = "http://localhost:5173/users/dashboard";
-        } else {
-          toast.error(
-            "Access denied. Only users can log in here. Redirecting to the correct login page..."
-          );
-          setTimeout(() => {
-            window.location.href = "http://localhost:5174/login";
-          }, 2000); // 2 seconds delay
-        }
-      } else {
-        // Show explicit error messages for login
-        if (data.message === "Email or username not found") {
-          toast.error("No account found with that email or username.");
-        } else if (data.message === "Incorrect password") {
-          toast.error("Incorrect password. Please try again.");
-        } else {
-          toast.error(
-            data.message || "Login failed. Please check your credentials."
-          );
-        }
-      }
-    } catch (err) {
-      toast.error("Network error. Please try again.");
-    } finally {
-      setLoading(false);
-    }
+    // Directly navigate to dashboard
+    navigate("/users/dashboard");
   };
 
   return (
@@ -277,33 +229,7 @@ const login = () => {
                 disabled={loading}
                 type="submit"
               >
-                {loading ? (
-                  <span className="flex items-center gap-2">
-                    <svg
-                      className="animate-spin h-5 w-5 text-white group-hover:text-blue-800"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                    >
-                      <circle
-                        className="opacity-25"
-                        cx="12"
-                        cy="12"
-                        r="10"
-                        stroke="currentColor"
-                        strokeWidth="4"
-                      ></circle>
-                      <path
-                        className="opacity-75"
-                        fill="currentColor"
-                        d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
-                      ></path>
-                    </svg>
-                    Signing In...
-                  </span>
-                ) : (
-                  "Sign in"
-                )}
+                Sign in
               </button>
               <p className=" ">
                 Dont't have an account?{" "}

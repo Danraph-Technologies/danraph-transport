@@ -1,24 +1,11 @@
-import React, { useState, useEffect } from "react";
-import { Outlet, useNavigate } from "react-router-dom";
+import React, { useState } from "react";
+import { Outlet } from "react-router-dom";
 import Sidebar from "../Components/sidebar";
 import Navbar from "../Components/navbar";
 import Footer from "../Components/footer";
-import axios from "axios";
 
 const Users = () => {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
-  const navigate = useNavigate();
-
-  // Redirect to login if not authenticated
-  useEffect(() => {
-    axios
-      .get("http://localhost:3000/api/auth/userscurrentinformation", {
-        withCredentials: true,
-      })
-      .catch(() => {
-        navigate("/login");
-      });
-  }, [navigate]);
 
   const toggleMobileSidebar = () => {
     setIsMobileOpen(!isMobileOpen);
@@ -32,7 +19,6 @@ const Users = () => {
           isMobileOpen={isMobileOpen}
           toggleMobileSidebar={toggleMobileSidebar}
         />
-
         <div
           className={`flex-1 sm:px-3 px-3 py-5  ${
             isMobileOpen ? "ml-0" : ""
@@ -47,3 +33,5 @@ const Users = () => {
 };
 
 export default Users;
+
+// No authentication or redirect logic present
