@@ -4,16 +4,19 @@ import img1 from "../images/danraph-services8.jpg";
 import img2 from "../images/danraph-logo.png";
 import { FaArrowLeft } from "react-icons/fa";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/solid";
+import { toast } from "sonner";
 import ImageWithSkeleton from "./skeleton";
+import authApi from "../lib/auth";
 
 const login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
   const [form, setForm] = useState({
-    username: "",
+    email: "",
     password: "",
   });
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
   const togglePassword = () => {
@@ -25,10 +28,66 @@ const login = () => {
     setForm((prev) => ({ ...prev, [name]: value.trim() }));
   };
 
-  const handleSubmit = (e) => {
+  const validateForm = () => {
+    if (!form.email.trim()) {
+      toast.error("Email is required");
+      return false;
+    }
+    if (!form.password) {
+      toast.error("Password is required");
+      return false;
+    }
+    return true;
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Directly navigate to dashboard
-    navigate("/users/dashboard");
+
+    // Validate form fields
+    if (!validateForm()) {
+      return;
+    }
+
+    setLoading(true);
+    let loadingToast;
+
+    try {
+      loadingToast = toast.loading('Signing in...');
+      
+      // Call the login API
+      await authApi.login(form.email, form.password);
+      
+      // If we get here, login was successful
+      toast.success('Login successful! Redirecting...');
+      
+      // Redirect to dashboard after a short delay
+      setTimeout(() => {
+        navigate("/users/dashboard");
+      }, 1500);
+      
+    } catch (error) {
+      console.error('Login error:', error);
+      
+      // Default error message
+      let errorMessage = 'Login failed. Please try again.';
+      
+      // Extract error message from different possible locations
+      if (error.data?.message) {
+        errorMessage = error.data.message;
+      } else if (error.response?.data?.message) {
+        errorMessage = error.response.data.message;
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+      
+      // Show the error message
+      toast.error(errorMessage, { autoClose: 5000 });
+    } finally {
+      setLoading(false);
+      if (loadingToast) {
+        toast.dismiss(loadingToast);
+      }
+    }
   };
 
   return (
@@ -174,16 +233,13 @@ const login = () => {
               className="flex flex-col justify-center items-center w-full max-w-[510px] px-3"
             >
               <div className="flex flex-col justify-center w-full">
-                <label htmlFor="Username or email address">
-                  Username or email address
-                </label>
+                <label htmlFor="email address">Email address</label>
                 <input
-                  type="text"
-                  name="username"
-                  id="username"
+                  type="email"
+                  name="email"
+                  id="email"
                   required
-                  autoComplete="off"
-                  value={form.username}
+                  value={form.email}
                   onChange={handleInputChange}
                   className="outline-none w-full px-4 py-2 rounded-lg bg-white border border-gray-400"
                 />
@@ -225,11 +281,37 @@ const login = () => {
               </div>
 
               <button
-                className="bg-blue-800 w-full px-10 py-2 my-3 rounded-3xl border-2 border-blue-800 hover:bg-transparent transition duration-500 text-white hover:text-blue-800 flex items-center justify-center group"
-                disabled={loading}
                 type="submit"
+                className={`w-full px-10 py-2 my-2 rounded-3xl border-2 border-blue-800 transition duration-500 flex items-center justify-center ${
+                  loading
+                    ? "bg-blue-700 text-white"
+                    : "bg-blue-800 text-white hover:bg-transparent hover:text-blue-800"
+                } disabled:opacity-70 disabled:cursor-not-allowed`}
+                disabled={loading}
               >
-                Sign in
+                {loading ? "Logging in..." : "Login"}
+                {loading && (
+                  <svg
+                    className="animate-spin ml-2 mr-3 h-5 w-5 text-white"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    ></path>
+                  </svg>
+                )}
               </button>
               <p className=" ">
                 Dont't have an account?{" "}
