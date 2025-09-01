@@ -59,25 +59,27 @@ const login = () => {
       const response = await authApi.login(form.email, form.password);
       console.log('Login API response:', response);
       
-      // Store user data in localStorage if available
-      if (response && response.data) {
-        const userData = {
-          ...response.data,
-          // Make sure all required fields are present
-          first_name: response.data.first_name || '',
-          last_name: response.data.last_name || '',
-          balance: response.data.balance || 0,
-          email: response.data.email || form.email,
-          user_id: response.data.user_id
+      // Handle the API response structure
+      if (response) {
+        // Extract user data from response.data if it exists, otherwise use the whole response
+        const userData = response.data || response;
+        console.log('Login response data:', userData);
+        
+        // Make sure we have all required fields with fallbacks
+        const completeUserData = {
+          ...userData,
+          first_name: userData.first_name || '',
+          last_name: userData.last_name || '',
+          balance: typeof userData.balance === 'number' ? userData.balance : 0,
+          email: userData.email || form.email,
+          user_id: userData.user_id
         };
-        console.log('Storing user data in localStorage:', userData);
-        localStorage.setItem('user', JSON.stringify(userData));
-      } else if (response) {
-        // If response exists but no data property, use the whole response
-        console.log('Using full response as user data');
-        localStorage.setItem('user', JSON.stringify(response));
+        
+        console.log('Storing user data in localStorage:', completeUserData);
+        localStorage.setItem('user', JSON.stringify(completeUserData));
       } else {
         console.warn('No user data in response');
+        throw new Error('No user data received from server');
       }
       
       // If we get here, login was successful
