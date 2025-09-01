@@ -60,12 +60,12 @@ const login = () => {
       console.log('Login API response:', response);
       
       // Handle the API response structure
-      if (response) {
-        // Extract user data from response.data if it exists, otherwise use the whole response
-        const userData = response.data || response;
+      if (response?.data?.data) {
+        // Extract the nested user data
+        const userData = response.data.data;
         console.log('Login response data:', userData);
         
-        // Make sure we have all required fields with fallbacks
+        // Create a flat user object with all required fields
         const completeUserData = {
           ...userData,
           first_name: userData.first_name || '',

@@ -92,9 +92,23 @@ const Dashboard = () => {
     const savedUser = localStorage.getItem('user');
     if (savedUser) {
       try {
-        const user = JSON.parse(savedUser);
-        console.log('Loaded user from localStorage:', user);
-        setUserData(user);
+        const userData = JSON.parse(savedUser);
+        console.log('Loaded user from localStorage:', userData);
+        
+        // If we have nested data structure, flatten it
+        const user = userData.data ? userData.data : userData;
+        
+        // Ensure all fields have proper values
+        const completeUserData = {
+          ...user,
+          first_name: user.first_name || '',
+          last_name: user.last_name || '',
+          balance: typeof user.balance === 'number' ? user.balance : 0,
+          email: user.email || '',
+          user_id: user.user_id
+        };
+        
+        setUserData(completeUserData);
         setLoading(false);
         return;
       } catch (e) {
@@ -142,17 +156,17 @@ const Dashboard = () => {
         
         console.log('Session response:', response);
         
-        if (response && (response.user_id || response.data?.user_id)) {
-          // Extract user data from response.data if it exists, otherwise use the whole response
-          const userData = response.data || response;
+        if (response && (response.user_id || response.data?.data?.user_id || response.data?.user_id)) {
+          // Extract user data from the nested structure
+          const userData = response.data?.data || response.data || response;
           console.log('Extracted user data:', userData);
           
-          // Make sure we have all required fields
+          // Make sure we have all required fields with proper fallbacks
           const completeUserData = {
             ...userData,
             first_name: userData.first_name || '',
             last_name: userData.last_name || '',
-            balance: userData.balance || 0,
+            balance: typeof userData.balance === 'number' ? userData.balance : 0,
             email: userData.email || '',
             user_id: userData.user_id
           };
