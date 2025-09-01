@@ -71,6 +71,16 @@ const Settings = () => {
   const [previewUrl, setPreviewUrl] = useState(null);
   const [fieldErrors, setFieldErrors] = useState({});
   const navigate = useNavigate();
+  const [userData, setUserData] = useState(null);
+
+  const handleLogout = () => {
+    // Clear user data from localStorage
+    localStorage.removeItem('user');
+    // Show success message
+    toast.success('Logged out successfully');
+    // Redirect to login page
+    navigate('/login');
+  };
 
   // Remove backend integration, just set country by IP
   useEffect(() => {
@@ -117,11 +127,6 @@ const Settings = () => {
     e.preventDefault();
     setFieldErrors({});
     toast.error("No integration yet.");
-  };
-
-  const handleLogout = () => {
-    localStorage.clear();
-    navigate("/login");
   };
 
   // Show skeleton while loading
