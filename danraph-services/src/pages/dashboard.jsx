@@ -70,10 +70,18 @@ const DashboardSkeleton = () => (
 let sessionRequest = null;
 
 const Dashboard = () => {
+  // State hooks
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+  
+  // Debug effect to log user data changes
+  useEffect(() => {
+    if (userData) {
+      console.log('Current userData:', userData);
+    }
+  }, [userData]);
 
   // Fetch user session data
   useEffect(() => {
@@ -135,10 +143,23 @@ const Dashboard = () => {
         console.log('Session response:', response);
         
         if (response && (response.user_id || response.data?.user_id)) {
+          // Extract user data from response.data if it exists, otherwise use the whole response
           const userData = response.data || response;
+          console.log('Extracted user data:', userData);
+          
+          // Make sure we have all required fields
+          const completeUserData = {
+            ...userData,
+            first_name: userData.first_name || '',
+            last_name: userData.last_name || '',
+            balance: userData.balance || 0,
+            email: userData.email || '',
+            user_id: userData.user_id
+          };
+          
           // Store the complete user data in localStorage
-          localStorage.setItem('user', JSON.stringify(userData));
-          setUserData(userData);
+          localStorage.setItem('user', JSON.stringify(completeUserData));
+          setUserData(completeUserData);
           setError(null);
         } else {
           // If no valid user data, clear any existing session
@@ -195,8 +216,7 @@ const Dashboard = () => {
     if (hour < 18) return "Good afternoon";
     return "Good evening";
   };
-
-
+  
   return (
     <main>
       <div className="flex gap-8 items-start flex-wrap pb-14">
@@ -214,7 +234,7 @@ const Dashboard = () => {
                 lineHeight: 1.2,
               }}
             >
-              {`${getGreeting()}${userData?.last_name ? `, ${userData.last_name}` : ''}`}
+              {`${getGreeting()}${userData?.last_name ? `, ${userData.last_name}` : userData?.first_name ? `, ${userData.first_name}` : ''}`}
             </h1>
             <p className="font-normal sm:text-[20px] text-[16px] text-[#8F9DAD]">
               Ready to ride?
@@ -231,7 +251,7 @@ const Dashboard = () => {
               className="sm:max-w-[39px] max-w-[29px] w-full"
             />
             <span className="font-medium sm:text-[20px] text-[19px]">
-              Wallet <span className="pr-[3px]">₦</span>22,000.00
+              Wallet <span className="pr-[3px]">₦</span>{userData?.balance?.toLocaleString() || '0.00'}
             </span>
           </section>
 

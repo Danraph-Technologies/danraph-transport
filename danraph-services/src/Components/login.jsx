@@ -61,10 +61,23 @@ const login = () => {
       
       // Store user data in localStorage if available
       if (response && response.data) {
-        console.log('Storing user data in localStorage:', response.data);
-        localStorage.setItem('user', JSON.stringify(response.data));
+        const userData = {
+          ...response.data,
+          // Make sure all required fields are present
+          first_name: response.data.first_name || '',
+          last_name: response.data.last_name || '',
+          balance: response.data.balance || 0,
+          email: response.data.email || form.email,
+          user_id: response.data.user_id
+        };
+        console.log('Storing user data in localStorage:', userData);
+        localStorage.setItem('user', JSON.stringify(userData));
+      } else if (response) {
+        // If response exists but no data property, use the whole response
+        console.log('Using full response as user data');
+        localStorage.setItem('user', JSON.stringify(response));
       } else {
-        console.warn('No user data in response:', response);
+        console.warn('No user data in response');
       }
       
       // If we get here, login was successful
