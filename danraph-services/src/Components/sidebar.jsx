@@ -81,7 +81,7 @@ const Sidebar = ({ isMobileOpen, toggleMobileSidebar }) => {
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               stroke="none"
-              stroke-width="none"
+              strokeWidth="none"
               className="pl-1 "
             >
               <path
@@ -111,7 +111,7 @@ const Sidebar = ({ isMobileOpen, toggleMobileSidebar }) => {
               xmlns="http://www.w3.org/2000/svg"
               fill="white"
               stroke="none"
-              stroke-width="none"
+              strokeWidth="none"
               className="pl-1 "
             >
               <path
@@ -141,7 +141,7 @@ const Sidebar = ({ isMobileOpen, toggleMobileSidebar }) => {
               xmlns="http://www.w3.org/2000/svg"
               fill="white"
               stroke="none"
-              stroke-width="none"
+              strokeWidth="none"
               className="pl-1 "
             >
               <path
@@ -171,7 +171,7 @@ const Sidebar = ({ isMobileOpen, toggleMobileSidebar }) => {
               xmlns="http://www.w3.org/2000/svg"
               fill="white"
               stroke="none"
-              stroke-width="none"
+              strokeWidth="none"
               className="pl-1 "
             >
               <path
@@ -201,7 +201,7 @@ const Sidebar = ({ isMobileOpen, toggleMobileSidebar }) => {
               xmlns="http://www.w3.org/2000/svg"
               fill="white"
               stroke="none"
-              stroke-width="none"
+              strokeWidth="none"
               className="pl-1 "
             >
               <path
@@ -231,7 +231,7 @@ const Sidebar = ({ isMobileOpen, toggleMobileSidebar }) => {
               xmlns="http://www.w3.org/2000/svg"
               fill="white"
               stroke="none"
-              stroke-width="none"
+              strokeWidth="none"
               className="pl-1 "
             >
               <path

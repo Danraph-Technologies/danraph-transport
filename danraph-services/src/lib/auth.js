@@ -12,10 +12,12 @@ export const authApi = {
    */
   login: async (email, password) => {
     try {
+      console.log('Login request with:', { email });
       const response = await callBackendApi("/auth/login", {
         method: "POST",
         body: { email, password }
       });
+      console.log('Login response:', response);
       return response;
     } catch (error) {
       console.error('Login error:', error);

@@ -54,8 +54,18 @@ const login = () => {
     try {
       loadingToast = toast.loading('Signing in...');
       
-      // Call the login API
-      await authApi.login(form.email, form.password);
+      // Call the login API and get the response
+      console.log('Calling login API...');
+      const response = await authApi.login(form.email, form.password);
+      console.log('Login API response:', response);
+      
+      // Store user data in localStorage if available
+      if (response && response.data) {
+        console.log('Storing user data in localStorage:', response.data);
+        localStorage.setItem('user', JSON.stringify(response.data));
+      } else {
+        console.warn('No user data in response:', response);
+      }
       
       // If we get here, login was successful
       toast.success('Login successful! Redirecting...');

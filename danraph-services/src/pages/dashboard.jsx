@@ -1,8 +1,10 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { FaArrowRight } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import img1 from "../images/danraph-services-11.webp";
 import ImageWithSkeleton from "../Components/skeleton";
+import { callBackendApi } from "../lib/api";
+import { toast } from "sonner";
 
 // Dashboard skeleton component
 const DashboardSkeleton = () => (
@@ -64,7 +66,128 @@ const DashboardSkeleton = () => (
   </main>
 );
 
-const dashboard = () => {
+// Track session request to prevent duplicates
+let sessionRequest = null;
+
+const Dashboard = () => {
+  const [userData, setUserData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const navigate = useNavigate();
+
+  // Fetch user session data
+  useEffect(() => {
+    let isMounted = true;
+    const controller = new AbortController();
+    
+    // Try to get user data from localStorage first
+    const savedUser = localStorage.getItem('user');
+    if (savedUser) {
+      try {
+        const user = JSON.parse(savedUser);
+        console.log('Loaded user from localStorage:', user);
+        setUserData(user);
+        setLoading(false);
+        return;
+      } catch (e) {
+        console.error('Error parsing saved user data:', e);
+        localStorage.removeItem('user'); // Clear invalid data
+      }
+    } else {
+      console.log('No saved user found in localStorage');
+    }
+
+    const fetchUserSession = async () => {
+      if (!isMounted) return;
+      
+      try {
+        console.log('Fetching user session...');
+        
+        // Create a new AbortController for this specific request
+        const requestController = new AbortController();
+        sessionRequest = requestController;
+        
+        // Set timeout for the request
+        const timeoutId = setTimeout(() => {
+          if (isMounted) {
+            requestController.abort();
+            setLoading(false);
+            setError('Request timed out. Please try again.');
+            toast.error("Request timed out. Please try again.");
+          }
+        }, 10000);
+        
+        const response = await callBackendApi("/auth/session", {
+          method: "POST",
+          signal: requestController.signal,
+          headers: {
+            'Cache-Control': 'no-cache',
+            'Pragma': 'no-cache',
+            'Content-Type': 'application/json'
+          },
+          credentials: 'include'  // Important for sending cookies
+        });
+        
+        clearTimeout(timeoutId);
+        
+        if (!isMounted) return;
+        
+        console.log('Session response:', response);
+        
+        if (response && (response.user_id || response.data?.user_id)) {
+          const userData = response.data || response;
+          // Store the complete user data in localStorage
+          localStorage.setItem('user', JSON.stringify(userData));
+          setUserData(userData);
+          setError(null);
+        } else {
+          // If no valid user data, clear any existing session
+          localStorage.removeItem('user');
+          throw new Error('No valid session data received');
+        }
+      } catch (error) {
+        if (!isMounted) return;
+        
+        if (error.name === 'AbortError') {
+          console.log('Request was aborted');
+          return;
+        }
+        
+        console.error('Failed to fetch user session:', error);
+        setError(error.message || 'Failed to load session');
+        
+        // Only redirect on 401 Unauthorized
+        if (error.status === 401 || error.message.includes('401')) {
+          toast.error("Your session has expired. Please log in again.");
+          navigate("/login");
+        } else {
+          toast.error(error.message || "Failed to load session. Please try again.");
+        }
+      } finally {
+        if (isMounted) {
+          setLoading(false);
+          sessionRequest = null;
+        }
+      }
+    };
+
+    fetchUserSession();
+    
+    return () => {
+      isMounted = false;
+      controller.abort();
+      if (sessionRequest) {
+        sessionRequest.abort();
+        sessionRequest = null;
+      }
+    };
+  }, [navigate]);
+
+  // Show loading skeleton while fetching user data
+  if (loading) {
+    return <DashboardSkeleton />;
+  }
+
   // Add greeting based on time of day
   const getGreeting = () => {
     const hour = new Date().getHours();
@@ -73,8 +196,6 @@ const dashboard = () => {
     return "Good evening";
   };
 
-  // Use a static username or leave blank
-  const username = "";
 
   return (
     <main>
@@ -93,7 +214,7 @@ const dashboard = () => {
                 lineHeight: 1.2,
               }}
             >
-              {getGreeting() + ", Daniel"}
+              {`${getGreeting()}${userData?.last_name ? `, ${userData.last_name}` : ''}`}
             </h1>
             <p className="font-normal sm:text-[20px] text-[16px] text-[#8F9DAD]">
               Ready to ride?
@@ -257,4 +378,4 @@ const dashboard = () => {
   );
 };
 
-export default dashboard;
+export default Dashboard;
