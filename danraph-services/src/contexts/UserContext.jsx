@@ -13,34 +13,55 @@ export const UserProvider = ({ children }) => {
     
     // Get the stored user data
     const storedUser = JSON.parse(localStorage.getItem('user') || '{}');
+    console.log('Stored user data:', storedUser);
     
     try {
       // If we have a token, try to use it
       if (storedUser?.access_token) {
-        const response = await callBackendApi('/auth/session', {
-          method: 'POST',
-          credentials: 'include',
-          headers: {
-            'Authorization': `Bearer ${storedUser.access_token}`
+        console.log('Found access token, validating session...');
+        try {
+          const response = await callBackendApi('/auth/session', {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+              'Authorization': `Bearer ${storedUser.access_token}`
+            }
+          });
+          
+          console.log('Session validation response:', response);
+          
+          const userData = response?.data || response;
+          if (userData?.user_id) {
+            console.log('Session validation successful');
+            // Merge with existing user data to preserve the token
+            const updatedUser = { ...storedUser, ...userData };
+            localStorage.setItem('user', JSON.stringify(updatedUser));
+            return updatedUser;
+          } else {
+            console.warn('Session validation failed - no user_id in response');
           }
-        });
-        
-        const userData = response?.data || response;
-        if (userData?.user_id) {
-          // Merge with existing user data to preserve the token
-          const updatedUser = { ...storedUser, ...userData };
-          localStorage.setItem('user', JSON.stringify(updatedUser));
-          return updatedUser;
+        } catch (apiError) {
+          console.error('API error during session validation:', apiError);
+          throw apiError; // Re-throw to be caught by outer catch
         }
+      } else {
+        console.warn('No access token found in stored user data');
       }
       
       // If we get here, either no token or invalid session
-      throw new Error('No valid session');
+      const error = new Error('No valid session');
+      error.status = 401;
+      throw error;
     } catch (error) {
-      console.error('Session validation failed:', error);
-      if (error.status === 401 || !storedUser?.access_token) {
-        localStorage.removeItem('user');
-      }
+      console.error('Session validation failed:', {
+        message: error.message,
+        status: error.status,
+        data: error.data,
+        stack: error.stack
+      });
+      
+      // Always clear invalid session data
+      localStorage.removeItem('user');
       throw error;
     }
   };
@@ -54,6 +75,8 @@ export const UserProvider = ({ children }) => {
   } = useQuery({
     queryKey: ['user'],
     queryFn: async () => {
+      console.log('Running user query...');
+      
       // First, try to get from localStorage
       const savedUser = localStorage.getItem('user');
       
@@ -61,17 +84,31 @@ export const UserProvider = ({ children }) => {
       if (savedUser) {
         try {
           const parsedUser = JSON.parse(savedUser);
+          console.log('Found saved user:', { hasUserId: !!parsedUser?.user_id, hasToken: !!parsedUser?.access_token });
+          
           if (parsedUser?.user_id) {
-            // Return the saved user immediately for better UX
-            // and validate session in the background
-            validateSession().catch(console.error);
+            // In the background, try to validate the session
+            // This will update the cache if successful
+            validateSession()
+              .then(validatedUser => {
+                console.log('Background session validation successful');
+                queryClient.setQueryData(['user'], validatedUser);
+              })
+              .catch(error => {
+                console.warn('Background session validation failed:', error.message);
+                // Don't update the cache on failure
+              });
+              
+            // Return the cached user immediately for better UX
             return parsedUser;
           }
         } catch (e) {
           console.error('Error parsing saved user:', e);
+          localStorage.removeItem('user');
         }
       }
       
+      console.log('No valid cached user, attempting to validate session...');
       // If no saved user or invalid, try to get from API
       return validateSession();
     },
@@ -79,38 +116,53 @@ export const UserProvider = ({ children }) => {
     retry: 1,
     refetchOnWindowFocus: false,
     refetchOnMount: true,
-    retryIf: (error) => error.status !== 401, // Don't retry on 401
+    retryIf: (error) => {
+      const shouldRetry = error.status !== 401;
+      console.log(`Retrying query: ${shouldRetry ? 'Yes' : 'No'}, status: ${error.status}`);
+      return shouldRetry;
+    },
   });
 
   // Login mutation
   const login = async (email, password) => {
     try {
+      console.log('Starting login process...');
+      
       // First, clear any existing session
       localStorage.removeItem('user');
       queryClient.setQueryData(['user'], null);
       
       // Make the login request
-      console.log('Login request starting...');
+      console.log('Sending login request...');
       const response = await callBackendApi('/auth/login', {
         method: 'POST',
         body: { email, password },
         credentials: 'include',
       });
       
-      console.log('Login response received:', {
-        status: 'success',
-        hasData: !!response,
-        responseKeys: Object.keys(response || {}),
-        response: JSON.parse(JSON.stringify(response || {}))
-      });
+      console.log('Login response received:', response);
+      
+      // Get user data from response
+      const userData = response?.data || response;
+      
+      if (!userData) {
+        throw new Error('No user data received in login response');
+      }
+      
+      // Ensure we have required fields
+      if (!userData.user_id || !userData.access_token) {
+        console.error('Invalid login response - missing required fields:', userData);
+        throw new Error('Invalid login response from server');
+      }
       
       // Store the user data with access token
-      const userData = response?.data || response;
-      if (userData?.access_token) {
-        localStorage.setItem('user', JSON.stringify(userData));
-        queryClient.setQueryData(['user'], userData);
-        return userData;
-      }
+      localStorage.setItem('user', JSON.stringify(userData));
+      
+      // Update the query cache
+      queryClient.setQueryData(['user'], userData);
+      
+      console.log('Login successful, user data stored');
+      return userData;
       
       // After successful login, validate the session to get fresh user data
       try {
