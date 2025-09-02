@@ -71,13 +71,14 @@ const Settings = () => {
   const [imgLoading, setImgLoading] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [fieldErrors, setFieldErrors] = useState({});
+  const [previewUrl, setPreviewUrl] = useState(null);
   const navigate = useNavigate();
   const { user, logout } = useUser();
-  const [userData, setUserData] = useState(user || null);
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     try {
-      logout();
+      await logout();
       toast.success('Logged out successfully');
       navigate('/login');
     } catch (error) {
@@ -99,6 +100,20 @@ const Settings = () => {
         setCountry("ng");
       });
   }, []);
+
+  // Initialize form with user data
+  useEffect(() => {
+    if (user) {
+      setForm({
+        firstName: user.first_name || "",
+        lastName: user.last_name || "",
+        email: user.email || "",
+        username: user.username || "",
+        phone: user.phone || "",
+        profileImage: null,
+      });
+    }
+  }, [user]);
 
   useEffect(() => {
     return () => {
@@ -202,14 +217,12 @@ const Settings = () => {
                 type="text"
                 name="firstName"
                 id="firstName"
-                required
                 value={form.firstName}
                 onChange={handleInputChange}
-                className="border border-gray-300 sm:p-[13px] p-[10px]  rounded-xl outline-none "
+                className="border border-gray-400 rounded-md px-3 py-2 outline-none"
               />
             </div>
-
-            <div className="flex flex-col flex-1">
+            <div className="flex flex-wrap flex-col flex-1">
               <label htmlFor="lastName" className="text-[16px] text-[#666666]">
                 Last name
               </label>
@@ -217,14 +230,12 @@ const Settings = () => {
                 type="text"
                 name="lastName"
                 id="lastName"
-                required
                 value={form.lastName}
                 onChange={handleInputChange}
-                className="border border-gray-300 sm:p-[13px] p-[10px]  rounded-xl outline-none "
+                className="border border-gray-400 rounded-md px-3 py-2 outline-none"
               />
             </div>
           </div>
-
           <div className="flex flex-col flex-1">
             <label htmlFor="email" className="text-[16px] text-[#666666]">
               Email address
@@ -233,16 +244,11 @@ const Settings = () => {
               type="email"
               name="email"
               id="email"
-              required
               value={form.email}
               onChange={handleInputChange}
-              className="border border-gray-300 sm:p-[13px] p-[10px]  rounded-xl outline-none "
+              className="border border-gray-400 rounded-md px-3 py-2 outline-none"
             />
-            {fieldErrors.email && (
-              <span className="text-red-500 text-sm">{fieldErrors.email}</span>
-            )}
           </div>
-
           <div className="flex flex-col flex-1">
             <label htmlFor="username" className="text-[16px] text-[#666666]">
               Username
@@ -251,28 +257,22 @@ const Settings = () => {
               type="text"
               name="username"
               id="username"
-              required
               value={form.username}
               onChange={handleInputChange}
-              className="border border-gray-300 sm:p-[13px] p-[10px]  rounded-xl outline-none "
+              className="border border-gray-400 rounded-md px-3 py-2 outline-none"
             />
-            {fieldErrors.username && (
-              <span className="text-red-500 text-sm">
-                {fieldErrors.username}
-              </span>
-            )}
           </div>
-
           <div className="flex flex-col flex-1">
             <label htmlFor="phone" className="text-[16px] text-[#666666]">
-              Phone Number
+              Phone number
             </label>
             <PhoneInput
               country={country}
               value={form.phone}
               onChange={handlePhoneChange}
-              containerClass="w-full"
-              inputClass="border border-gray-300 sm:p-[13px] p-[10px]  rounded-xl outline-none w-full"
+              containerClass="!border !border-gray-400 !rounded-md !px-0"
+              inputClass="!w-full !border-0 !rounded-md !outline-none !h-[42px] !text-base"
+              buttonClass="!border-0"
               dropdownClass="!z-50"
               enableSearch
               countryCodeEditable={false}

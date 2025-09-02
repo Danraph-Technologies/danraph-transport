@@ -1,56 +1,56 @@
 import { createFetchClient } from "@zayne-labs/callapi";
 
-// Create a configured fetch client
-const api = createFetchClient({
+const callBackendApi = createFetchClient({
   baseURL: "https://backend-services--techwithdunamix9789-guakp32e.leapcell.dev/v1",
-  credentials: "include",
+  credentials: "include", // This ensures cookies are sent with requests
+  retryAttempts: 1,
   headers: {
     'Content-Type': 'application/json',
     'Accept': 'application/json',
   },
 });
 
-// Simple wrapper to handle the API calls
-const callBackendApi = async (url, options = {}) => {
-  try {
-    console.log('API Request:', { url, options });
-    const response = await api(url, {
-      ...options,
-      body: options.body ? JSON.stringify(options.body) : undefined,
-    });
-    
-    console.log('API Response:', response);
-    
-    // If the response has an error status, throw it
-    if (response.error || response.status >= 400) {
-      // Try to get the error message from different possible locations
-      const errorMessage = 
-        response.message || 
-        response.data?.message || 
-        response.error?.message || 
-        'Request failed';
-      
-      const error = new Error(errorMessage);
-      error.status = response.status || 500;
-      error.data = response.data || response;
-      error.raw = response; // Keep the raw response for debugging
-      console.error('API Error:', error);
-      throw error;
-    }
-    
+// Add response interceptor to handle errors
+callBackendApi.interceptors.response.use(
+  (response) => {
     return response;
-  } catch (error) {
-    console.error('API call failed:', error);
+  },
+  (error) => {
+    // Handle network errors
+    if (!error.response) {
+      return Promise.reject({
+        message: 'Network error. Please check your connection.',
+      });
+    }
+
+    // Handle HTTP errors
+    const { status, data } = error.response;
     
-    // If it's already formatted, just rethrow
-    if (error.status) throw error;
+    let errorMessage = 'An error occurred';
     
-    // Format the error
-    const errorObj = new Error(error.message || 'Network error');
-    errorObj.status = 0;
-    errorObj.data = { message: error.message || 'Unable to connect to the server' };
-    throw errorObj;
+    if (status === 403 && data?.message === 'user already exists') {
+      errorMessage = 'This email is already registered. Please use a different email or log in.';
+    } else if (data?.message) {
+      errorMessage = data.message;
+    } else if (status === 422 && data?.errors) {
+      // Handle validation errors
+      errorMessage = Object.values(data.errors)[0] || 'Validation failed';
+    } else if (status === 401) {
+      errorMessage = 'Unauthorized. Please log in again.';
+    } else if (status === 403) {
+      errorMessage = 'You do not have permission to perform this action.';
+    } else if (status === 404) {
+      errorMessage = 'The requested resource was not found.';
+    } else if (status >= 500) {
+      errorMessage = 'Server error. Please try again later.';
+    }
+
+    return Promise.reject({
+      message: errorMessage,
+      status,
+      data: data || {},
+    });
   }
-};
+);
 
 export { callBackendApi };

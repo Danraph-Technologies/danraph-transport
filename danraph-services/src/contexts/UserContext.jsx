@@ -16,56 +16,92 @@ export const UserProvider = ({ children }) => {
   } = useQuery({
     queryKey: ['user'],
     queryFn: async () => {
-      try {
-        // Try to get from localStorage first
-        const savedUser = localStorage.getItem('user');
-        if (savedUser) {
-          return JSON.parse(savedUser);
+      // Try to get from localStorage first
+      const savedUser = localStorage.getItem('user');
+      if (savedUser) {
+        const parsedUser = JSON.parse(savedUser);
+        // If we have a saved user, return it immediately
+        // and validate in the background
+        if (parsedUser?.user_id) {
+          // Validate session in the background
+          callBackendApi('/auth/session', {
+            method: 'POST',
+            credentials: 'include',
+          }).then(response => {
+            const userData = response?.data || response;
+            if (userData?.user_id) {
+              localStorage.setItem('user', JSON.stringify(userData));
+              queryClient.setQueryData(['user'], userData);
+            }
+          }).catch(() => {
+            // If validation fails, clear the invalid session
+            localStorage.removeItem('user');
+            queryClient.setQueryData(['user'], null);
+          });
+          return parsedUser;
         }
-        
-        // If not in localStorage, fetch from API
-        const response = await callBackendApi('/auth/session', {
-          method: 'POST',
-          credentials: 'include',
-        });
-        
-        const userData = response?.data || response;
-        if (userData?.user_id) {
-          localStorage.setItem('user', JSON.stringify(userData));
-          return userData;
-        }
-        throw new Error('No valid session');
-      } catch (error) {
-        localStorage.removeItem('user');
-        throw error;
       }
+      
+      // If no saved user or invalid, try to get from API
+      const response = await callBackendApi('/auth/session', {
+        method: 'POST',
+        credentials: 'include',
+      });
+      
+      const userData = response?.data || response;
+      if (userData?.user_id) {
+        localStorage.setItem('user', JSON.stringify(userData));
+        return userData;
+      }
+      throw new Error('No valid session');
     },
     staleTime: 5 * 60 * 1000, // 5 minutes
     retry: 1,
     refetchOnWindowFocus: false,
+    // Don't retry on 401 errors
+    retryIf: (error) => error.status !== 401,
   });
 
   // Login mutation
   const login = async (email, password) => {
-    const response = await callBackendApi('/auth/login', {
-      method: 'POST',
-      body: { email, password },
-    });
-    
-    const userData = response?.data || response;
-    if (userData?.user_id) {
-      localStorage.setItem('user', JSON.stringify(userData));
-      queryClient.setQueryData(['user'], userData);
-      return userData;
+    try {
+      const response = await callBackendApi('/auth/login', {
+        method: 'POST',
+        body: { email, password },
+        credentials: 'include',
+      });
+      
+      console.log('Login response:', response);
+      
+      // Handle the response based on the actual API structure
+      const userData = response?.data || response;
+      if (userData?.user_id) {
+        localStorage.setItem('user', JSON.stringify(userData));
+        queryClient.setQueryData(['user'], userData);
+        return userData;
+      }
+      throw new Error('Login failed');
+    } catch (error) {
+      console.error('Login error details:', error);
+      throw new Error(error.message || 'Login failed. Please check your credentials.');
     }
-    throw new Error('Login failed');
   };
 
   // Logout function
-  const logout = () => {
-    localStorage.removeItem('user');
-    queryClient.setQueryData(['user'], null);
-    queryClient.clear();
+  const logout = async () => {
+    try {
+      // Call logout endpoint if you have one
+      await callBackendApi('/auth/logout', {
+        method: 'POST',
+        credentials: 'include',
+      });
+    } catch (error) {
+      console.error('Logout error:', error);
+    } finally {
+      localStorage.removeItem('user');
+      queryClient.setQueryData(['user'], null);
+      queryClient.clear();
+    }
   };
 
   return (
