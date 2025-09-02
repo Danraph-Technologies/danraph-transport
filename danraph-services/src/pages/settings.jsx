@@ -5,6 +5,7 @@ import "react-phone-input-2/lib/style.css";
 import "../styles/settings.css";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
+import { useUser } from "../contexts/UserContext";
 
 const SkeletonCircle = () => (
   <div
@@ -68,18 +69,21 @@ const Settings = () => {
   const [country, setCountry] = useState("ng");
   const [loading, setLoading] = useState(false);
   const [imgLoading, setImgLoading] = useState(false);
-  const [previewUrl, setPreviewUrl] = useState(null);
-  const [fieldErrors, setFieldErrors] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
   const navigate = useNavigate();
-  const [userData, setUserData] = useState(null);
+  const { user, logout } = useUser();
+  const [userData, setUserData] = useState(user || null);
 
   const handleLogout = () => {
-    // Clear user data from localStorage
-    localStorage.removeItem('user');
-    // Show success message
-    toast.success('Logged out successfully');
-    // Redirect to login page
-    navigate('/login');
+    try {
+      logout();
+      toast.success('Logged out successfully');
+      navigate('/login');
+    } catch (error) {
+      console.error('Logout error:', error);
+      toast.error('Failed to log out. Please try again.');
+    }
   };
 
   // Remove backend integration, just set country by IP

@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import SonnerToaster from "./Components/sonner-toast-setup";
 import "./App.css";
 import Home from "./pages/home";
@@ -16,9 +17,19 @@ import Comfirm from "./pages/comfirm";
 import Success from "./pages/success";
 import Charterr from "./pages/charterr";
 import ScrollToTop from "./Components/scrolltotop";
+import { UserProvider } from "./contexts/UserContext";
 import ProtectedRoute from "./components/ProtectedRoute";
-import { useEffect } from "react";
-import { toast } from "sonner";
+
+// Create a client
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+      retry: 1,
+      staleTime: 5 * 60 * 1000, // 5 minutes
+    },
+  },
+});
 
 // Function to check if user is authenticated
 const isAuthenticated = () => {
@@ -46,7 +57,7 @@ const AuthWrapper = ({ children }) => {
   return children;
 };
 
-function App() {
+function AppContent() {
   return (
     <Router>
       <ScrollToTop />
@@ -58,11 +69,7 @@ function App() {
         <Route path="/signup" element={<Signup />} />
 
         {/* Protected routes */}
-        <Route element={
-          <AuthWrapper>
-            <ProtectedRoute />
-          </AuthWrapper>
-        }>
+        <Route element={<ProtectedRoute />}>
           <Route path="/users" element={<Users />}>
             <Route path="Ride" element={<Ride />} />
             <Route path="Dashboard" element={<Dashboard />} />
@@ -81,6 +88,16 @@ function App() {
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Router>
+  );
+}
+
+function App() {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <UserProvider>
+        <AppContent />
+      </UserProvider>
+    </QueryClientProvider>
   );
 }
 

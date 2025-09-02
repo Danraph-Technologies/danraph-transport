@@ -6,18 +6,18 @@ import { FaArrowLeft } from "react-icons/fa";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/solid";
 import { toast } from "sonner";
 import ImageWithSkeleton from "./skeleton";
-import authApi from "../lib/auth";
+import { useUser } from '../contexts/UserContext';
 
-const login = () => {
+const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
+  const { login } = useUser();
+  const navigate = useNavigate();
   const [form, setForm] = useState({
     email: "",
     password: "",
   });
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-  const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
 
   const togglePassword = () => {
     setShowPassword(!showPassword);
@@ -42,76 +42,21 @@ const login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!validateForm()) return;
 
-    // Validate form fields
-    if (!validateForm()) {
-      return;
-    }
-
-    setLoading(true);
-    let loadingToast;
+    setIsLoading(true);
+    const loadingToast = toast.loading('Signing in...');
 
     try {
-      loadingToast = toast.loading('Signing in...');
-      
-      // Call the login API and get the response
-      console.log('Calling login API...');
-      const response = await authApi.login(form.email, form.password);
-      console.log('Login API response:', response);
-      
-      // Handle the API response structure
-      if (response?.data?.data) {
-        // Extract the nested user data
-        const userData = response.data.data;
-        console.log('Login response data:', userData);
-        
-        // Create a flat user object with all required fields
-        const completeUserData = {
-          ...userData,
-          first_name: userData.first_name || '',
-          last_name: userData.last_name || '',
-          balance: typeof userData.balance === 'number' ? userData.balance : 0,
-          email: userData.email || form.email,
-          user_id: userData.user_id
-        };
-        
-        console.log('Storing user data in localStorage:', completeUserData);
-        localStorage.setItem('user', JSON.stringify(completeUserData));
-      } else {
-        console.warn('No user data in response');
-        throw new Error('No user data received from server');
-      }
-      
-      // If we get here, login was successful
+      await login(form.email, form.password);
       toast.success('Login successful! Redirecting...');
-      
-      // Redirect to dashboard after a short delay
-      setTimeout(() => {
-        navigate("/users/dashboard");
-      }, 1500);
-      
+      setTimeout(() => navigate("/users/dashboard"), 1500);
     } catch (error) {
       console.error('Login error:', error);
-      
-      // Default error message
-      let errorMessage = 'Login failed. Please try again.';
-      
-      // Extract error message from different possible locations
-      if (error.data?.message) {
-        errorMessage = error.data.message;
-      } else if (error.response?.data?.message) {
-        errorMessage = error.response.data.message;
-      } else if (error.message) {
-        errorMessage = error.message;
-      }
-      
-      // Show the error message
-      toast.error(errorMessage, { autoClose: 5000 });
+      toast.error(error.message || 'Login failed. Please try again.');
     } finally {
-      setLoading(false);
-      if (loadingToast) {
-        toast.dismiss(loadingToast);
-      }
+      setIsLoading(false);
+      toast.dismiss(loadingToast);
     }
   };
 
@@ -308,14 +253,14 @@ const login = () => {
               <button
                 type="submit"
                 className={`w-full px-10 py-2 my-2 rounded-3xl border-2 border-blue-800 transition duration-500 flex items-center justify-center ${
-                  loading
+                  isLoading
                     ? "bg-blue-700 text-white"
                     : "bg-blue-800 text-white hover:bg-transparent hover:text-blue-800"
                 } disabled:opacity-70 disabled:cursor-not-allowed`}
-                disabled={loading}
+                disabled={isLoading}
               >
-                {loading ? "Logging in..." : "Login"}
-                {loading && (
+                {isLoading ? "Logging in..." : "Login"}
+                {isLoading && (
                   <svg
                     className="animate-spin ml-2 mr-3 h-5 w-5 text-white"
                     xmlns="http://www.w3.org/2000/svg"
@@ -354,4 +299,4 @@ const login = () => {
   );
 };
 
-export default login;
+export default Login;
