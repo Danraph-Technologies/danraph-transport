@@ -7,6 +7,44 @@ const UserContext = createContext();
 export const UserProvider = ({ children }) => {
   const queryClient = useQueryClient();
 
+  // Function to validate the session using stored token
+  const validateSession = async () => {
+    console.log('Validating session...');
+    
+    // Get the stored user data
+    const storedUser = JSON.parse(localStorage.getItem('user') || '{}');
+    
+    try {
+      // If we have a token, try to use it
+      if (storedUser?.access_token) {
+        const response = await callBackendApi('/auth/session', {
+          method: 'POST',
+          credentials: 'include',
+          headers: {
+            'Authorization': `Bearer ${storedUser.access_token}`
+          }
+        });
+        
+        const userData = response?.data || response;
+        if (userData?.user_id) {
+          // Merge with existing user data to preserve the token
+          const updatedUser = { ...storedUser, ...userData };
+          localStorage.setItem('user', JSON.stringify(updatedUser));
+          return updatedUser;
+        }
+      }
+      
+      // If we get here, either no token or invalid session
+      throw new Error('No valid session');
+    } catch (error) {
+      console.error('Session validation failed:', error);
+      if (error.status === 401 || !storedUser?.access_token) {
+        localStorage.removeItem('user');
+      }
+      throw error;
+    }
+  };
+
   // Query to fetch user session
   const {
     data: user,
@@ -16,83 +54,135 @@ export const UserProvider = ({ children }) => {
   } = useQuery({
     queryKey: ['user'],
     queryFn: async () => {
-      try {
-        // Try to get from localStorage first
-        const savedUser = localStorage.getItem('user');
-        if (savedUser) {
+      // First, try to get from localStorage
+      const savedUser = localStorage.getItem('user');
+      
+      // If we have a saved user, try to use it
+      if (savedUser) {
+        try {
           const parsedUser = JSON.parse(savedUser);
-          // If we have a saved user, return it immediately
-          // and validate in the background
           if (parsedUser?.user_id) {
-            // Validate session in the background
-            callBackendApi('/auth/session', {
-              method: 'POST',
-              credentials: 'include',
-            }).then(response => {
-              const userData = response?.data || response;
-              if (userData?.user_id) {
-                localStorage.setItem('user', JSON.stringify(userData));
-                queryClient.setQueryData(['user'], userData);
-              }
-            }).catch(() => {
-              // If validation fails, clear the invalid session
-              localStorage.removeItem('user');
-              queryClient.setQueryData(['user'], null);
-            });
+            // Return the saved user immediately for better UX
+            // and validate session in the background
+            validateSession().catch(console.error);
             return parsedUser;
           }
+        } catch (e) {
+          console.error('Error parsing saved user:', e);
         }
-        
-        // If no saved user or invalid, try to get from API
-        const response = await callBackendApi('/auth/session', {
-          method: 'POST',
-          credentials: 'include',
-        });
-        
-        const userData = response?.data || response;
-        if (userData?.user_id) {
-          localStorage.setItem('user', JSON.stringify(userData));
-          return userData;
-        }
-        throw new Error('No valid session');
-      } catch (error) {
-        localStorage.removeItem('user');
-        // Only throw error if it's not a 401 (which is expected when not logged in)
-        if (error?.status !== 401) {
-          throw error;
-        }
-        throw new Error('No valid session');
       }
+      
+      // If no saved user or invalid, try to get from API
+      return validateSession();
     },
     staleTime: 5 * 60 * 1000, // 5 minutes
     retry: 1,
     refetchOnWindowFocus: false,
-    // Don't retry on 401 errors
-    retryIf: (error) => error?.status !== 401,
+    refetchOnMount: true,
+    retryIf: (error) => error.status !== 401, // Don't retry on 401
   });
 
   // Login mutation
   const login = async (email, password) => {
     try {
+      // First, clear any existing session
+      localStorage.removeItem('user');
+      queryClient.setQueryData(['user'], null);
+      
+      // Make the login request
+      console.log('Login request starting...');
       const response = await callBackendApi('/auth/login', {
         method: 'POST',
         body: { email, password },
         credentials: 'include',
       });
       
-      console.log('Login response:', response);
+      console.log('Login response received:', {
+        status: 'success',
+        hasData: !!response,
+        responseKeys: Object.keys(response || {}),
+        response: JSON.parse(JSON.stringify(response || {}))
+      });
       
-      // Handle the response based on the actual API structure
+      // Store the user data with access token
       const userData = response?.data || response;
-      if (userData?.user_id) {
+      if (userData?.access_token) {
         localStorage.setItem('user', JSON.stringify(userData));
         queryClient.setQueryData(['user'], userData);
         return userData;
       }
-      throw new Error('Login failed');
+      
+      // After successful login, validate the session to get fresh user data
+      try {
+        console.log('Attempting to validate session...');
+        
+        // First, get cookies to see what we're working with
+        const cookies = document.cookie;
+        console.log('Current cookies:', cookies);
+        
+        // Make session request with full credentials
+        const sessionResponse = await callBackendApi('/auth/session', {
+          method: 'POST',
+          credentials: 'include',
+          headers: {
+            'Cache-Control': 'no-cache',
+            'Pragma': 'no-cache'
+          }
+        });
+        
+        console.log('Session validation response:', {
+          status: 'success',
+          hasData: !!sessionResponse,
+          response: sessionResponse
+        });
+        
+        const userData = sessionResponse?.data || sessionResponse;
+        
+        if (userData?.user_id) {
+          console.log('Session validation successful, user ID:', userData.user_id);
+          localStorage.setItem('user', JSON.stringify(userData));
+          queryClient.setQueryData(['user'], userData);
+          return userData;
+        } else {
+          console.warn('Session validation missing user_id:', userData);
+        }
+      } catch (sessionError) {
+        console.error('Session validation after login failed:', {
+          message: sessionError.message,
+          status: sessionError.status,
+          data: sessionError.data,
+          stack: sessionError.stack
+        });
+        
+        // Check if we have a valid response from the login that we can use
+        if (response?.user_id) {
+          console.log('Using login response as fallback');
+          const userData = response;
+          localStorage.setItem('user', JSON.stringify(userData));
+          queryClient.setQueryData(['user'], userData);
+          return userData;
+        }
+      }
+      
+      // Fallback to original response handling if session validation fails
+      if (response?.data?.user_id) {
+        const userData = response.data;
+        localStorage.setItem('user', JSON.stringify(userData));
+        queryClient.setQueryData(['user'], userData);
+        return userData;
+      } else if (response?.user_id) {
+        localStorage.setItem('user', JSON.stringify(response));
+        queryClient.setQueryData(['user'], response);
+        return response;
+      }
+      
+      throw new Error('Invalid response format from server');
     } catch (error) {
       console.error('Login error details:', error);
-      throw new Error(error?.message || 'Login failed. Please check your credentials.');
+      // Clear any partial session data on error
+      localStorage.removeItem('user');
+      queryClient.setQueryData(['user'], null);
+      throw new Error(error.message || 'Login failed. Please check your credentials.');
     }
   };
 
