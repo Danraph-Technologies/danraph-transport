@@ -2,8 +2,9 @@ import { createFetchClient } from "@zayne-labs/callapi";
 
 const callBackendApi = createFetchClient({
   baseURL: "https://backend-services--techwithdunamix9789-guakp32e.leapcell.dev/v1",
-  credentials: "include", // This ensures cookies are sent with requests
-  retryAttempts: 1,
+  credentials: "include",
+  retryAttempts: 0, // Disable retry attempts to prevent multiple failed requests
+  validateStatus: (status) => status < 500, // Accept all responses except server errors
   headers: {
     'Content-Type': 'application/json',
     'Accept': 'application/json',
