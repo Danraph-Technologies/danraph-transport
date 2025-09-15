@@ -132,8 +132,13 @@ const Dashboard = () => {
           <p className='sm:text-[22px] text-[18px] py-2 font-semibold'>Recent Activities Section</p>
           <div className='py-4 sm:px-3 px-1 grid grid-cols-1 leee:grid-cols-1 md:grid-cols-2 gap-6'>
             {/* Latest Ride Requests & Charters */}
-            <div className='w-full'>
-              <p className='sm:text-[19.7px] text-[17px]  text-[#323132] font-medium mb-1'>Latest Ride Requests & Charters</p>
+            <div className='w-full border border-[#E1E1E1] rounded-[19px] px-4 pb-2 '>
+              <div className='flex justify-between gap-2 items-center font-medium pb-5 pt-3 '>
+              <p className='sm:text-[19.7px] text-[17px]  text-[#323132] font-medium mb-1'>Latest Ride Trends</p>
+              <p className='text-[14px] cursor-pointer text-[#004AAD] '>See All</p>
+
+              </div>
+              
               <hr className='border border-[#dbdbdb77]'/>
               <div className='overflow-x-auto'>
                 <table className='min-w-[340px] w-full'>

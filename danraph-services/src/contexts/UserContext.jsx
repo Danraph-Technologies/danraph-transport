@@ -149,11 +149,14 @@ export const UserProvider = ({ children }) => {
         throw new Error('No user data received in login response');
       }
       
-      // Ensure we have required fields
-      if (!userData.user_id || !userData.access_token) {
-        console.error('Invalid login response - missing required fields:', userData);
+      // Ensure we have required fields - updated to match actual response structure
+      if (!userData.user_id) {
+        console.error('Invalid login response - missing user_id:', userData);
         throw new Error('Invalid login response from server');
       }
+      
+      // Log the successful login response for debugging
+      console.log('Login successful, user data:', userData);
       
       // Store the user data with access token
       localStorage.setItem('user', JSON.stringify(userData));
