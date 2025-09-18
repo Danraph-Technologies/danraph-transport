@@ -9,7 +9,7 @@ import Dashboard from "./pages/Dashboard";
 import Manage from "./pages/Manage";
 import Ride from "./pages/ride";
 import Charter from "./pages/charter";
-import Users from "./pages/users";
+import Users from "./pages/users/users";
 import Driver from "./pages/driver";
 import Wallet from "./pages/wallet";
 import Notification from "./pages/Notification";

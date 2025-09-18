@@ -1,5 +1,20 @@
 import React from "react";
+import TableMore from "./_tablecomponent/tablemore";
+import Viewdetailsmodal from "./_tablecomponent/Viewdetailsmodal";
 
+function Users() {
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleViewDetails = (user) => {
+    setSelectedUser(user);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setSelectedUser(null);
+  };
 const users = () => {
   return (
     <div>
@@ -98,18 +113,9 @@ const users = () => {
                   ₦ 5,000
                 </td>
                 <td className="whitespace-nowrap  py-4 pl-3">
-                  <svg
-                    width="20"
-                    height="20"
-                    viewBox="0 0 20 20"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M10.3422 2.83496C9.47023 2.83496 8.75684 3.54835 8.75684 4.42028C8.75684 5.2922 9.47023 6.0056 10.3422 6.0056C11.2141 6.0056 11.9275 5.2922 11.9275 4.42028C11.9275 3.54835 11.2141 2.83496 10.3422 2.83496ZM10.3422 13.9322C9.47023 13.9322 8.75684 14.6456 8.75684 15.5175C8.75684 16.3894 9.47023 17.1028 10.3422 17.1028C11.2141 17.1028 11.9275 16.3894 11.9275 15.5175C11.9275 14.6456 11.2141 13.9322 10.3422 13.9322ZM10.3422 8.38357C9.47023 8.38357 8.75684 9.09696 8.75684 9.96889C8.75684 10.8408 9.47023 11.5542 10.3422 11.5542C11.2141 11.5542 11.9275 10.8408 11.9275 9.96889C11.9275 9.09696 11.2141 8.38357 10.3422 8.38357Z"
-                      fill="#5C5F62"
-                    />
-                  </svg>
+                <TableMore 
+                  onViewDetails={() => handleViewDetails(user)}
+                />
                 </td>
               </tr>
 
@@ -139,18 +145,7 @@ const users = () => {
                   ₦ 5,000
                 </td>
                 <td className="whitespace-nowrap  py-4 pl-3">
-                  <svg
-                    width="20"
-                    height="20"
-                    viewBox="0 0 20 20"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M10.3422 2.83496C9.47023 2.83496 8.75684 3.54835 8.75684 4.42028C8.75684 5.2922 9.47023 6.0056 10.3422 6.0056C11.2141 6.0056 11.9275 5.2922 11.9275 4.42028C11.9275 3.54835 11.2141 2.83496 10.3422 2.83496ZM10.3422 13.9322C9.47023 13.9322 8.75684 14.6456 8.75684 15.5175C8.75684 16.3894 9.47023 17.1028 10.3422 17.1028C11.2141 17.1028 11.9275 16.3894 11.9275 15.5175C11.9275 14.6456 11.2141 13.9322 10.3422 13.9322ZM10.3422 8.38357C9.47023 8.38357 8.75684 9.09696 8.75684 9.96889C8.75684 10.8408 9.47023 11.5542 10.3422 11.5542C11.2141 11.5542 11.9275 10.8408 11.9275 9.96889C11.9275 9.09696 11.2141 8.38357 10.3422 8.38357Z"
-                      fill="#5C5F62"
-                    />
-                  </svg>
+                 <TableMore/>
                 </td>
               </tr>
 
@@ -180,18 +175,7 @@ const users = () => {
                   ₦ 5,000
                 </td>
                 <td className="whitespace-nowrap  py-4 pl-3">
-                  <svg
-                    width="20"
-                    height="20"
-                    viewBox="0 0 20 20"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M10.3422 2.83496C9.47023 2.83496 8.75684 3.54835 8.75684 4.42028C8.75684 5.2922 9.47023 6.0056 10.3422 6.0056C11.2141 6.0056 11.9275 5.2922 11.9275 4.42028C11.9275 3.54835 11.2141 2.83496 10.3422 2.83496ZM10.3422 13.9322C9.47023 13.9322 8.75684 14.6456 8.75684 15.5175C8.75684 16.3894 9.47023 17.1028 10.3422 17.1028C11.2141 17.1028 11.9275 16.3894 11.9275 15.5175C11.9275 14.6456 11.2141 13.9322 10.3422 13.9322ZM10.3422 8.38357C9.47023 8.38357 8.75684 9.09696 8.75684 9.96889C8.75684 10.8408 9.47023 11.5542 10.3422 11.5542C11.2141 11.5542 11.9275 10.8408 11.9275 9.96889C11.9275 9.09696 11.2141 8.38357 10.3422 8.38357Z"
-                      fill="#5C5F62"
-                    />
-                  </svg>
+                 <TableMore/>
                 </td>
               </tr>
 
@@ -221,100 +205,7 @@ const users = () => {
                   ₦ 5,000
                 </td>
                 <td className="whitespace-nowrap  py-4 pl-3">
-                  <svg
-                    width="20"
-                    height="20"
-                    viewBox="0 0 20 20"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M10.3422 2.83496C9.47023 2.83496 8.75684 3.54835 8.75684 4.42028C8.75684 5.2922 9.47023 6.0056 10.3422 6.0056C11.2141 6.0056 11.9275 5.2922 11.9275 4.42028C11.9275 3.54835 11.2141 2.83496 10.3422 2.83496ZM10.3422 13.9322C9.47023 13.9322 8.75684 14.6456 8.75684 15.5175C8.75684 16.3894 9.47023 17.1028 10.3422 17.1028C11.2141 17.1028 11.9275 16.3894 11.9275 15.5175C11.9275 14.6456 11.2141 13.9322 10.3422 13.9322ZM10.3422 8.38357C9.47023 8.38357 8.75684 9.09696 8.75684 9.96889C8.75684 10.8408 9.47023 11.5542 10.3422 11.5542C11.2141 11.5542 11.9275 10.8408 11.9275 9.96889C11.9275 9.09696 11.2141 8.38357 10.3422 8.38357Z"
-                      fill="#5C5F62"
-                    />
-                  </svg>
-                </td>
-              </tr>
-
-              <tr className="border-b ">
-                <td className="whitespace-nowrap border-r border-[#dbdbdb7e] py-4 pl-3 pr-10">
-                  Grace Joe
-                </td>
-                <td className="whitespace-nowrap border-r border-[#dbdbdb7e] py-4 pl-3 pr-10">
-                  Student
-                </td>
-                <td className="whitespace-nowrap border-r border-[#dbdbdb7e] py-4 pl-3 pr-10">
-                  127663377
-                </td>
-                <td className="whitespace-nowrap border-r border-[#dbdbdb7e] py-4 pl-3 pr-10">
-                  09168071385
-                </td>
-                <td className="whitespace-nowrap border-r border-[#dbdbdb7e] py-4 pl-3 pr-10">
-                  gracejoe@email.com
-                </td>
-                <td className="whitespace-nowrap border-r border-[#dbdbdb7e] py-4 pl-3 pr-10">
-                  {" "}
-                  <span className="rounded-full w-[12px] h-[12px] bg-[#34C759] inline-block"></span>{" "}
-                  <span>Active</span>{" "}
-                </td>
-                <td className="whitespace-nowrap border-r border-[#dbdbdb7e] py-4 pl-3 pr-10">
-                  {" "}
-                  ₦ 5,000
-                </td>
-                <td className="whitespace-nowrap  py-4 pl-3">
-                  <svg
-                    width="20"
-                    height="20"
-                    viewBox="0 0 20 20"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M10.3422 2.83496C9.47023 2.83496 8.75684 3.54835 8.75684 4.42028C8.75684 5.2922 9.47023 6.0056 10.3422 6.0056C11.2141 6.0056 11.9275 5.2922 11.9275 4.42028C11.9275 3.54835 11.2141 2.83496 10.3422 2.83496ZM10.3422 13.9322C9.47023 13.9322 8.75684 14.6456 8.75684 15.5175C8.75684 16.3894 9.47023 17.1028 10.3422 17.1028C11.2141 17.1028 11.9275 16.3894 11.9275 15.5175C11.9275 14.6456 11.2141 13.9322 10.3422 13.9322ZM10.3422 8.38357C9.47023 8.38357 8.75684 9.09696 8.75684 9.96889C8.75684 10.8408 9.47023 11.5542 10.3422 11.5542C11.2141 11.5542 11.9275 10.8408 11.9275 9.96889C11.9275 9.09696 11.2141 8.38357 10.3422 8.38357Z"
-                      fill="#5C5F62"
-                    />
-                  </svg>
-                </td>
-              </tr>
-
-              <tr className="border-b ">
-                <td className="whitespace-nowrap border-r border-[#dbdbdb7e] py-4 pl-3 pr-10">
-                  Grace Joe
-                </td>
-                <td className="whitespace-nowrap border-r border-[#dbdbdb7e] py-4 pl-3 pr-10">
-                  Student
-                </td>
-                <td className="whitespace-nowrap border-r border-[#dbdbdb7e] py-4 pl-3 pr-10">
-                  127663377
-                </td>
-                <td className="whitespace-nowrap border-r border-[#dbdbdb7e] py-4 pl-3 pr-10">
-                  09168071385
-                </td>
-                <td className="whitespace-nowrap border-r border-[#dbdbdb7e] py-4 pl-3 pr-10">
-                  gracejoe@email.com
-                </td>
-                <td className="whitespace-nowrap border-r border-[#dbdbdb7e] py-4 pl-3 pr-10">
-                  {" "}
-                  <span className="rounded-full w-[12px] h-[12px] bg-[#34C759] inline-block"></span>{" "}
-                  <span>Active</span>{" "}
-                </td>
-                <td className="whitespace-nowrap border-r border-[#dbdbdb7e] py-4 pl-3 pr-10">
-                  {" "}
-                  ₦ 5,000
-                </td>
-                <td className="whitespace-nowrap  py-4 pl-3">
-                  <svg
-                    width="20"
-                    height="20"
-                    viewBox="0 0 20 20"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M10.3422 2.83496C9.47023 2.83496 8.75684 3.54835 8.75684 4.42028C8.75684 5.2922 9.47023 6.0056 10.3422 6.0056C11.2141 6.0056 11.9275 5.2922 11.9275 4.42028C11.9275 3.54835 11.2141 2.83496 10.3422 2.83496ZM10.3422 13.9322C9.47023 13.9322 8.75684 14.6456 8.75684 15.5175C8.75684 16.3894 9.47023 17.1028 10.3422 17.1028C11.2141 17.1028 11.9275 16.3894 11.9275 15.5175C11.9275 14.6456 11.2141 13.9322 10.3422 13.9322ZM10.3422 8.38357C9.47023 8.38357 8.75684 9.09696 8.75684 9.96889C8.75684 10.8408 9.47023 11.5542 10.3422 11.5542C11.2141 11.5542 11.9275 10.8408 11.9275 9.96889C11.9275 9.09696 11.2141 8.38357 10.3422 8.38357Z"
-                      fill="#5C5F62"
-                    />
-                  </svg>
+                 <TableMore/>
                 </td>
               </tr>
 
@@ -344,18 +235,7 @@ const users = () => {
                   ₦ 5,000
                 </td>
                 <td className="whitespace-nowrap  py-4 pl-3">
-                  <svg
-                    width="20"
-                    height="20"
-                    viewBox="0 0 20 20"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M10.3422 2.83496C9.47023 2.83496 8.75684 3.54835 8.75684 4.42028C8.75684 5.2922 9.47023 6.0056 10.3422 6.0056C11.2141 6.0056 11.9275 5.2922 11.9275 4.42028C11.9275 3.54835 11.2141 2.83496 10.3422 2.83496ZM10.3422 13.9322C9.47023 13.9322 8.75684 14.6456 8.75684 15.5175C8.75684 16.3894 9.47023 17.1028 10.3422 17.1028C11.2141 17.1028 11.9275 16.3894 11.9275 15.5175C11.9275 14.6456 11.2141 13.9322 10.3422 13.9322ZM10.3422 8.38357C9.47023 8.38357 8.75684 9.09696 8.75684 9.96889C8.75684 10.8408 9.47023 11.5542 10.3422 11.5542C11.2141 11.5542 11.9275 10.8408 11.9275 9.96889C11.9275 9.09696 11.2141 8.38357 10.3422 8.38357Z"
-                      fill="#5C5F62"
-                    />
-                  </svg>
+                 <TableMore/>
                 </td>
               </tr>
 
@@ -385,18 +265,7 @@ const users = () => {
                   ₦ 5,000
                 </td>
                 <td className="whitespace-nowrap  py-4 pl-3">
-                  <svg
-                    width="20"
-                    height="20"
-                    viewBox="0 0 20 20"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M10.3422 2.83496C9.47023 2.83496 8.75684 3.54835 8.75684 4.42028C8.75684 5.2922 9.47023 6.0056 10.3422 6.0056C11.2141 6.0056 11.9275 5.2922 11.9275 4.42028C11.9275 3.54835 11.2141 2.83496 10.3422 2.83496ZM10.3422 13.9322C9.47023 13.9322 8.75684 14.6456 8.75684 15.5175C8.75684 16.3894 9.47023 17.1028 10.3422 17.1028C11.2141 17.1028 11.9275 16.3894 11.9275 15.5175C11.9275 14.6456 11.2141 13.9322 10.3422 13.9322ZM10.3422 8.38357C9.47023 8.38357 8.75684 9.09696 8.75684 9.96889C8.75684 10.8408 9.47023 11.5542 10.3422 11.5542C11.2141 11.5542 11.9275 10.8408 11.9275 9.96889C11.9275 9.09696 11.2141 8.38357 10.3422 8.38357Z"
-                      fill="#5C5F62"
-                    />
-                  </svg>
+                 <TableMore/>
                 </td>
               </tr>
 
@@ -426,18 +295,7 @@ const users = () => {
                   ₦ 5,000
                 </td>
                 <td className="whitespace-nowrap  py-4 pl-3">
-                  <svg
-                    width="20"
-                    height="20"
-                    viewBox="0 0 20 20"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M10.3422 2.83496C9.47023 2.83496 8.75684 3.54835 8.75684 4.42028C8.75684 5.2922 9.47023 6.0056 10.3422 6.0056C11.2141 6.0056 11.9275 5.2922 11.9275 4.42028C11.9275 3.54835 11.2141 2.83496 10.3422 2.83496ZM10.3422 13.9322C9.47023 13.9322 8.75684 14.6456 8.75684 15.5175C8.75684 16.3894 9.47023 17.1028 10.3422 17.1028C11.2141 17.1028 11.9275 16.3894 11.9275 15.5175C11.9275 14.6456 11.2141 13.9322 10.3422 13.9322ZM10.3422 8.38357C9.47023 8.38357 8.75684 9.09696 8.75684 9.96889C8.75684 10.8408 9.47023 11.5542 10.3422 11.5542C11.2141 11.5542 11.9275 10.8408 11.9275 9.96889C11.9275 9.09696 11.2141 8.38357 10.3422 8.38357Z"
-                      fill="#5C5F62"
-                    />
-                  </svg>
+                 <TableMore/>
                 </td>
               </tr>
 
@@ -467,18 +325,37 @@ const users = () => {
                   ₦ 5,000
                 </td>
                 <td className="whitespace-nowrap  py-4 pl-3">
-                  <svg
-                    width="20"
-                    height="20"
-                    viewBox="0 0 20 20"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M10.3422 2.83496C9.47023 2.83496 8.75684 3.54835 8.75684 4.42028C8.75684 5.2922 9.47023 6.0056 10.3422 6.0056C11.2141 6.0056 11.9275 5.2922 11.9275 4.42028C11.9275 3.54835 11.2141 2.83496 10.3422 2.83496ZM10.3422 13.9322C9.47023 13.9322 8.75684 14.6456 8.75684 15.5175C8.75684 16.3894 9.47023 17.1028 10.3422 17.1028C11.2141 17.1028 11.9275 16.3894 11.9275 15.5175C11.9275 14.6456 11.2141 13.9322 10.3422 13.9322ZM10.3422 8.38357C9.47023 8.38357 8.75684 9.09696 8.75684 9.96889C8.75684 10.8408 9.47023 11.5542 10.3422 11.5542C11.2141 11.5542 11.9275 10.8408 11.9275 9.96889C11.9275 9.09696 11.2141 8.38357 10.3422 8.38357Z"
-                      fill="#5C5F62"
-                    />
-                  </svg>
+                 <TableMore/>
+                </td>
+              </tr>
+
+              <tr className="border-b ">
+                <td className="whitespace-nowrap border-r border-[#dbdbdb7e] py-4 pl-3 pr-10">
+                  Grace Joe
+                </td>
+                <td className="whitespace-nowrap border-r border-[#dbdbdb7e] py-4 pl-3 pr-10">
+                  Student
+                </td>
+                <td className="whitespace-nowrap border-r border-[#dbdbdb7e] py-4 pl-3 pr-10">
+                  127663377
+                </td>
+                <td className="whitespace-nowrap border-r border-[#dbdbdb7e] py-4 pl-3 pr-10">
+                  09168071385
+                </td>
+                <td className="whitespace-nowrap border-r border-[#dbdbdb7e] py-4 pl-3 pr-10">
+                  gracejoe@email.com
+                </td>
+                <td className="whitespace-nowrap border-r border-[#dbdbdb7e] py-4 pl-3 pr-10">
+                  {" "}
+                  <span className="rounded-full w-[12px] h-[12px] bg-[#34C759] inline-block"></span>{" "}
+                  <span>Active</span>{" "}
+                </td>
+                <td className="whitespace-nowrap border-r border-[#dbdbdb7e] py-4 pl-3 pr-10">
+                  {" "}
+                  ₦ 5,000
+                </td>
+                <td className="whitespace-nowrap  py-4 pl-3">
+                 <TableMore/>
                 </td>
               </tr>
 
@@ -508,22 +385,141 @@ const users = () => {
                   ₦ 5,000
                 </td>
                 <td className="whitespace-nowrap  py-4 pl-3">
-                  <svg
-                    width="20"
-                    height="20"
-                    viewBox="0 0 20 20"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M10.3422 2.83496C9.47023 2.83496 8.75684 3.54835 8.75684 4.42028C8.75684 5.2922 9.47023 6.0056 10.3422 6.0056C11.2141 6.0056 11.9275 5.2922 11.9275 4.42028C11.9275 3.54835 11.2141 2.83496 10.3422 2.83496ZM10.3422 13.9322C9.47023 13.9322 8.75684 14.6456 8.75684 15.5175C8.75684 16.3894 9.47023 17.1028 10.3422 17.1028C11.2141 17.1028 11.9275 16.3894 11.9275 15.5175C11.9275 14.6456 11.2141 13.9322 10.3422 13.9322ZM10.3422 8.38357C9.47023 8.38357 8.75684 9.09696 8.75684 9.96889C8.75684 10.8408 9.47023 11.5542 10.3422 11.5542C11.2141 11.5542 11.9275 10.8408 11.9275 9.96889C11.9275 9.09696 11.2141 8.38357 10.3422 8.38357Z"
-                      fill="#5C5F62"
-                    />
-                  </svg>
+                 <TableMore/>
+                </td>
+              </tr>
+
+              <tr className="border-b ">
+                <td className="whitespace-nowrap border-r border-[#dbdbdb7e] py-4 pl-3 pr-10">
+                  Grace Joe
+                </td>
+                <td className="whitespace-nowrap border-r border-[#dbdbdb7e] py-4 pl-3 pr-10">
+                  Student
+                </td>
+                <td className="whitespace-nowrap border-r border-[#dbdbdb7e] py-4 pl-3 pr-10">
+                  127663377
+                </td>
+                <td className="whitespace-nowrap border-r border-[#dbdbdb7e] py-4 pl-3 pr-10">
+                  09168071385
+                </td>
+                <td className="whitespace-nowrap border-r border-[#dbdbdb7e] py-4 pl-3 pr-10">
+                  gracejoe@email.com
+                </td>
+                <td className="whitespace-nowrap border-r border-[#dbdbdb7e] py-4 pl-3 pr-10">
+                  {" "}
+                  <span className="rounded-full w-[12px] h-[12px] bg-[#34C759] inline-block"></span>{" "}
+                  <span>Active</span>{" "}
+                </td>
+                <td className="whitespace-nowrap border-r border-[#dbdbdb7e] py-4 pl-3 pr-10">
+                  {" "}
+                  ₦ 5,000
+                </td>
+                <td className="whitespace-nowrap  py-4 pl-3">
+                 <TableMore/>
+                </td>
+              </tr>
+
+              <tr className="border-b ">
+                <td className="whitespace-nowrap border-r border-[#dbdbdb7e] py-4 pl-3 pr-10">
+                  Grace Joe
+                </td>
+                <td className="whitespace-nowrap border-r border-[#dbdbdb7e] py-4 pl-3 pr-10">
+                  Student
+                </td>
+                <td className="whitespace-nowrap border-r border-[#dbdbdb7e] py-4 pl-3 pr-10">
+                  127663377
+                </td>
+                <td className="whitespace-nowrap border-r border-[#dbdbdb7e] py-4 pl-3 pr-10">
+                  09168071385
+                </td>
+                <td className="whitespace-nowrap border-r border-[#dbdbdb7e] py-4 pl-3 pr-10">
+                  gracejoe@email.com
+                </td>
+                <td className="whitespace-nowrap border-r border-[#dbdbdb7e] py-4 pl-3 pr-10">
+                  {" "}
+                  <span className="rounded-full w-[12px] h-[12px] bg-[#34C759] inline-block"></span>{" "}
+                  <span>Active</span>{" "}
+                </td>
+                <td className="whitespace-nowrap border-r border-[#dbdbdb7e] py-4 pl-3 pr-10">
+                  {" "}
+                  ₦ 5,000
+                </td>
+                <td className="whitespace-nowrap  py-4 pl-3">
+                 <TableMore/>
+                </td>
+              </tr>
+
+              <tr className="border-b ">
+                <td className="whitespace-nowrap border-r border-[#dbdbdb7e] py-4 pl-3 pr-10">
+                  Grace Joe
+                </td>
+                <td className="whitespace-nowrap border-r border-[#dbdbdb7e] py-4 pl-3 pr-10">
+                  Student
+                </td>
+                <td className="whitespace-nowrap border-r border-[#dbdbdb7e] py-4 pl-3 pr-10">
+                  127663377
+                </td>
+                <td className="whitespace-nowrap border-r border-[#dbdbdb7e] py-4 pl-3 pr-10">
+                  09168071385
+                </td>
+                <td className="whitespace-nowrap border-r border-[#dbdbdb7e] py-4 pl-3 pr-10">
+                  gracejoe@email.com
+                </td>
+                <td className="whitespace-nowrap border-r border-[#dbdbdb7e] py-4 pl-3 pr-10">
+                  {" "}
+                  <span className="rounded-full w-[12px] h-[12px] bg-[#34C759] inline-block"></span>{" "}
+                  <span>Active</span>{" "}
+                </td>
+                <td className="whitespace-nowrap border-r border-[#dbdbdb7e] py-4 pl-3 pr-10">
+                  {" "}
+                  ₦ 5,000
+                </td>
+                <td className="whitespace-nowrap  py-4 pl-3">
+                 <TableMore/>
+                </td>
+              </tr>
+
+              <tr className="border-b ">
+                <td className="whitespace-nowrap border-r border-[#dbdbdb7e] py-4 pl-3 pr-10">
+                  Grace Joe
+                </td>
+                <td className="whitespace-nowrap border-r border-[#dbdbdb7e] py-4 pl-3 pr-10">
+                  Student
+                </td>
+                <td className="whitespace-nowrap border-r border-[#dbdbdb7e] py-4 pl-3 pr-10">
+                  127663377
+                </td>
+                <td className="whitespace-nowrap border-r border-[#dbdbdb7e] py-4 pl-3 pr-10">
+                  09168071385
+                </td>
+                <td className="whitespace-nowrap border-r border-[#dbdbdb7e] py-4 pl-3 pr-10">
+                  gracejoe@email.com
+                </td>
+                <td className="whitespace-nowrap border-r border-[#dbdbdb7e] py-4 pl-3 pr-10">
+                  {" "}
+                  <span className="rounded-full w-[12px] h-[12px] bg-[#F80B0B] inline-block"></span>{" "}
+                  <span>Deactivated</span>{" "}
+                </td>
+                <td className="whitespace-nowrap border-r border-[#dbdbdb7e] py-4 pl-3 pr-10">
+                  {" "}
+                  ₦ 5,000
+                </td>
+                <td className="whitespace-nowrap  py-4 pl-3">
+                 <TableMore/>
                 </td>
               </tr>
             </tbody>
           </table>
+           {/* Modal */}
+      {isModalOpen && (
+        <Viewdetailsmodal 
+          userData={selectedUser} 
+          onClose={closeModal} 
+        />
+      )}
+    
+  );
+}
 
           <div className="w-full flex justify-center my-5">
             <div className="w-full max-w-[500px] border border-gray-300 rounded-md bg-white px-2 py-[2px]">
