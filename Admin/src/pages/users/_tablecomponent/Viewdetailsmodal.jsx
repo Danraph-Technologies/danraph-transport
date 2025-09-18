@@ -1,11 +1,14 @@
 import React from "react";
 
-function Viewdetailsmodal() {
+function Viewdetailsmodal({ onClose }) {
   return (
-    <div className="w-[767px] h-auto relative  bg-white rounded-[10px]">
-      <p className="absolute right-2 top-2 cursor-pointer px-3 py-2 text-[20px] text-[#262626] font-semibold ">
+    <div className="w-[767px] max-h-[95vh] overflow-y-auto relative sm:px-2 mx-2 bg-white rounded-[10px]">
+      <button
+        onClick={onClose}
+        className="absolute right-2 top-2 cursor-pointer px-3 py-2 text-[20px] text-[#262626] font-semibold"
+      >
         X
-      </p>
+      </button>
       <div className="py-10 px-5 ">
         <h2 className="text-[24px] font-semibold text-[#262626] ">
           User Profile
@@ -15,7 +18,7 @@ function Viewdetailsmodal() {
             <img
               src="/userprofile.jpg"
               alt=""
-              className="w-[98px] h-[98px] rounded-full object-cover "
+              className="sm:w-[98px] sm:h-[98px] w-[50px] h-[50px] rounded-full object-cover "
             />
             <div className="flex gap-1 items-center">
               <p className="bg-[#34C759] w-[13px] h-[13px] rounded-full"></p>
@@ -46,44 +49,201 @@ function Viewdetailsmodal() {
         </div>
         <div className="border border-[#58585880] my-3"></div>
         <div>
-          <h2 className="text-[#000000] font-semibold text-[20px] ">
+          <h2 className="text-[#000000] font-semibold py-3 text-[20px] ">
             Ride History
           </h2>
-          <div className="border rounded-[10px] w-[689px] px-2 ">
-            <table className="w-full">
-              <thead className="border-b">
-                <tr className="text-left  ">
-                  <th className="px-3 py-2">Date</th>
-                  <th className="px-3 py-2">Destination</th>
-                  <th className="px-3 py-2">Fare (₦) </th>
-                  <th className="px-3 py-2">Driver</th>
-                  <th className="px-3 py-2">Complaints</th>
-                </tr>
-              </thead>
-              <tbody className="w-full">
-                <tr className="">
-                  <td className="px-3 flex flex-col py-2 ">
-                    <span className="text-[13.2px] text-[#77787C]">
-                      4/4/2024
-                    </span>
-                    <span className="text-[10.2px] text-[#77787C]">
-                      10:00AM
-                    </span>
-                  </td>
-                  <td className="px-3">
-                    <span>Main Gate</span>
-                    <span>
+          <div className="max-w-[689px]">
+            <div className="border overflow-x-auto rounded-[15px]  px-2 ">
+              <table className="w-full ">
+                <thead className="border-b whitespace-nowrap">
+                  <tr className="text-left  ">
+                    <th className="px-3 py-2">Date</th>
+                    <th className="px-3 py-2">Destination</th>
+                    <th className="px-3 py-2">Fare (₦) </th>
+                    <th className="px-3 py-2">Driver</th>
+                    <th className="px-3 py-2">Complaints</th>
+                  </tr>
+                </thead>
+                <tbody className="w-full">
+                  <tr className="">
+                    <td className="px-3 flex flex-col py-2 w-[128px] ">
+                      <span className="text-[14.2px] text-[#595959]">
+                        4/4/2024
+                      </span>
+                      <span className="text-[11.2px] text-[#77787C]">
+                        10:00AM
+                      </span>
+                    </td>
+                    <td className="px-3 py-2 w-[128px] ">
+                      <span className="text-[14.2px] text-[#595959]">
+                        Main Gate
+                      </span>
+                      <span className="flex gap-2 items-center">
                         <span>
-                            <img src="/arrow.png" alt="" />
+                          <img src="/arrow.png" alt="" className="w-[8px]" />
                         </span>
-                    </span>
-                  </td>
-                  <td className="px-3">ff</td>
-                  <td className="px-3">ff</td>
-                  <td className="px-3">ff</td>
-                </tr>
-              </tbody>
-            </table>
+                        <span className="text-[11.2px] text-[#77787C]">
+                          Hostel A
+                        </span>
+                      </span>
+                    </td>
+                    <td className="px-3 w-[128px]">₦250</td>
+                    <td className="px-3  py-2">
+                      <span className="flex gap-1 text-[#202223] items-center">
+                        <span className="text-[17px]">James</span>
+                        <span>
+                          <svg
+                            width="15"
+                            height="15"
+                            viewBox="0 0 12 12"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              d="M9.56248 3V7.875C9.56248 8.02418 9.50322 8.16726 9.39773 8.27275C9.29224 8.37824 9.14916 8.4375 8.99998 8.4375C8.8508 8.4375 8.70772 8.37824 8.60223 8.27275C8.49674 8.16726 8.43748 8.02418 8.43748 7.875V4.35938L3.39795 9.39797C3.29228 9.50364 3.14895 9.56301 2.99951 9.56301C2.85007 9.56301 2.70675 9.50364 2.60107 9.39797C2.4954 9.2923 2.43604 9.14897 2.43604 8.99953C2.43604 8.85009 2.4954 8.70677 2.60107 8.60109L7.6406 3.5625H4.12498C3.9758 3.5625 3.83272 3.50324 3.72723 3.39775C3.62174 3.29226 3.56248 3.14918 3.56248 3C3.56248 2.85082 3.62174 2.70774 3.72723 2.60225C3.83272 2.49676 3.9758 2.4375 4.12498 2.4375H8.99998C9.14916 2.4375 9.29224 2.49676 9.39773 2.60225C9.50322 2.70774 9.56248 2.85082 9.56248 3Z"
+                              fill="#202223"
+                            />
+                          </svg>
+                        </span>
+                      </span>
+                    </td>
+                    <td className="px-3 w-[128px]">None</td>
+                  </tr>
+                  <tr className="">
+                    <td className="px-3 flex flex-col py-2 w-[128px]">
+                      <span className="text-[14.2px] text-[#595959]">
+                        4/4/2024
+                      </span>
+                      <span className="text-[11.2px] text-[#77787C]">
+                        10:00AM
+                      </span>
+                    </td>
+                    <td className="px-3 py-2 w-[128px]">
+                      <span className="text-[14.2px] text-[#595959]">
+                        Main Gate
+                      </span>
+                      <span className="flex gap-2 items-center">
+                        <span>
+                          <img src="/arrow.png" alt="" className="w-[8px]" />
+                        </span>
+                        <span className="text-[11.2px] text-[#77787C]">
+                          Hostel A
+                        </span>
+                      </span>
+                    </td>
+                    <td className="px-3 w-[128px]">₦250</td>
+                    <td className="px-3  py-2">
+                      <span className="flex gap-1 text-[#202223] items-center">
+                        <span className="text-[17px]">James</span>
+                        <span>
+                          <svg
+                            width="15"
+                            height="15"
+                            viewBox="0 0 12 12"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              d="M9.56248 3V7.875C9.56248 8.02418 9.50322 8.16726 9.39773 8.27275C9.29224 8.37824 9.14916 8.4375 8.99998 8.4375C8.8508 8.4375 8.70772 8.37824 8.60223 8.27275C8.49674 8.16726 8.43748 8.02418 8.43748 7.875V4.35938L3.39795 9.39797C3.29228 9.50364 3.14895 9.56301 2.99951 9.56301C2.85007 9.56301 2.70675 9.50364 2.60107 9.39797C2.4954 9.2923 2.43604 9.14897 2.43604 8.99953C2.43604 8.85009 2.4954 8.70677 2.60107 8.60109L7.6406 3.5625H4.12498C3.9758 3.5625 3.83272 3.50324 3.72723 3.39775C3.62174 3.29226 3.56248 3.14918 3.56248 3C3.56248 2.85082 3.62174 2.70774 3.72723 2.60225C3.83272 2.49676 3.9758 2.4375 4.12498 2.4375H8.99998C9.14916 2.4375 9.29224 2.49676 9.39773 2.60225C9.50322 2.70774 9.56248 2.85082 9.56248 3Z"
+                              fill="#202223"
+                            />
+                          </svg>
+                        </span>
+                      </span>
+                    </td>
+                    <td className="px-3 w-[128px]">None</td>
+                  </tr>
+                  <tr className="">
+                    <td className="px-3 flex flex-col py-2 ">
+                      <span className="text-[14.2px] text-[#595959]">
+                        4/4/2024
+                      </span>
+                      <span className="text-[11.2px] text-[#77787C]">
+                        10:00AM
+                      </span>
+                    </td>
+                    <td className="px-3 py-2 ">
+                      <span className="text-[14.2px] text-[#595959]">
+                        Main Gate
+                      </span>
+                      <span className="flex gap-2 items-center">
+                        <span>
+                          <img src="/arrow.png" alt="" className="w-[8px]" />
+                        </span>
+                        <span className="text-[11.2px] text-[#77787C]">
+                          Hostel A
+                        </span>
+                      </span>
+                    </td>
+                    <td className="px-3 w-[128px]">₦250</td>
+                    <td className="px-3  py-2">
+                      <span className="flex gap-1 text-[#202223] items-center">
+                        <span className="text-[17px]">James</span>
+                        <span>
+                          <svg
+                            width="15"
+                            height="15"
+                            viewBox="0 0 12 12"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              d="M9.56248 3V7.875C9.56248 8.02418 9.50322 8.16726 9.39773 8.27275C9.29224 8.37824 9.14916 8.4375 8.99998 8.4375C8.8508 8.4375 8.70772 8.37824 8.60223 8.27275C8.49674 8.16726 8.43748 8.02418 8.43748 7.875V4.35938L3.39795 9.39797C3.29228 9.50364 3.14895 9.56301 2.99951 9.56301C2.85007 9.56301 2.70675 9.50364 2.60107 9.39797C2.4954 9.2923 2.43604 9.14897 2.43604 8.99953C2.43604 8.85009 2.4954 8.70677 2.60107 8.60109L7.6406 3.5625H4.12498C3.9758 3.5625 3.83272 3.50324 3.72723 3.39775C3.62174 3.29226 3.56248 3.14918 3.56248 3C3.56248 2.85082 3.62174 2.70774 3.72723 2.60225C3.83272 2.49676 3.9758 2.4375 4.12498 2.4375H8.99998C9.14916 2.4375 9.29224 2.49676 9.39773 2.60225C9.50322 2.70774 9.56248 2.85082 9.56248 3Z"
+                              fill="#202223"
+                            />
+                          </svg>
+                        </span>
+                      </span>
+                    </td>
+                    <td className="px-3 w-[128px]">None</td>
+                  </tr>
+                  <tr className="">
+                    <td className="px-3 flex flex-col py-2 ">
+                      <span className="text-[14.2px] text-[#595959]">
+                        4/4/2024
+                      </span>
+                      <span className="text-[11.2px] text-[#77787C]">
+                        10:00AM
+                      </span>
+                    </td>
+                    <td className="px-3 py-2 w-[128px]">
+                      <span className="text-[14.2px] text-[#595959]">
+                        Main Gate
+                      </span>
+                      <span className="flex gap-2 items-center">
+                        <span>
+                          <img src="/arrow.png" alt="" className="w-[8px]" />
+                        </span>
+                        <span className="text-[11.2px] text-[#77787C]">
+                          Hostel A
+                        </span>
+                      </span>
+                    </td>
+                    <td className="px-3 w-[128px]">₦250</td>
+                    <td className="px-3  py-2 w-[128px]">
+                      <span className="flex gap-1 text-[#202223] items-center">
+                        <span className="text-[17px]">James</span>
+                        <span>
+                          <svg
+                            width="15"
+                            height="15"
+                            viewBox="0 0 12 12"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              d="M9.56248 3V7.875C9.56248 8.02418 9.50322 8.16726 9.39773 8.27275C9.29224 8.37824 9.14916 8.4375 8.99998 8.4375C8.8508 8.4375 8.70772 8.37824 8.60223 8.27275C8.49674 8.16726 8.43748 8.02418 8.43748 7.875V4.35938L3.39795 9.39797C3.29228 9.50364 3.14895 9.56301 2.99951 9.56301C2.85007 9.56301 2.70675 9.50364 2.60107 9.39797C2.4954 9.2923 2.43604 9.14897 2.43604 8.99953C2.43604 8.85009 2.4954 8.70677 2.60107 8.60109L7.6406 3.5625H4.12498C3.9758 3.5625 3.83272 3.50324 3.72723 3.39775C3.62174 3.29226 3.56248 3.14918 3.56248 3C3.56248 2.85082 3.62174 2.70774 3.72723 2.60225C3.83272 2.49676 3.9758 2.4375 4.12498 2.4375H8.99998C9.14916 2.4375 9.29224 2.49676 9.39773 2.60225C9.50322 2.70774 9.56248 2.85082 9.56248 3Z"
+                              fill="#202223"
+                            />
+                          </svg>
+                        </span>
+                      </span>
+                    </td>
+                    <td className="px-3 w-[128px]">None</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>

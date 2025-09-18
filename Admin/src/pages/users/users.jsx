@@ -1,8 +1,18 @@
-import React from "react";
+import React, { useState } from "react";
 import TableMore from "./_tablecomponent/tablemore";
 import Viewdetailsmodal from "./_tablecomponent/Viewdetailsmodal";
 
 const users = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleViewDetails = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+
   return (
     <div className="relative">
       <div className="max-w-[1105px] w-full rounded-lg border border-gray-300 py-3 px-4 ">
@@ -100,7 +110,7 @@ const users = () => {
                   ₦ 5,000
                 </td>
                 <td className="whitespace-nowrap  py-4 pl-3">
-                  <TableMore />
+                  <TableMore onViewDetails={handleViewDetails} />
                 </td>
               </tr>
 
@@ -130,7 +140,7 @@ const users = () => {
                   ₦ 5,000
                 </td>
                 <td className="whitespace-nowrap  py-4 pl-3">
-                  <TableMore />
+                  <TableMore onViewDetails={handleViewDetails} />
                 </td>
               </tr>
 
@@ -160,37 +170,7 @@ const users = () => {
                   ₦ 5,000
                 </td>
                 <td className="whitespace-nowrap  py-4 pl-3">
-                  <TableMore />
-                </td>
-              </tr>
-
-              <tr className="border-b ">
-                <td className="whitespace-nowrap border-r border-[#dbdbdb7e] py-4 pl-3 pr-10">
-                  Grace Joe
-                </td>
-                <td className="whitespace-nowrap border-r border-[#dbdbdb7e] py-4 pl-3 pr-10">
-                  Student
-                </td>
-                <td className="whitespace-nowrap border-r border-[#dbdbdb7e] py-4 pl-3 pr-10">
-                  127663377
-                </td>
-                <td className="whitespace-nowrap border-r border-[#dbdbdb7e] py-4 pl-3 pr-10">
-                  09168071385
-                </td>
-                <td className="whitespace-nowrap border-r border-[#dbdbdb7e] py-4 pl-3 pr-10">
-                  gracejoe@email.com
-                </td>
-                <td className="whitespace-nowrap border-r border-[#dbdbdb7e] py-4 pl-3 pr-10">
-                  {" "}
-                  <span className="rounded-full w-[12px] h-[12px] bg-[#34C759] inline-block"></span>{" "}
-                  <span>Active</span>{" "}
-                </td>
-                <td className="whitespace-nowrap border-r border-[#dbdbdb7e] py-4 pl-3 pr-10">
-                  {" "}
-                  ₦ 5,000
-                </td>
-                <td className="whitespace-nowrap  py-4 pl-3">
-                  <TableMore />
+                  <TableMore onViewDetails={handleViewDetails} />
                 </td>
               </tr>
 
@@ -220,7 +200,7 @@ const users = () => {
                   ₦ 5,000
                 </td>
                 <td className="whitespace-nowrap  py-4 pl-3">
-                  <TableMore />
+                  <TableMore onViewDetails={handleViewDetails} />
                 </td>
               </tr>
 
@@ -250,7 +230,7 @@ const users = () => {
                   ₦ 5,000
                 </td>
                 <td className="whitespace-nowrap  py-4 pl-3">
-                  <TableMore />
+                  <TableMore onViewDetails={handleViewDetails} />
                 </td>
               </tr>
 
@@ -280,7 +260,7 @@ const users = () => {
                   ₦ 5,000
                 </td>
                 <td className="whitespace-nowrap  py-4 pl-3">
-                  <TableMore />
+                  <TableMore onViewDetails={handleViewDetails} />
                 </td>
               </tr>
 
@@ -310,7 +290,7 @@ const users = () => {
                   ₦ 5,000
                 </td>
                 <td className="whitespace-nowrap  py-4 pl-3">
-                  <TableMore />
+                  <TableMore onViewDetails={handleViewDetails} />
                 </td>
               </tr>
 
@@ -340,7 +320,7 @@ const users = () => {
                   ₦ 5,000
                 </td>
                 <td className="whitespace-nowrap  py-4 pl-3">
-                  <TableMore />
+                  <TableMore onViewDetails={handleViewDetails} />
                 </td>
               </tr>
 
@@ -370,7 +350,7 @@ const users = () => {
                   ₦ 5,000
                 </td>
                 <td className="whitespace-nowrap  py-4 pl-3">
-                  <TableMore />
+                  <TableMore onViewDetails={handleViewDetails} />
                 </td>
               </tr>
 
@@ -400,7 +380,7 @@ const users = () => {
                   ₦ 5,000
                 </td>
                 <td className="whitespace-nowrap  py-4 pl-3">
-                  <TableMore />
+                  <TableMore onViewDetails={handleViewDetails} />
                 </td>
               </tr>
 
@@ -430,7 +410,7 @@ const users = () => {
                   ₦ 5,000
                 </td>
                 <td className="whitespace-nowrap  py-4 pl-3">
-                  <TableMore />
+                  <TableMore onViewDetails={handleViewDetails} />
                 </td>
               </tr>
 
@@ -460,7 +440,7 @@ const users = () => {
                   ₦ 5,000
                 </td>
                 <td className="whitespace-nowrap  py-4 pl-3">
-                  <TableMore />
+                  <TableMore onViewDetails={handleViewDetails} />
                 </td>
               </tr>
 
@@ -490,7 +470,7 @@ const users = () => {
                   ₦ 5,000
                 </td>
                 <td className="whitespace-nowrap  py-4 pl-3">
-                  <TableMore />
+                  <TableMore onViewDetails={handleViewDetails} />
                 </td>
               </tr>
             </tbody>
@@ -581,9 +561,11 @@ const users = () => {
           </div>
         </div>
       </div>
-      <div className="fixed inset-0 bg-black/20 flex items-center justify-center z-50">
-        <Viewdetailsmodal />
-      </div>
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-start justify-center py-4 z-50 overflow-y-auto">
+          <Viewdetailsmodal onClose={handleCloseModal} />
+        </div>
+      )}
     </div>
   );
 };

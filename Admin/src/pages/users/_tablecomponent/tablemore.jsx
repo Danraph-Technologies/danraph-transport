@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 
-function TableMore() {
+function TableMore({ onViewDetails }) {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
 
@@ -52,7 +52,10 @@ function TableMore() {
 
   return (
     <div className="relative table-more-dropdown" ref={dropdownRef}>
-      <button onClick={toggleMenu} className="focus:outline-none">
+      <button
+        onClick={toggleMenu}
+        className="flex items-center justify-center w-8 h-8 rounded-full hover:bg-gray-100"
+      >
         <svg
           width="20"
           height="20"
