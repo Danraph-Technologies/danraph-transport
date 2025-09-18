@@ -1,10 +1,10 @@
 import React from "react";
 import TableMore from "./_tablecomponent/tablemore";
-
+import Viewdetailsmodal from "./_tablecomponent/Viewdetailsmodal";
 
 const users = () => {
   return (
-    <div>
+    <div className="relative">
       <div className="max-w-[1105px] w-full rounded-lg border border-gray-300 py-3 px-4 ">
         <p className="text-[20px] font-semibold py-2">User Management</p>
         <div className=" relative py-3 mb-2">
@@ -100,7 +100,7 @@ const users = () => {
                   ₦ 5,000
                 </td>
                 <td className="whitespace-nowrap  py-4 pl-3">
-                 <TableMore/>
+                  <TableMore />
                 </td>
               </tr>
 
@@ -130,7 +130,7 @@ const users = () => {
                   ₦ 5,000
                 </td>
                 <td className="whitespace-nowrap  py-4 pl-3">
-                 <TableMore/>
+                  <TableMore />
                 </td>
               </tr>
 
@@ -160,7 +160,7 @@ const users = () => {
                   ₦ 5,000
                 </td>
                 <td className="whitespace-nowrap  py-4 pl-3">
-                 <TableMore/>
+                  <TableMore />
                 </td>
               </tr>
 
@@ -190,7 +190,7 @@ const users = () => {
                   ₦ 5,000
                 </td>
                 <td className="whitespace-nowrap  py-4 pl-3">
-                 <TableMore/>
+                  <TableMore />
                 </td>
               </tr>
 
@@ -220,7 +220,7 @@ const users = () => {
                   ₦ 5,000
                 </td>
                 <td className="whitespace-nowrap  py-4 pl-3">
-                 <TableMore/>
+                  <TableMore />
                 </td>
               </tr>
 
@@ -250,7 +250,7 @@ const users = () => {
                   ₦ 5,000
                 </td>
                 <td className="whitespace-nowrap  py-4 pl-3">
-                 <TableMore/>
+                  <TableMore />
                 </td>
               </tr>
 
@@ -280,7 +280,7 @@ const users = () => {
                   ₦ 5,000
                 </td>
                 <td className="whitespace-nowrap  py-4 pl-3">
-                 <TableMore/>
+                  <TableMore />
                 </td>
               </tr>
 
@@ -310,7 +310,7 @@ const users = () => {
                   ₦ 5,000
                 </td>
                 <td className="whitespace-nowrap  py-4 pl-3">
-                 <TableMore/>
+                  <TableMore />
                 </td>
               </tr>
 
@@ -340,7 +340,7 @@ const users = () => {
                   ₦ 5,000
                 </td>
                 <td className="whitespace-nowrap  py-4 pl-3">
-                 <TableMore/>
+                  <TableMore />
                 </td>
               </tr>
 
@@ -370,7 +370,7 @@ const users = () => {
                   ₦ 5,000
                 </td>
                 <td className="whitespace-nowrap  py-4 pl-3">
-                 <TableMore/>
+                  <TableMore />
                 </td>
               </tr>
 
@@ -400,7 +400,7 @@ const users = () => {
                   ₦ 5,000
                 </td>
                 <td className="whitespace-nowrap  py-4 pl-3">
-                 <TableMore/>
+                  <TableMore />
                 </td>
               </tr>
 
@@ -430,7 +430,7 @@ const users = () => {
                   ₦ 5,000
                 </td>
                 <td className="whitespace-nowrap  py-4 pl-3">
-                 <TableMore/>
+                  <TableMore />
                 </td>
               </tr>
 
@@ -460,7 +460,7 @@ const users = () => {
                   ₦ 5,000
                 </td>
                 <td className="whitespace-nowrap  py-4 pl-3">
-                 <TableMore/>
+                  <TableMore />
                 </td>
               </tr>
 
@@ -490,7 +490,7 @@ const users = () => {
                   ₦ 5,000
                 </td>
                 <td className="whitespace-nowrap  py-4 pl-3">
-                 <TableMore/>
+                  <TableMore />
                 </td>
               </tr>
             </tbody>
@@ -580,6 +580,9 @@ const users = () => {
             </div>
           </div>
         </div>
+      </div>
+      <div className="fixed inset-0 bg-black/20 flex items-center justify-center z-50">
+        <Viewdetailsmodal />
       </div>
     </div>
   );
