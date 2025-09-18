@@ -1,20 +1,7 @@
 import React from "react";
 import TableMore from "./_tablecomponent/tablemore";
-import Viewdetailsmodal from "./_tablecomponent/Viewdetailsmodal";
 
-function Users() {
-  const [selectedUser, setSelectedUser] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const handleViewDetails = (user) => {
-    setSelectedUser(user);
-    setIsModalOpen(true);
-  };
-
-  const closeModal = () => {
-    setIsModalOpen(false);
-    setSelectedUser(null);
-  };
 const users = () => {
   return (
     <div>
@@ -113,9 +100,7 @@ const users = () => {
                   ₦ 5,000
                 </td>
                 <td className="whitespace-nowrap  py-4 pl-3">
-                <TableMore 
-                  onViewDetails={() => handleViewDetails(user)}
-                />
+                 <TableMore/>
                 </td>
               </tr>
 
@@ -510,16 +495,6 @@ const users = () => {
               </tr>
             </tbody>
           </table>
-           {/* Modal */}
-      {isModalOpen && (
-        <Viewdetailsmodal 
-          userData={selectedUser} 
-          onClose={closeModal} 
-        />
-      )}
-    
-  );
-}
 
           <div className="w-full flex justify-center my-5">
             <div className="w-full max-w-[500px] border border-gray-300 rounded-md bg-white px-2 py-[2px]">
