@@ -1,17 +1,48 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import TableMore from "./_tablecomponent/tablemore";
 import Viewdetailsmodal from "./_tablecomponent/Viewdetailsmodal";
 
-const users = () => {
+function Users() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isClosing, setIsClosing] = useState(false);
+  const modalRef = useRef(null);
 
   const handleViewDetails = () => {
     setIsModalOpen(true);
+    setIsClosing(false);
   };
 
   const handleCloseModal = () => {
-    setIsModalOpen(false);
+    if (isClosing || !isModalOpen) return;
+
+    setIsClosing(true);
+    // Wait for the animation to complete before removing the modal from the DOM
+    setTimeout(() => {
+      setIsModalOpen(false);
+      setIsClosing(false);
+    }, 300); // Match this with your animation duration
   };
+
+  // Close modal when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (modalRef.current && !modalRef.current.contains(event.target)) {
+        handleCloseModal();
+      }
+    };
+
+    if (isModalOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+      // Prevent body scroll when modal is open
+      document.body.style.overflow = "hidden";
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      // Re-enable body scroll when modal is closed
+      document.body.style.overflow = "auto";
+    };
+  }, [isModalOpen, isClosing]);
 
   return (
     <div className="relative">
@@ -562,12 +593,19 @@ const users = () => {
         </div>
       </div>
       {isModalOpen && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-start justify-center py-4 z-50 overflow-y-auto">
-          <Viewdetailsmodal onClose={handleCloseModal} />
+        <div
+          className={`fixed inset-0 bg-black/50 backdrop-blur-sm flex items-start justify-center py-4 z-50 overflow-y-auto transition-opacity duration-300 ease-in-out ${
+            isClosing ? "opacity-0" : "opacity-100"
+          }`}
+          onClick={handleCloseModal}
+        >
+        
+            <Viewdetailsmodal onClose={handleCloseModal}  className="animate-fadeIn" />
+          
         </div>
       )}
     </div>
   );
-};
+}
 
-export default users;
+export default Users;
