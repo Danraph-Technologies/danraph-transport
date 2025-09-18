@@ -27,7 +27,7 @@ function App() {
           <Route path="Ride-Activities" element={<Ride />} />
           <Route path="Charter-Requests" element={<Charter />} />
           <Route path="User-Management" element={<Users />} />
-          <Route path="Driver-Management" element={<Driver />} />
+          <Route path="Driver-list" element={<Driver />} />
           <Route path="Transaction-&-Wallet" element={<Wallet />} />
           <Route path="Notifications" element={<Notification />} />
           <Route path="Settings" element={<Settings />} />

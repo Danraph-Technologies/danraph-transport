@@ -159,7 +159,7 @@ const Sidebar = ({ open, onClose }) => {
           </NavLink>
 
           <NavLink
-            to="/admin/Driver-Management"
+            to="/admin/Driver-list"
             className={({ isActive }) =>
               `pl-3 py-[10px] transition-all flex items-center gap-2 ${
                 isActive

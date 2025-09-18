@@ -1,8 +1,13 @@
 import React from "react";
 
-function Viewdetailsmodal({ onClose }) {
+function Viewdetailsmodal({ onClose, isClosing }) {
   return (
-    <div className="w-[767px] max-h-[95vh] overflow-y-auto relative sm:px-2 mx-2 bg-white rounded-[10px]">
+    <div 
+    className={`w-[767px] max-h-[95vh] overflow-y-auto relative sm:px-2 mx-2 bg-white rounded-[10px]  animate-fadeIn ${
+      isClosing ? 'opacity-0' : 'opacity-100'
+    }`}
+    onClick={(e) => e.stopPropagation()}
+  >
       <button
         onClick={onClose}
         className="absolute right-2 top-2 cursor-pointer px-3 py-2 text-[20px] text-[#262626] font-semibold"
@@ -54,7 +59,7 @@ function Viewdetailsmodal({ onClose }) {
           </h2>
           <div className="max-w-[689px]">
             <div className="border overflow-x-auto rounded-[15px]  px-2 ">
-              <table className="w-full ">
+              <table className="w-full min-w-[600px] ">
                 <thead className="border-b whitespace-nowrap">
                   <tr className="text-left  ">
                     <th className="px-3 py-2">Date</th>
