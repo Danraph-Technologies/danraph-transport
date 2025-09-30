@@ -17,3 +17,38 @@
     opacity: 0;
     transition: opacity 200ms ease-in-out;
   }
+
+  @keyframes zoomIn {
+    from {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+  
+  @keyframes zoomOut {
+    from {
+      opacity: 1;
+      transform: scale(1);
+    }
+    to {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+  }
+  
+  .modal-container {
+    will-change: transform;
+    transform-origin: center top;
+  }
+  
+  .modal-container.zoom-in {
+    animation: zoomIn 0.25s ease-out forwards;
+  }
+  
+  .modal-container.zoom-out {
+    animation: zoomOut 0.2s ease-in forwards;
+  }

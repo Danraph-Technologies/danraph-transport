@@ -10,10 +10,12 @@ import Manage from "./pages/Manage";
 import Ride from "./pages/ride";
 import Charter from "./pages/charter";
 import Users from "./pages/users/users";
-import Driver from "./pages/driver";
+import Driver from "./pages/drivers/driver";
 import Wallet from "./pages/wallet";
 import Notification from "./pages/Notification";
 import Settings from "./pages/Settings";
+import RegisterDriver from "./pages/drivers/Register"
+import DriversProfile from "./pages/drivers/DriversProfile";
 
 function App() {
   return (
@@ -31,6 +33,8 @@ function App() {
           <Route path="Transaction-&-Wallet" element={<Wallet />} />
           <Route path="Notifications" element={<Notification />} />
           <Route path="Settings" element={<Settings />} />
+          <Route path="RegisterDriver" element={<RegisterDriver />} />
+          <Route path="DriversProfile" element={<DriversProfile />} />
         </Route>
       </Routes>
     </Router>
