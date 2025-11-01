@@ -1,11 +1,11 @@
- import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Taablemore from "./tablemore";
 import DriversProfile from "./DriversProfile";
 
 const driver = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isAnimatingOut, setIsAnimatingOut] = useState(false); // 👈 New state for animation
+  const [isClosing, setIsClosing] = useState(false); // Using same pattern as Viewdetailsmodal
 
   // Prevent background scroll + handle Escape key
   useEffect(() => {
@@ -15,7 +15,7 @@ const driver = () => {
       }
     };
 
-    if (isModalOpen && !isAnimatingOut) {
+    if (isModalOpen && !isClosing) {
       document.body.style.overflow = "hidden";
       window.addEventListener("keydown", handleEsc);
     } else {
@@ -26,14 +26,14 @@ const driver = () => {
       document.body.style.overflow = "unset";
       window.removeEventListener("keydown", handleEsc);
     };
-  }, [isModalOpen, isAnimatingOut]);
+  }, [isModalOpen, isClosing]);
 
   const handleCloseModal = () => {
-    setIsAnimatingOut(true);
+    setIsClosing(true);
     setTimeout(() => {
-      setIsAnimatingOut(false);
+      setIsClosing(false);
       setIsModalOpen(false);
-    }, 200); // Match zoomOut animation duration
+    }, 300); // Match transition duration
   };
 
   return (
@@ -198,16 +198,15 @@ const driver = () => {
         </div>
       </div>
 
-      {/* MODAL OVERLAY */}
-      {(isModalOpen || isAnimatingOut) && (
+      {/* MODAL OVERLAY - Made consistent with Viewdetailsmodal */}
+      {isModalOpen && (
         <div
-          className="fixed inset-0 z-50 bg-black/50 flex justify-center items-start py-8 backdrop-blur-sm"
+          className={`fixed inset-0 bg-black/50 backdrop-blur-sm flex items-start justify-center py-4 z-50 overflow-y-auto transition-opacity duration-300 ease-in-out ${
+            isClosing ? "opacity-0" : "opacity-100"
+          }`}
           onClick={handleCloseModal}
         >
-          <div
-            onClick={(e) => e.stopPropagation()}
-            className={`modal-container ${isAnimatingOut ? "zoom-out" : "zoom-in"}`}
-          >
+          <div onClick={(e) => e.stopPropagation()}>
             <DriversProfile onClose={handleCloseModal} />
           </div>
         </div>
