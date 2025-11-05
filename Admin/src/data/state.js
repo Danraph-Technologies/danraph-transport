@@ -1,6 +1,6 @@
 // src/data/states.js
 
-export const nigerianStatesData = [
+export const nigerianStatesData = [ 
   {
     "code": "FC", "name": "Abuja", "lgas": ["Abuja", "Kwali", "Kuje", "Gwagwalada", "Bwari", "Abaji"]
   },

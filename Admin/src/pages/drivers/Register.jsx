@@ -212,7 +212,7 @@ function Register() {
               <div className="py-5">
                 <h2 className="text-[19px] font-semibold">Assign Vehicle</h2>
                 <p className="text-[#212123] text-[18px] italic">
-                  Assign vehicle to driver
+                  Assign  vehicle to driver
                 </p>
               </div>
 
