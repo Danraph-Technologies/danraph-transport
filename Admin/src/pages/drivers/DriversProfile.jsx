@@ -1,8 +1,4 @@
-import {
-  ArrowRight,
-  ArrowUpRight,
-  Star,
-} from "lucide-react";
+import { ArrowRight, ArrowUpRight, Star } from "lucide-react";
 import React, { useState, useEffect } from "react";
 
 function DriversProfile({ onClose }) {
@@ -43,8 +39,8 @@ function DriversProfile({ onClose }) {
   }, [zoomedImage]);
 
   return (
-    <div>
-      <div className="px-6 py-3 items-center bg-white w-[867px] max-h-[95vh] overflow-y-auto rounded-lg relative">
+    <div className="">
+      <div className=" max-w-4xl px-6 py-3 bg-white sm:max-h-[95vh] max-h-[100vh] overflow-y-auto rounded-lg relative mx-auto">
         <p
           className="text-right font-semibold text-[20px] cursor-pointer absolute top-3 right-3"
           onClick={onClose}
@@ -164,8 +160,8 @@ function DriversProfile({ onClose }) {
               <span>Trips completed </span>
               <span className="text-[#004AAD]">(30)</span>
             </h2>
-            <div className="border  rounded-lg max-w-[700px] overflow-x-auto flex ">
-              <table className="w-full min-w-[595px]  ">
+            <div className="overflow-x-auto border rounded-lg">
+              <table className="w-full min-w-[65 0px] ">
                 <thead className="border-b py-3">
                   <tr>
                     <th className="px-3 py-3 text-left">Date</th>
@@ -177,20 +173,18 @@ function DriversProfile({ onClose }) {
                 </thead>
                 <tbody>
                   <tr className="border-b">
-                    <td className="flex flex-col pl-3 py-1 text-[#5C5C5D] ">
+                    <td className=" flex flex-col pl-3 py-1 text-[#5C5C5D] ">
                       <span className="text-[15px]">4/4/2024</span>
                       <span className="text-[11px]">10:00AM</span>
                     </td>
                     <td className="  pl-3 py-1 text-[#5C5C5D] ">
-                      
-                        <span className="text-[15px]">Main gate </span>
-                        <p className="flex gap-1 items-center text-[12px] ">
-                          <span>
-                            <ArrowRight className="w-4 h-4" />
-                          </span>
-                          <span>Hostel A</span>
-                        </p>
-                     
+                      <span className="text-[15px]">Main gate </span>
+                      <p className="flex gap-1 items-center text-[12px] ">
+                        <span>
+                          <ArrowRight className="w-4 h-4" />
+                        </span>
+                        <span>Hostel A</span>
+                      </p>
                     </td>
                     <td className="pl-3 py-1 "> ₦250</td>
                     <td className="py-1">
@@ -209,15 +203,13 @@ function DriversProfile({ onClose }) {
                       <span className="text-[11px]">10:00AM</span>
                     </td>
                     <td className="  pl-3 py-1 text-[#5C5C5D] ">
-                      
-                        <span className="text-[15px]">Main gate </span>
-                        <p className="flex gap-1 items-center text-[12px] ">
-                          <span>
-                            <ArrowRight className="w-4 h-4" />
-                          </span>
-                          <span>Hostel A</span>
-                        </p>
-                     
+                      <span className="text-[15px]">Main gate </span>
+                      <p className="flex gap-1 items-center text-[12px] ">
+                        <span>
+                          <ArrowRight className="w-4 h-4" />
+                        </span>
+                        <span>Hostel A</span>
+                      </p>
                     </td>
                     <td className="pl-3 py-1 "> ₦250</td>
                     <td className="py-1">
@@ -236,15 +228,13 @@ function DriversProfile({ onClose }) {
                       <span className="text-[11px]">10:00AM</span>
                     </td>
                     <td className="  pl-3 py-1 text-[#5C5C5D] ">
-                      
-                        <span className="text-[15px]">Main gate </span>
-                        <p className="flex gap-1 items-center text-[12px] ">
-                          <span>
-                            <ArrowRight className="w-4 h-4" />
-                          </span>
-                          <span>Hostel A</span>
-                        </p>
-                     
+                      <span className="text-[15px]">Main gate </span>
+                      <p className="flex gap-1 items-center text-[12px] ">
+                        <span>
+                          <ArrowRight className="w-4 h-4" />
+                        </span>
+                        <span>Hostel A</span>
+                      </p>
                     </td>
                     <td className="pl-3 py-1 "> ₦250</td>
                     <td className="py-1">
@@ -263,15 +253,13 @@ function DriversProfile({ onClose }) {
                       <span className="text-[11px]">10:00AM</span>
                     </td>
                     <td className="  pl-3 py-1 text-[#5C5C5D] ">
-                      
-                        <span className="text-[15px]">Main gate </span>
-                        <p className="flex gap-1 items-center text-[12px] ">
-                          <span>
-                            <ArrowRight className="w-4 h-4" />
-                          </span>
-                          <span>Hostel A</span>
-                        </p>
-                     
+                      <span className="text-[15px]">Main gate </span>
+                      <p className="flex gap-1 items-center text-[12px] ">
+                        <span>
+                          <ArrowRight className="w-4 h-4" />
+                        </span>
+                        <span>Hostel A</span>
+                      </p>
                     </td>
                     <td className="pl-3 py-1 "> ₦250</td>
                     <td className="py-1">
@@ -312,15 +300,22 @@ function DriversProfile({ onClose }) {
 
             {/* Image */}
             <img
-              src={zoomedImage === "license" ? "/passport2.png" : "/passport1.png"}
+              src={
+                zoomedImage === "license" ? "/passport2.png" : "/passport1.png"
+              }
               alt={zoomedImage === "license" ? "Driver License" : "NIN"}
               className="max-w-full max-h-[80vh] object-contain rounded-lg shadow-2xl border-2 border-white"
-              style={{ animation: "zoomIn 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards" }}
+              style={{
+                animation:
+                  "zoomIn 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards",
+              }}
             />
 
             {/* Caption */}
             <p className="text-white text-center mt-2 text-lg">
-              {zoomedImage === "license" ? "Driver License" : "National ID (NIN)"}
+              {zoomedImage === "license"
+                ? "Driver License"
+                : "National ID (NIN)"}
             </p>
           </div>
         </div>
@@ -329,8 +324,12 @@ function DriversProfile({ onClose }) {
       {/* Add animations globally or here via style tag */}
       <style jsx>{`
         @keyframes fadeIn {
-          from { opacity: 0; }
-          to { opacity: 1; }
+          from {
+            opacity: 0;
+          }
+          to {
+            opacity: 1;
+          }
         }
         @keyframes zoomIn {
           from {
@@ -348,4 +347,3 @@ function DriversProfile({ onClose }) {
 }
 
 export default DriversProfile;
-

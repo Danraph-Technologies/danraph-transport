@@ -53,7 +53,7 @@ function Register() {
             <p className="text-[15px] sm:text-[16px]">Upload Passport Image</p>
           </div>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-[50px]">
+        <div className="grid grid-cols-1 md:grid-cols-2 sm:gap-[50px] gap-2 ">
           <div>
             <form action="">
               <div className="flex flex-col">

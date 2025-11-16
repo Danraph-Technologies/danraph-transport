@@ -1,9 +1,17 @@
+// App.jsx (CLEANED UP)
+
 import {
   BrowserRouter as Router,
   Routes,
   Route,
   Navigate,
 } from "react-router-dom";
+
+// 1. REMOVE the AuthProvider import, it's no longer needed here.
+// import { AuthProvider } from "./contexts/AuthContext";
+import ProtectedRoute from "./components/ProtectedRoute";
+
+// Import your pages
 import Admin from "./pages/admin";
 import Dashboard from "./pages/Dashboard";
 import Manage from "./pages/Manage";
@@ -14,16 +22,29 @@ import Driver from "./pages/drivers/driver";
 import Wallet from "./pages/wallet";
 import Notification from "./pages/Notification";
 import Settings from "./pages/Settings";
-import RegisterDriver from "./pages/drivers/Register"
+import RegisterDriver from "./pages/drivers/Register";
 import DriversProfile from "./pages/drivers/DriversProfile";
+import Login from "./components/login";
+import Vehicle from "./pages/vehicle/Vehicle";
+import RegisterVehicle from "./pages/vehicle/RegisterVehicle"
 
 function App() {
   return (
+    // 2. REMOVE the AuthProvider wrapper from here.
     <Router>
       <Routes>
-        <Route path="/" element={<Navigate to="/admin" replace />} />
-        <Route path="/admin" element={<Admin />}>
-          <Route index element={<Dashboard />} />
+        {/* Your routing logic is perfect and stays the same */}
+        <Route path="/login" element={<Login />} />
+        <Route path="/" element={<Navigate to="/admin/dashboard" replace />} />
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRoute>
+              <Admin />
+            </ProtectedRoute>
+          }
+        >
+          <Route index element={<Navigate to="dashboard" replace />} />
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="Manage-location" element={<Manage />} />
           <Route path="Ride-Activities" element={<Ride />} />
@@ -35,7 +56,10 @@ function App() {
           <Route path="Settings" element={<Settings />} />
           <Route path="RegisterDriver" element={<RegisterDriver />} />
           <Route path="DriversProfile" element={<DriversProfile />} />
+          <Route path="Vehicle-management" element={<Vehicle />} />
+           <Route path="Registervehicle" element={<RegisterVehicle />} />
         </Route>
+        <Route path="*" element={<div>404 - Page Not Found</div>} />
       </Routes>
     </Router>
   );
