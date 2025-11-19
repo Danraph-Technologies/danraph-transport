@@ -7,24 +7,26 @@ function Register() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     state: "",
-    lga: ""
+    lga: "",
   });
 
   // Use the imported data directly
   const statesData = nigerianStatesData;
 
   const lgas = useMemo(() => {
-    const selectedStateObject = statesData.find(s => s.name === formData.state);
+    const selectedStateObject = statesData.find(
+      (s) => s.name === formData.state
+    );
     return selectedStateObject ? selectedStateObject.lgas : [];
   }, [formData.state, statesData]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     console.log(`Input changed: Name=${name}, Value=${value}`);
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       [name]: value,
-      ...(name === 'state' && { lga: '' })
+      ...(name === "state" && { lga: "" }),
     }));
   };
 
@@ -36,10 +38,7 @@ function Register() {
     <div>
       <div className="sm:px-5 px-1">
         <div className="flex gap-2 hover:text-[#000000d5] transition-all duration-300 items-center">
-          <ArrowLeft 
-            className="cursor-pointer" 
-            onClick={handleGoBack}
-          />
+          <ArrowLeft className="cursor-pointer" onClick={handleGoBack} />
           <p className="font-semibold">Register New Driver</p>
         </div>
         <div className="flex items-center gap-3 py-5 ">
@@ -103,17 +102,21 @@ function Register() {
                 />
               </div>
               <div className="flex flex-col">
-                <label htmlFor="state" className="py-2">State</label>
+                <label htmlFor="state" className="py-2">
+                  State
+                </label>
                 <div className="relative">
                   <select
                     name="state"
                     value={formData.state}
                     onChange={handleInputChange}
-                    style={{ color: 'black' }}
+                    style={{ color: "black" }}
                     className="border border-[#21212380] rounded-[3px] p-2 py-3 cursor-pointer w-full outline-none pr-10 min-h-[48px] h-auto appearance-none"
                     required
                   >
-                    <option value="" style={{ color: 'gray' }}>Select Your State</option>
+                    <option value="" style={{ color: "gray" }}>
+                      Select Your State
+                    </option>
                     {statesData.map((state) => (
                       <option key={state.code} value={state.name}>
                         {state.name}
@@ -121,36 +124,52 @@ function Register() {
                     ))}
                   </select>
                   <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                    <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                      <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/>
+                    <svg
+                      className="fill-current h-4 w-4"
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 20 20"
+                    >
+                      <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
                     </svg>
                   </div>
                 </div>
               </div>
               <div className="flex flex-col">
-                <label htmlFor="lga" className="py-2">LGA</label>
+                <label htmlFor="lga" className="py-2">
+                  LGA
+                </label>
                 <div className="relative">
                   <select
                     name="lga"
                     value={formData.lga}
                     onChange={handleInputChange}
-                    style={{ color: formData.lga ? 'black' : 'gray' }}
+                    style={{ color: formData.lga ? "black" : "gray" }}
                     className="border border-[#21212380] rounded-[3px] p-2 py-3 cursor-pointer w-full outline-none pr-10 min-h-[48px] h-auto appearance-none"
                     disabled={!formData.state}
                     required
                   >
                     <option value="">
-                      {formData.state ? 'Select Your LGA' : 'Select a state first'}
+                      {formData.state
+                        ? "Select Your LGA"
+                        : "Select a state first"}
                     </option>
                     {lgas.map((lga, index) => (
-                      <option key={index} value={lga} style={{ color: 'black' }}>
+                      <option
+                        key={index}
+                        value={lga}
+                        style={{ color: "black" }}
+                      >
                         {lga}
                       </option>
                     ))}
                   </select>
                   <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                    <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                      <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/>
+                    <svg
+                      className="fill-current h-4 w-4"
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 20 20"
+                    >
+                      <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
                     </svg>
                   </div>
                 </div>
@@ -180,9 +199,7 @@ function Register() {
             <div className="grid grid-cols-2 gap-3 sm:gap-6">
               <div className="flex flex-col gap-4 items-center">
                 <img src="/passport2.png" alt="" />
-                <p className="underline cursor-pointer">
-                  View Drivers licence
-                </p>
+                <p className="underline cursor-pointer">View Drivers licence</p>
                 <div className="bg-[#F0F0F0] py-2 rounded-lg px-3 flex items-center gap-2 cursor-pointer">
                   <img
                     src="\UploadSimple.png"
@@ -194,9 +211,7 @@ function Register() {
               </div>
               <div className="flex flex-col gap-4 items-center">
                 <img src="/passport2.png" alt="" />
-                <p className="underline cursor-pointer">
-                  View Drivers licence
-                </p>
+                <p className="underline cursor-pointer">View Drivers licence</p>
                 <div className="bg-[#F0F0F0] py-2 rounded-lg px-3 flex items-center gap-2 cursor-pointer">
                   <img
                     src="\UploadSimple.png"
@@ -212,7 +227,7 @@ function Register() {
               <div className="py-5">
                 <h2 className="text-[19px] font-semibold">Assign Vehicle</h2>
                 <p className="text-[#212123] text-[18px] italic">
-                  Assign  vehicle to driver
+                  Assign vehicle to driver
                 </p>
               </div>
 

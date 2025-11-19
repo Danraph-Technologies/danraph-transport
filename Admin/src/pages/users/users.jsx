@@ -1,6 +1,11 @@
-import React, { useState, useRef, useEffect } from "react";
-import { useQuery } from '@tanstack/react-query';
+import React, { useState, useRef, useEffect, useCallback } from "react";
+import { useQuery } from "@tanstack/react-query";
 import api from "../../services/api"; // Your configured axios instance
+import { RefreshCw } from "lucide-react";
+
+// Cache configuration
+const CACHE_KEY = 'usersDataCache';
+const CACHE_DURATION = 30 * 60 * 1000; // 30 minutes in milliseconds
 
 // Your own components
 import TableMore from "./_tablecomponent/tablemore";
@@ -21,46 +26,156 @@ function useDebounce(value, delay) {
 }
 
 function Users() {
-  // State for the modal
+  // State for the modal and loading state
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   // State for API filtering and pagination
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
-  const [searchTerm, setSearchTerm] = useState('');
-  
-  // Debounce the search term to avoid excessive API calls
-  const debouncedSearchTerm = useDebounce(searchTerm, 500); // 500ms delay
+  const [localSearchTerm, setLocalSearchTerm] = useState("");
+  const [filteredUsers, setFilteredUsers] = useState([]);
+
+  // Debounce the local search term before triggering API fetches
+  const debouncedSearchTerm = useDebounce(localSearchTerm, 500);
+
+  // Get cached data from localStorage
+  const getCachedData = useCallback(() => {
+    const cached = localStorage.getItem(CACHE_KEY);
+    if (!cached) return null;
+    
+    const { data, timestamp } = JSON.parse(cached);
+    const isExpired = Date.now() - timestamp > CACHE_DURATION;
+    
+    return isExpired ? null : data;
+  }, []);
+
+  // Save data to cache
+  const saveToCache = useCallback((data) => {
+    const cacheData = {
+      data,
+      timestamp: Date.now()
+    };
+    localStorage.setItem(CACHE_KEY, JSON.stringify(cacheData));
+  }, []);
 
   // --- React Query to fetch users ---
-  const { 
-    data: usersData, 
-    isLoading, 
-    isError, 
-    error 
+  const {
+    data: usersData,
+    isLoading,
+    isError,
+    error,
+    refetch: refetchQuery,
+    dataUpdatedAt,
   } = useQuery({
-    // The query key now includes all parameters, so it refetches when they change
-    queryKey: ['users', page, pageSize, debouncedSearchTerm],
-    queryFn: async () => {
-      console.log(`Fetching users: page=${page}, search='${debouncedSearchTerm}'`);
-      const response = await api.get('/v1/admin/users', {
+    queryKey: ["users", page, pageSize, debouncedSearchTerm],
+    queryFn: async ({ queryKey: [_, page, pageSize, search] }) => {
+      // Check cache first
+      const cachedData = getCachedData();
+      if (cachedData && !isRefreshing) {
+        return cachedData;
+      }
+
+      console.log(`Fetching users: page=${page}, search='${search}'`);
+      const response = await api.get("/v1/admin/users", {
         params: {
-          page: page,
+          page,
           page_size: pageSize,
-          search: debouncedSearchTerm,
+          search,
         },
       });
-      // The docs say the data is in response.data, which has 'items' and 'pagination'
+      
+      // Save to cache
+      saveToCache(response.data);
       return response.data;
     },
-    // keepPreviousData is great for a smooth pagination experience
-    keepPreviousData: true, 
+    keepPreviousData: true,
+    staleTime: CACHE_DURATION,
+    cacheTime: CACHE_DURATION,
+    initialData: () => getCachedData() || undefined, // Use cached data as initial data if available
   });
 
-  // Extract items and pagination info, with safe fallbacks
-  const users = usersData?.items || [];
-  const pagination = usersData?.pagination || {};
+  // Custom refetch that forces a fresh fetch
+  const refetch = useCallback(async () => {
+    // Clear cache to force fresh fetch
+    localStorage.removeItem(CACHE_KEY);
+    await refetchQuery();
+  }, [refetchQuery]);
 
+  // Filter users client-side when local search term or usersData changes
+  useEffect(() => {
+    if (!usersData?.items) return;
+
+    if (!localSearchTerm.trim()) {
+      setFilteredUsers(usersData.items);
+      return;
+    }
+
+    const lowercasedFilter = localSearchTerm.toLowerCase();
+    const filtered = usersData.items.filter(
+      (user) =>
+        (user.first_name + " " + (user.last_name || ""))
+          .toLowerCase()
+          .includes(lowercasedFilter) ||
+        user.email?.toLowerCase().includes(lowercasedFilter) ||
+        user.phone?.toLowerCase().includes(lowercasedFilter) ||
+        (user.is_staff ? "staff" : "student").includes(lowercasedFilter)
+    );
+
+    setFilteredUsers(filtered);
+  }, [localSearchTerm, usersData]);
+
+  // Handle refresh with loading state
+  const handleRefresh = async () => {
+    if (isRefreshing) return; // Prevent multiple clicks
+    setIsRefreshing(true);
+    try {
+      await refetch();
+      // Reset the refresh state after a short delay to show the refresh animation
+      setTimeout(() => setIsRefreshing(false), 1000);
+    } catch (error) {
+      console.error('Error refreshing data:', error);
+      setIsRefreshing(false);
+    }
+  };
+
+  // Format the last updated time
+  const lastUpdated = new Date(dataUpdatedAt || 0).toLocaleString("en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+
+  // Initialize users and pagination with safe defaults
+  const hasLocalFilter = Boolean(localSearchTerm.trim());
+  const users = usersData?.items
+    ? hasLocalFilter
+      ? filteredUsers
+      : usersData.items
+    : [];
+  const pagination = usersData?.pagination || { total_pages: 1, page: 1 };
+
+  // Loading overlay styles
+  const overlayStyle = {
+    position: "fixed", // Changed from absolute to fixed
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: "rgba(255, 255, 255, 0.95)",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: 50, // Increased z-index to ensure it's above other content
+    backdropFilter: "blur(4px)",
+  };
+
+  // Handle retry for failed fetches
+  const handleRetry = () => {
+    refetch();
+  };
   // --- Modal Logic ---
   const handleViewDetails = () => {
     setIsModalOpen(true);
@@ -71,66 +186,196 @@ function Users() {
     document.body.style.overflow = "auto";
   };
 
-  // Render a loading state
-  if (isLoading && !usersData) {
-    return <div className="p-5 text-center">Loading users...</div>;
-  }
-  
-  // Render an error state
-  if (isError) {
-    return <div className="p-5 text-center text-red-500">Error fetching users: {error.message}</div>;
+  // Show error overlay if there's an error and no data exists yet
+  if (isError && (!usersData || users.length === 0)) {
+    return (
+      <div style={overlayStyle}>
+        <div className="flex flex-col items-center gap-4 p-8 bg-white rounded-xl shadow-xl max-w-md w-full mx-4">
+          <div className="text-red-500">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-12 w-12"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+              />
+            </svg>
+          </div>
+          <h3 className="text-xl font-semibold text-gray-800">
+            Failed to Load Data
+          </h3>
+          <p className="text-gray-600 text-center">
+            {error.message ||
+              "Unable to fetch users. Please check your connection and try again."}
+          </p>
+          <button
+            onClick={handleRetry}
+            className="mt-4 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2"
+          >
+            <RefreshCw className="w-5 h-5" />
+            Retry
+          </button>
+        </div>
+      </div>
+    );
   }
 
   return (
     <div className="relative">
-      <div className="max-w-[1105px] w-full rounded-lg border border-gray-300 py-3 px-4 ">
-        <p className="text-[20px] font-semibold py-2">User Management</p>
-        
+      {isLoading && (
+        <div style={overlayStyle}>
+          <div className="flex flex-col items-center gap-4 p-8 bg-white rounded-xl shadow-xl">
+            <RefreshCw className="w-12 h-12 text-blue-600 animate-spin" />
+            <h3 className="text-xl font-medium text-gray-800">Loading Users</h3>
+            <p className="text-gray-500">
+              Please wait while we fetch the latest data
+            </p>
+          </div>
+        </div>
+      )}
+
+      <div className="max-w-[1105px] w-full rounded-lg border border-gray-300 py-5 px-4 ">
+        <div className="flex flex-wrap gap-y-3 justify-between items-center">
+          <p className="text-[20px] font-semibold">User Management</p>
+          <p>Last Updated: {dataUpdatedAt ? lastUpdated : "Never"}</p>
+          <button
+            onClick={handleRefresh}
+            disabled={isRefreshing}
+            className={`text-white ${
+              isRefreshing ? "bg-blue-500" : "bg-blue-700 hover:bg-blue-800"
+            } flex items-center gap-2 p-2 rounded-lg text-[14px] transition-colors disabled:opacity-70 disabled:cursor-not-allowed`}
+          >
+            <RefreshCw
+              className={`w-5 h-5 ${isRefreshing ? "animate-spin" : ""}`}
+            />
+            {isRefreshing ? "Refreshing..." : "Fetch New Data"}
+          </button>
+        </div>
+
         {/* Search Input */}
         <div className="relative py-3 mb-2">
           <input
             type="text"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            value={localSearchTerm}
+            onChange={(e) => setLocalSearchTerm(e.target.value)}
+            placeholder="Search by name, email, or phone..."
             className="w-full rounded-full border border-gray-300 outline-none px-10 py-[10px] placeholder:text-[#6264A0]"
-            placeholder="Search user by name or email"
           />
           {/* Search Icon */}
           <div className="flex items-center gap-2 text-[#6264A0] absolute left-3 top-1/2 -translate-y-1/2">
-            <svg width="22" height="23" viewBox="0 0 22 23" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M10.0269 2.606C7.84116 2.60967 5.74597 3.47958 4.2004 5.02515C2.65483 6.57072 1.78491 8.66591 1.78125 10.8517C1.78308 13.0393 2.65196 15.137 4.19753 16.6851C5.7431 18.2333 7.83932 19.1057 10.0269 19.1112C11.9671 19.1112 13.7548 18.4287 15.1683 17.2992L18.6017 20.7326C18.7757 20.8943 19.0055 20.9824 19.243 20.9782C19.4804 20.9741 19.7071 20.878 19.8752 20.7103C20.0434 20.5426 20.14 20.3162 20.1448 20.0788C20.1496 19.8413 20.0622 19.6112 19.9009 19.4369L16.4675 16C17.6402 14.5416 18.2794 12.7265 18.2795 10.8551C18.2795 6.30963 14.5724 2.606 10.0269 2.606ZM10.0269 4.44222C13.5816 4.44222 16.4433 7.30049 16.4433 10.8517C16.4433 14.4029 13.5816 17.2784 10.0269 17.2784C6.47227 17.2784 3.61401 14.4132 3.61401 10.8586C3.61401 7.30396 6.47227 4.44222 10.0269 4.44222Z" fill="#6264A0" />
+            <svg
+              width="22"
+              height="23"
+              viewBox="0 0 22 23"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M10.0269 2.606C7.84116 2.60967 5.74597 3.47958 4.2004 5.02515C2.65483 6.57072 1.78491 8.66591 1.78125 10.8517C1.78308 13.0393 2.65196 15.137 4.19753 16.6851C5.7431 18.2333 7.83932 19.1057 10.0269 19.1112C11.9671 19.1112 13.7548 18.4287 15.1683 17.2992L18.6017 20.7326C18.7757 20.8943 19.0055 20.9824 19.243 20.9782C19.4804 20.9741 19.7071 20.878 19.8752 20.7103C20.0434 20.5426 20.14 20.3162 20.1448 20.0788C20.1496 19.8413 20.0622 19.6112 19.9009 19.4369L16.4675 16C17.6402 14.5416 18.2794 12.7265 18.2795 10.8551C18.2795 6.30963 14.5724 2.606 10.0269 2.606ZM10.0269 4.44222C13.5816 4.44222 16.4433 7.30049 16.4433 10.8517C16.4433 14.4029 13.5816 17.2784 10.0269 17.2784C6.47227 17.2784 3.61401 14.4132 3.61401 10.8586C3.61401 7.30396 6.47227 4.44222 10.0269 4.44222Z"
+                fill="#6264A0"
+              />
             </svg>
           </div>
         </div>
 
         {/* The Responsive Table Container */}
         <div className="overflow-x-auto">
-          <table className="w-full"> {/* Removed min-w here, it's not needed */}
+          <table className="w-full">
             <thead className="bg-[#004AAD]">
               <tr className="text-white text-left">
-                <th className="py-2 pl-3 pr-3 font-normal whitespace-nowrap">Full Name</th>
-                <th className="py-2 pl-2 pr-3 font-normal whitespace-nowrap">User Type</th>
-                <th className="py-2 pl-2 pr-3 font-normal whitespace-nowrap">Student/Staff ID</th>
-                <th className="py-2 pl-2 pr-3 font-normal whitespace-nowrap">Phone Number</th>
-                <th className="py-2 pl-2 pr-3 font-normal whitespace-nowrap">Email Address</th>
-                <th className="py-2 pl-2 pr-3 font-normal whitespace-nowrap">Status</th>
-                <th className="py-2 pl-2 pr-3 font-normal whitespace-nowrap">Wallet Balance</th>
-                <th className="py-2 pl-2 pr-4 font-normal whitespace-nowrap">More</th>
+                <th className="py-2 pl-3 pr-3 font-normal whitespace-nowrap">
+                  Full Name
+                </th>
+                <th className="py-2 pl-2 pr-3 font-normal whitespace-nowrap">
+                  User Type
+                </th>
+                <th className="py-2 pl-2 pr-3 font-normal whitespace-nowrap">
+                  Student/Staff ID
+                </th>
+                <th className="py-2 pl-2 pr-3 font-normal whitespace-nowrap">
+                  Gender
+                </th>
+                <th className="py-2 pl-2 pr-3 font-normal whitespace-nowrap">
+                  Phone Number
+                </th>
+                <th className="py-2 pl-2 pr-3 font-normal whitespace-nowrap">
+                  Email Address
+                </th>
+                <th className="py-2 pl-2 pr-3 font-normal whitespace-nowrap">
+                  Status
+                </th>
+                <th className="py-2 pl-2 pr-3 font-normal whitespace-nowrap">
+                  Wallet Balance
+                </th>
+                <th className="py-2 pl-2 pr-3 font-normal whitespace-nowrap">
+                  Ride Balance
+                </th>
+                <th className="py-2 pl-2 pr-3 font-normal whitespace-nowrap">
+                  Date Joined
+                </th>
+                <th className="py-2 pl-2 pr-3 font-normal whitespace-nowrap">
+                  Last Active
+                </th>
+                <th className="py-2 pl-2 pr-4 font-normal whitespace-nowrap">
+                  More
+                </th>
               </tr>
             </thead>
             <tbody>
               {users.map((user, i) => (
                 <tr className="border-b" key={user.id || i}>
-                  <td className="py-4 pl-3 pr-10 whitespace-nowrap">{user.first_name} {user.last_name}</td>
-                  <td className="py-4 pl-3 pr-10 whitespace-nowrap">{user.is_staff ? 'Staff' : 'Student'}</td>
-                  <td className="py-4 pl-3 pr-10 whitespace-nowrap">{user.student_id || 'N/A'}</td>
-                  <td className="py-4 pl-3 pr-10 whitespace-nowrap">{user.phone}</td>
-                  <td className="py-4 pl-3 pr-10 whitespace-nowrap">{user.email}</td>
                   <td className="py-4 pl-3 pr-10 whitespace-nowrap">
-                    <span className={`rounded-full w-3 h-3 inline-block mr-2 ${user.is_active ? 'bg-[#34C759]' : 'bg-[#F80B0B]'}`}></span>
-                    <span>{user.is_active ? 'Active' : 'Deactivated'}</span>
+                    {user.first_name} {user.last_name}
                   </td>
-                  <td className="py-4 pl-3 pr-10 whitespace-nowrap">₦{user.balance?.toLocaleString() || '0'}</td>
+                  <td className="py-4 pl-3 pr-10 whitespace-nowrap">
+                    {user.is_staff ? "Staff" : "Student"}
+                  </td>
+                  <td className="py-4 pl-3 pr-10 whitespace-nowrap">
+                    {user.user_id || "N/A"}
+                  </td>
+                  <td className="py-4 pl-3 pr-10 whitespace-nowrap">
+                    {user.gender || "N/A"}
+                  </td>
+                  <td className="py-4 pl-3 pr-10 whitespace-nowrap">
+                    {user.phone || "N/A"}
+                  </td>
+                  <td className="py-4 pl-3 pr-10 whitespace-nowrap">
+                    {user.email}
+                  </td>
+                  <td className="py-4 pl-3 pr-10 whitespace-nowrap">
+                    <span
+                      className={`rounded-full w-3 h-3 inline-block mr-2 ${
+                        user.is_active ? "bg-[#34C759]" : "bg-[#F80B0B]"
+                      }`}
+                    ></span>
+                    <span>{user.is_active ? "Active" : "Deactivated"}</span>
+                  </td>
+                  <td className="py-4 pl-3 pr-10 whitespace-nowrap">
+                    ₦{user.balance?.toLocaleString() || "0"}
+                  </td>
+                  <td className="py-4 pl-3 pr-10 whitespace-nowrap">
+                    ₦{user.ride_balance?.toLocaleString() || "0"}
+                  </td>
+                  <td className="py-4 pl-3 pr-10 whitespace-nowrap">
+                    {user.created_at
+                      ? new Date(user.created_at).toLocaleString("en-US", {
+                          year: "numeric",
+                          month: "short",
+                          day: "numeric",
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })
+                      : "N/A"}
+                  </td>
+                  <td className="py-4 pl-3 pr-10 whitespace-nowrap">
+                    {user.last_login || "N/A"}
+                  </td>
                   <td className="py-4 pl-3 whitespace-nowrap">
                     <TableMore onViewDetails={handleViewDetails} />
                   </td>
@@ -139,21 +384,25 @@ function Users() {
             </tbody>
           </table>
         </div>
-        
+
         {/* Pagination Controls */}
         <div className="w-full flex justify-center my-5">
           <div className="flex items-center gap-2">
-            <button 
-              onClick={() => setPage(old => Math.max(old - 1, 1))} 
+            <button
+              onClick={() => setPage((old) => Math.max(old - 1, 1))}
               disabled={page === 1}
               className="px-3 py-1 border rounded disabled:opacity-50"
             >
               Previous
             </button>
-            <span className="font-medium">Page {pagination.page || 1} of {pagination.total_pages || 1}</span>
-            <button 
-              onClick={() => setPage(old => old + 1)} 
-              disabled={page === pagination.total_pages || !pagination.total_pages}
+            <span className="font-medium">
+              Page {pagination.page || 1} of {pagination.total_pages || 1}
+            </span>
+            <button
+              onClick={() => setPage((old) => old + 1)}
+              disabled={
+                page === pagination.total_pages || !pagination.total_pages
+              }
               className="px-3 py-1 border rounded disabled:opacity-50"
             >
               Next
@@ -161,14 +410,14 @@ function Users() {
           </div>
         </div>
       </div>
-      
+
       {/* Modal for viewing details */}
       {isModalOpen && (
-        <div 
+        <div
           className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-start justify-center py-4 z-50 overflow-y-auto"
           onClick={handleCloseModal}
         >
-          <div ref={modalRef} onClick={e => e.stopPropagation()}>
+          <div ref={modalRef} onClick={(e) => e.stopPropagation()}>
             <Viewdetailsmodal onClose={handleCloseModal} />
           </div>
         </div>

@@ -42,7 +42,7 @@ function Viewdetailsmodal({ onClose, isClosing }) {
           <div className="flex flex-col gap-3 py-4 ">
             <p className="text-[#666666]">Name - Amanda Okoro</p>
             <p className="text-[#666666]">
-              Contact - mandyokoro@gmail.vom (0811234567)
+              Email - mandyokoro@gmail.vom (0811234567)
             </p>
             <p className="text-[#666666]">
               Address - No 2 Madubuike Street, Nsukka
