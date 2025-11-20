@@ -1,12 +1,24 @@
 import React, { useState, useEffect, useRef } from "react";
 
-function TableMore({ onViewDetails }) {
+// Props: 
+// user: The user object
+// onViewDetails: function to open modal
+// onToggleStatus: function(userId, newStatus) -> Promise
+function TableMore({ user, onViewDetails, onToggleStatus }) {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
 
   const toggleMenu = (e) => {
     e.stopPropagation();
     setIsOpen(!isOpen);
+  };
+
+  // Handle the status toggle
+  const handleStatusClick = (newStatus) => {
+    if (onToggleStatus) {
+      onToggleStatus(user.user_id, newStatus);
+    }
+    setIsOpen(false);
   };
 
   // Close when clicking outside
@@ -78,7 +90,7 @@ function TableMore({ onViewDetails }) {
         >
           <div className="w-full">
             <p
-              className="p-2 hover:underline cursor-pointer "
+              className="p-2 hover:underline cursor-pointer"
               onClick={() => {
                 onViewDetails?.();
                 setIsOpen(false);
@@ -86,12 +98,26 @@ function TableMore({ onViewDetails }) {
             >
               View Details
             </p>
-            <p className="p-2 hover:underline cursor-pointer border-t border-gray-100">
-              Deactivate user
-            </p>
-            <p className="p-2 hover:underline cursor-pointer border-t border-gray-100">
-              Reactivate user
-            </p>
+
+            {/* Only show Deactivate if they are currently Active */}
+            {user.is_active && (
+              <p
+                className="p-2 hover:underline cursor-pointer border-t border-gray-100 text-red-600"
+                onClick={() => handleStatusClick(false)}
+              >
+                Deactivate user
+              </p>
+            )}
+
+            {/* Only show Reactivate if they are currently Inactive */}
+            {!user.is_active && (
+              <p
+                className="p-2 hover:underline cursor-pointer border-t border-gray-100 text-green-600"
+                onClick={() => handleStatusClick(true)}
+              >
+                Reactivate user
+              </p>
+            )}
           </div>
         </div>
       )}

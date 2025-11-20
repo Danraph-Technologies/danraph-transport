@@ -1,11 +1,10 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import api from "../../services/api"; // Your configured axios instance
 import { RefreshCw } from "lucide-react";
 
-// Cache configuration
-const CACHE_KEY = 'usersDataCache';
-const CACHE_DURATION = 30 * 60 * 1000; // 30 minutes in milliseconds
+// Cache duration in milliseconds (30 minutes)
+const CACHE_DURATION = 30 * 60 * 1000;
 
 // Your own components
 import TableMore from "./_tablecomponent/tablemore";
@@ -27,37 +26,46 @@ function useDebounce(value, delay) {
 
 function Users() {
   // State for the modal and loading state
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const queryClient = useQueryClient();
+  const [selectedUserId, setSelectedUserId] = useState(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const modalRef = useRef(null);
+
+  // Mutation for updating user status
+  const statusMutation = useMutation({
+    mutationFn: async ({ userId, newStatus }) => {
+      const response = await api.patch(`/v1/admin/users/${userId}/status`, {
+        is_active: newStatus,
+      });
+      return response.data;
+    },
+    onSuccess: () => {
+      // Refresh the users list
+      queryClient.invalidateQueries(["users"]);
+    },
+    onError: (err) => {
+      console.error("Error updating status:", err);
+      alert("Failed to update status. Please try again.");
+    }
+  });
+
+  // Handle status change from TableMore
+  const handleTableStatusChange = (userId, newStatus) => {
+    if (confirm(`Are you sure you want to ${newStatus ? 'activate' : 'deactivate'} this user?`)) {
+      statusMutation.mutate({ userId, newStatus });
+    }
+  };
+
+  // Derived state for modal visibility
+  const isModalOpen = selectedUserId !== null;
 
   // State for API filtering and pagination
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [localSearchTerm, setLocalSearchTerm] = useState("");
-  const [filteredUsers, setFilteredUsers] = useState([]);
 
   // Debounce the local search term before triggering API fetches
   const debouncedSearchTerm = useDebounce(localSearchTerm, 500);
-
-  // Get cached data from localStorage
-  const getCachedData = useCallback(() => {
-    const cached = localStorage.getItem(CACHE_KEY);
-    if (!cached) return null;
-    
-    const { data, timestamp } = JSON.parse(cached);
-    const isExpired = Date.now() - timestamp > CACHE_DURATION;
-    
-    return isExpired ? null : data;
-  }, []);
-
-  // Save data to cache
-  const saveToCache = useCallback((data) => {
-    const cacheData = {
-      data,
-      timestamp: Date.now()
-    };
-    localStorage.setItem(CACHE_KEY, JSON.stringify(cacheData));
-  }, []);
 
   // --- React Query to fetch users ---
   const {
@@ -70,12 +78,6 @@ function Users() {
   } = useQuery({
     queryKey: ["users", page, pageSize, debouncedSearchTerm],
     queryFn: async ({ queryKey: [_, page, pageSize, search] }) => {
-      // Check cache first
-      const cachedData = getCachedData();
-      if (cachedData && !isRefreshing) {
-        return cachedData;
-      }
-
       console.log(`Fetching users: page=${page}, search='${search}'`);
       const response = await api.get("/v1/admin/users", {
         params: {
@@ -84,46 +86,24 @@ function Users() {
           search,
         },
       });
-      
-      // Save to cache
-      saveToCache(response.data);
       return response.data;
     },
     keepPreviousData: true,
     staleTime: CACHE_DURATION,
     cacheTime: CACHE_DURATION,
-    initialData: () => getCachedData() || undefined, // Use cached data as initial data if available
   });
 
-  // Custom refetch that forces a fresh fetch
+  // Manual refresh function that forces a refetch
   const refetch = useCallback(async () => {
-    // Clear cache to force fresh fetch
-    localStorage.removeItem(CACHE_KEY);
-    await refetchQuery();
+    setIsRefreshing(true);
+    try {
+      // Force refetch and ignore cache
+      await refetchQuery();
+    } finally {
+      setIsRefreshing(false);
+    }
   }, [refetchQuery]);
 
-  // Filter users client-side when local search term or usersData changes
-  useEffect(() => {
-    if (!usersData?.items) return;
-
-    if (!localSearchTerm.trim()) {
-      setFilteredUsers(usersData.items);
-      return;
-    }
-
-    const lowercasedFilter = localSearchTerm.toLowerCase();
-    const filtered = usersData.items.filter(
-      (user) =>
-        (user.first_name + " " + (user.last_name || ""))
-          .toLowerCase()
-          .includes(lowercasedFilter) ||
-        user.email?.toLowerCase().includes(lowercasedFilter) ||
-        user.phone?.toLowerCase().includes(lowercasedFilter) ||
-        (user.is_staff ? "staff" : "student").includes(lowercasedFilter)
-    );
-
-    setFilteredUsers(filtered);
-  }, [localSearchTerm, usersData]);
 
   // Handle refresh with loading state
   const handleRefresh = async () => {
@@ -134,7 +114,7 @@ function Users() {
       // Reset the refresh state after a short delay to show the refresh animation
       setTimeout(() => setIsRefreshing(false), 1000);
     } catch (error) {
-      console.error('Error refreshing data:', error);
+      console.error("Error refreshing data:", error);
       setIsRefreshing(false);
     }
   };
@@ -148,13 +128,8 @@ function Users() {
     minute: "2-digit",
   });
 
-  // Initialize users and pagination with safe defaults
-  const hasLocalFilter = Boolean(localSearchTerm.trim());
-  const users = usersData?.items
-    ? hasLocalFilter
-      ? filteredUsers
-      : usersData.items
-    : [];
+  // Get users from the API response or default to empty array
+  const users = usersData?.items || [];
   const pagination = usersData?.pagination || { total_pages: 1, page: 1 };
 
   // Loading overlay styles
@@ -177,14 +152,32 @@ function Users() {
     refetch();
   };
   // --- Modal Logic ---
-  const handleViewDetails = () => {
-    setIsModalOpen(true);
+  const handleViewDetails = (userId) => {
+    setSelectedUserId(userId);
     document.body.style.overflow = "hidden";
   };
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
+
+  const handleCloseModal = useCallback(() => {
+    setSelectedUserId(null);
     document.body.style.overflow = "auto";
-  };
+  }, []);
+
+  // Close modal when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (modalRef.current && !modalRef.current.contains(event.target)) {
+        handleCloseModal();
+      }
+    };
+
+    if (isModalOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isModalOpen, handleCloseModal]);
 
   // Show error overlay if there's an error and no data exists yet
   if (isError && (!usersData || users.length === 0)) {
@@ -377,7 +370,11 @@ function Users() {
                     {user.last_login || "N/A"}
                   </td>
                   <td className="py-4 pl-3 whitespace-nowrap">
-                    <TableMore onViewDetails={handleViewDetails} />
+                    <TableMore 
+                      user={user} 
+                      onViewDetails={() => handleViewDetails(user.user_id)} 
+                      onToggleStatus={handleTableStatusChange}
+                    />
                   </td>
                 </tr>
               ))}
@@ -412,16 +409,23 @@ function Users() {
       </div>
 
       {/* Modal for viewing details */}
-      {isModalOpen && (
-        <div
-          className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-start justify-center py-4 z-50 overflow-y-auto"
-          onClick={handleCloseModal}
-        >
-          <div ref={modalRef} onClick={(e) => e.stopPropagation()}>
-            <Viewdetailsmodal onClose={handleCloseModal} />
+      <div
+        className={`fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 overflow-y-auto transition-opacity duration-200 ${
+          isModalOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
+        }`}
+        onClick={handleCloseModal}
+        ref={modalRef}
+      >
+        {selectedUserId && (
+          <div onClick={(e) => e.stopPropagation()}>
+            <Viewdetailsmodal 
+              userId={selectedUserId}
+              onClose={handleCloseModal} 
+              isClosing={!isModalOpen} 
+            />
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }

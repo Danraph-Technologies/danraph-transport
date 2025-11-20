@@ -161,7 +161,7 @@ function DriversProfile({ onClose }) {
               <span className="text-[#004AAD]">(30)</span>
             </h2>
             <div className="overflow-x-auto border rounded-lg">
-              <table className="w-full min-w-[65 0px] ">
+              <table className="w-full min-w-[650px] ">
                 <thead className="border-b py-3">
                   <tr>
                     <th className="px-3 py-3 text-left">Date</th>

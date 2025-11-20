@@ -21,7 +21,7 @@ export const AuthProvider = ({ children }) => {
         const response = await api.get('/v1/users/me');
         
         // The docs say user data is in response.data, not response.data.data
-        if (response.data && response.data.id) {
+        if (response.data && response.data.user_id) {
           setUser(response.data); // Store the user object in state
           console.log("Session restored for user:", response.data.email);
         } else {
