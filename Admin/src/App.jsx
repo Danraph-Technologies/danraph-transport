@@ -6,9 +6,9 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
+import { Toaster } from "sonner";
 
-// 1. REMOVE the AuthProvider import, it's no longer needed here.
-// import { AuthProvider } from "./contexts/AuthContext";
+
 import ProtectedRoute from "./components/ProtectedRoute";
 
 // Import your pages
@@ -28,10 +28,12 @@ import Login from "./components/login";
 import Vehicle from "./pages/vehicle/Vehicle";
 import RegisterVehicle from "./pages/vehicle/RegisterVehicle"
 
+
 function App() {
   return (
     // 2. REMOVE the AuthProvider wrapper from here.
     <Router>
+       <Toaster position="top-right" richColors />
       <Routes>
         {/* Your routing logic is perfect and stays the same */}
         <Route path="/login" element={<Login />} />

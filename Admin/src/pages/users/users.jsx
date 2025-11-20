@@ -1,7 +1,8 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import api from "../../services/api"; // Your configured axios instance
+import api from "../../services/api";
 import { RefreshCw } from "lucide-react";
+import { toast } from "sonner";
 
 // Cache duration in milliseconds (30 minutes)
 const CACHE_DURATION = 30 * 60 * 1000;
@@ -39,20 +40,35 @@ function Users() {
       });
       return response.data;
     },
-    onSuccess: () => {
+    onSuccess: (data, variables) => {
       // Refresh the users list
       queryClient.invalidateQueries(["users"]);
+      queryClient.invalidateQueries(["user", variables.userId]); // Also refresh individual user if modal is open
+      
+      // Show success toast for status change
+      const action = variables.newStatus ? "activated" : "suspended";
+      toast.success(`User has been ${action} successfully`);
     },
     onError: (err) => {
       console.error("Error updating status:", err);
-      alert("Failed to update status. Please try again.");
+      toast.error(err.response?.data?.message || "Failed to update status. Please try again.");
     }
   });
 
   // Handle status change from TableMore
   const handleTableStatusChange = (userId, newStatus) => {
+    // We can keep confirm, or remove it and rely on the toggle. 
+    // Keeping it for safety is good for Admins.
     if (confirm(`Are you sure you want to ${newStatus ? 'activate' : 'deactivate'} this user?`)) {
-      statusMutation.mutate({ userId, newStatus });
+      // Optional: Show a loading toast while the mutation happens
+      const toastId = toast.loading("Updating user status...");
+      
+      statusMutation.mutate({ userId, newStatus }, {
+        onSettled: () => {
+            // Dismiss the "Updating..." toast when done (success or error)
+            toast.dismiss(toastId);
+        }
+      });
     }
   };
 
@@ -105,17 +121,31 @@ function Users() {
   }, [refetchQuery]);
 
 
-  // Handle refresh with loading state
+  // Handle refresh with loading state and toast notifications
   const handleRefresh = async () => {
-    if (isRefreshing) return; // Prevent multiple clicks
+    if (isRefreshing) return;
+    
+    // Start the Loading Toast
+    const toastId = toast.loading("Refreshing user data...");
+    
     setIsRefreshing(true);
     try {
       await refetch();
-      // Reset the refresh state after a short delay to show the refresh animation
+      
+      // Update the toast to Success
+      toast.success("Data refreshed successfully", {
+        id: toastId, // This replaces the loading toast
+      });
+
       setTimeout(() => setIsRefreshing(false), 1000);
     } catch (error) {
       console.error("Error refreshing data:", error);
       setIsRefreshing(false);
+      
+      // Update the toast to Error
+      toast.error("Failed to refresh data. Check connection.", {
+        id: toastId, // This replaces the loading toast
+      });
     }
   };
 

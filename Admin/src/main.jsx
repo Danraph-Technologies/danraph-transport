@@ -1,4 +1,4 @@
-// src/main.jsx (or index.js) - THE CORRECT SETUP
+
 
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";

@@ -1,7 +1,8 @@
 import React, { useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import api from "../../../services/api";
-import { RefreshCw, Loader2 } from "lucide-react"; // Added Loader2 for button spinner
+import { RefreshCw, Loader2 } from "lucide-react";
+import { toast } from "sonner"; // <--- 1. IMPORT SONNER
 
 // CONFIG: Cache this modal for 5 minutes
 const CACHE_DURATION = 5 * 60 * 1000;
@@ -47,20 +48,27 @@ function Viewdetailsmodal({ userId, onClose, isClosing }) {
   // 2. Mutation to Suspend/Activate User
   const statusMutation = useMutation({
     mutationFn: async (newStatus) => {
-      // The endpoint expects { "is_active": true/false }
       const response = await api.patch(`/v1/admin/users/${userId}/status`, {
         is_active: newStatus,
       });
       return response.data;
     },
-    onSuccess: () => {
+    onSuccess: (data, newStatus) => {
       // Success! Refresh both the specific user details AND the main list
-      queryClient.invalidateQueries(["user", userId]); // Refreshes this modal
-      queryClient.invalidateQueries(["users"]); // Refreshes the background table
+      queryClient.invalidateQueries(["user", userId]);
+      queryClient.invalidateQueries(["users"]);
+
+      // <--- TOAST SUCCESS
+      const action = newStatus ? "activated" : "suspended";
+      toast.success(`User has been ${action} successfully`);
     },
     onError: (err) => {
       console.error("Failed to update status", err);
-      alert("Failed to update user status. Please try again.");
+      // <--- TOAST ERROR
+      toast.error(
+        err.response?.data?.message ||
+          "Failed to update status. Please try again."
+      );
     },
   });
 
@@ -79,9 +87,21 @@ function Viewdetailsmodal({ userId, onClose, isClosing }) {
     });
   };
 
+  // 3. MANUAL REFRESH WITH TOAST
   const handleManualRefresh = async (e) => {
     e.stopPropagation();
-    await refetch();
+
+    // Start loading toast
+    const toastId = toast.loading("Refreshing details...");
+
+    try {
+      await refetch();
+      // Update to success
+      toast.success("User details updated", { id: toastId });
+    } catch (err) {
+      // Update to error
+      toast.error("Failed to refresh details", { id: toastId });
+    }
   };
 
   // Helper to handle status toggle click
@@ -137,7 +157,7 @@ function Viewdetailsmodal({ userId, onClose, isClosing }) {
                 />
               </button>
             </h2>
-            
+
             <div className="flex justify-between py-3 gap-2 items-center">
               <div className="flex py-3 gap-3 items-center">
                 <img
@@ -163,7 +183,11 @@ function Viewdetailsmodal({ userId, onClose, isClosing }) {
                     user.is_active
                       ? "border-[#F80B0B] text-[#F80B0B] hover:bg-red-50"
                       : "border-[#34C759] text-[#34C759] hover:bg-green-50"
-                  } ${statusMutation.isPending ? "opacity-50 cursor-not-allowed" : ""}`}
+                  } ${
+                    statusMutation.isPending
+                      ? "opacity-50 cursor-not-allowed"
+                      : ""
+                  }`}
                   onClick={handleToggleStatus}
                   disabled={statusMutation.isPending}
                 >
