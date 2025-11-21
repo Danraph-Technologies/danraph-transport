@@ -8,7 +8,6 @@ import {
 } from "react-router-dom";
 import { Toaster } from "sonner";
 
-
 import ProtectedRoute from "./components/ProtectedRoute";
 
 // Import your pages
@@ -26,14 +25,14 @@ import RegisterDriver from "./pages/drivers/Register";
 import DriversProfile from "./pages/drivers/DriversProfile";
 import Login from "./components/login";
 import Vehicle from "./pages/vehicle/Vehicle";
-import RegisterVehicle from "./pages/vehicle/RegisterVehicle"
-
+import RegisterVehicle from "./pages/vehicle/RegisterVehicle";
+import Edituser from "./pages/users/_tablecomponent/edituser";
 
 function App() {
   return (
     // 2. REMOVE the AuthProvider wrapper from here.
     <Router>
-       <Toaster position="top-right" richColors />
+      <Toaster position="top-right" richColors />
       <Routes>
         {/* Your routing logic is perfect and stays the same */}
         <Route path="/login" element={<Login />} />
@@ -59,7 +58,8 @@ function App() {
           <Route path="RegisterDriver" element={<RegisterDriver />} />
           <Route path="DriversProfile" element={<DriversProfile />} />
           <Route path="Vehicle-management" element={<Vehicle />} />
-           <Route path="Registervehicle" element={<RegisterVehicle />} />
+          <Route path="Registervehicle" element={<RegisterVehicle />} />
+          <Route path="Edituser" element={<Edituser />} />
         </Route>
         <Route path="*" element={<div>404 - Page Not Found</div>} />
       </Routes>

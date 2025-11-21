@@ -1,8 +1,10 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import api from "../../../services/api";
 import { RefreshCw, Loader2 } from "lucide-react";
-import { toast } from "sonner"; // <--- 1. IMPORT SONNER
+import { toast } from "sonner";
+// Import the new component
+import EditUser from "./edituser";
 
 // CONFIG: Cache this modal for 5 minutes
 const CACHE_DURATION = 5 * 60 * 1000;
@@ -17,14 +19,21 @@ const ModalSpinner = () => (
 function Viewdetailsmodal({ userId, onClose, isClosing }) {
   const queryClient = useQueryClient();
 
+  // State to control the Edit Modal Overlay
+  const [isEditOpen, setIsEditOpen] = useState(false);
+
   // Close on Escape key
   useEffect(() => {
     const handleEsc = (e) => {
-      if (e.key === "Escape") onClose();
+      if (e.key === "Escape") {
+        // If edit is open, close edit only. Otherwise close details.
+        if (isEditOpen) setIsEditOpen(false);
+        else onClose();
+      }
     };
     window.addEventListener("keydown", handleEsc);
     return () => window.removeEventListener("keydown", handleEsc);
-  }, [onClose]);
+  }, [onClose, isEditOpen]);
 
   // 1. Fetch user data
   const {
@@ -54,21 +63,14 @@ function Viewdetailsmodal({ userId, onClose, isClosing }) {
       return response.data;
     },
     onSuccess: (data, newStatus) => {
-      // Success! Refresh both the specific user details AND the main list
       queryClient.invalidateQueries(["user", userId]);
       queryClient.invalidateQueries(["users"]);
-
-      // <--- TOAST SUCCESS
       const action = newStatus ? "activated" : "suspended";
       toast.success(`User has been ${action} successfully`);
     },
     onError: (err) => {
       console.error("Failed to update status", err);
-      // <--- TOAST ERROR
-      toast.error(
-        err.response?.data?.message ||
-          "Failed to update status. Please try again."
-      );
+      toast.error(err.response?.data?.message || "Failed to update status.");
     },
   });
 
@@ -87,26 +89,20 @@ function Viewdetailsmodal({ userId, onClose, isClosing }) {
     });
   };
 
-  // 3. MANUAL REFRESH WITH TOAST
+  // 3. MANUAL REFRESH
   const handleManualRefresh = async (e) => {
     e.stopPropagation();
-
-    // Start loading toast
     const toastId = toast.loading("Refreshing details...");
-
     try {
       await refetch();
-      // Update to success
       toast.success("User details updated", { id: toastId });
     } catch (err) {
-      // Update to error
       toast.error("Failed to refresh details", { id: toastId });
     }
   };
 
   // Helper to handle status toggle click
   const handleToggleStatus = () => {
-    // Send the OPPOSITE of the current status
     statusMutation.mutate(!user.is_active);
   };
 
@@ -140,8 +136,19 @@ function Viewdetailsmodal({ userId, onClose, isClosing }) {
 
         {!isLoading && !isError && userData && (
           <div className="py-10 px-5">
-            <h2 className="text-[24px] font-semibold text-[#262626] flex items-center justify-between ">
-              User Profile
+            <h2 className=" font-semibold text-[#262626] flex items-center justify-between ">
+              <div className="flex gap-2 items-center ">
+                <span className="text-[24px]"> User Profile </span>
+
+                {/* EDIT BUTTON (Opens Overlay) */}
+                <span
+                  onClick={() => setIsEditOpen(true)}
+                  className="text-blue-700 hover:underline cursor-pointer text-sm font-medium"
+                >
+                  Edit
+                </span>
+              </div>
+
               <button
                 onClick={handleManualRefresh}
                 disabled={isRefetching}
@@ -177,7 +184,6 @@ function Viewdetailsmodal({ userId, onClose, isClosing }) {
                 </div>
               </div>
               <div>
-                {/* --- STATUS BUTTON --- */}
                 <button
                   className={`border font-semibold rounded-[10px] p-2 text-[14px] cursor-pointer duration-200 transition-all flex items-center gap-2 ${
                     user.is_active
@@ -276,6 +282,15 @@ function Viewdetailsmodal({ userId, onClose, isClosing }) {
           </div>
         )}
       </div>
+
+      {/* Render Edit User Overlay if open */}
+      {isEditOpen && (
+        <EditUser
+          user={user}
+          userId={userId}
+          onClose={() => setIsEditOpen(false)}
+        />
+      )}
     </div>
   );
 }

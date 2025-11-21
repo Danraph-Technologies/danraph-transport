@@ -1,234 +1,271 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Link } from "react-router-dom";
-import Taablemore from "./tablemore";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import api from "../../services/api";
+import { RefreshCw } from "lucide-react";
+import { toast } from "sonner";
+
+// Cache duration (30 minutes)
+const CACHE_DURATION = 30 * 60 * 1000;
+
+// Components
+import TableMore from "./tablemore"; 
 import DriversProfile from "./DriversProfile";
 import AssignVehicle from "./assignVerhicle";
 
-const Driver = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isClosing, setIsClosing] = useState(false);
-  const [showAssignVehicle, setShowAssignVehicle] = useState(false);
-
-  // Prevent background scroll + handle Escape key
+// Debounce Hook
+function useDebounce(value, delay) {
+  const [debouncedValue, setDebouncedValue] = useState(value);
   useEffect(() => {
-    const handleEsc = (event) => {
-      if (event.key === "Escape") {
-        handleCloseModal();
-      }
-    };
-
-    if (isModalOpen && !isClosing) {
-      document.body.style.overflow = "hidden";
-      window.addEventListener("keydown", handleEsc);
-    } else {
-      document.body.style.overflow = "unset";
-    }
-
+    const handler = setTimeout(() => {
+      setDebouncedValue(value);
+    }, delay);
     return () => {
-      document.body.style.overflow = "unset";
-      window.removeEventListener("keydown", handleEsc);
+      clearTimeout(handler);
     };
-  }, [isModalOpen, isClosing]);
+  }, [value, delay]);
+  return debouncedValue;
+}
 
-  const handleCloseModal = () => {
-    setIsClosing(true);
-    setTimeout(() => {
-      setIsClosing(false);
-      setIsModalOpen(false);
-    }, 300); // Match transition duration
+const Driver = () => {
+  const queryClient = useQueryClient();
+  
+  // State
+  const [selectedDriver, setSelectedDriver] = useState(null);
+  const [showAssignVehicle, setShowAssignVehicle] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [localSearchTerm, setLocalSearchTerm] = useState("");
+
+  const debouncedSearchTerm = useDebounce(localSearchTerm, 500);
+
+  // --- 1. FETCH DRIVERS ---
+  const {
+    data: driversData,
+    isLoading,
+    isError,
+    error,
+    refetch: refetchQuery,
+    dataUpdatedAt,
+  } = useQuery({
+    queryKey: ["drivers", page, pageSize, debouncedSearchTerm],
+    queryFn: async ({ queryKey: [_, page, pageSize, search] }) => {
+      const response = await api.get("/v1/admin/driver/list", {
+        params: { page, page_size: pageSize, search },
+      });
+      return response.data;
+    },
+    keepPreviousData: true,
+    staleTime: CACHE_DURATION,
+    cacheTime: CACHE_DURATION,
+  });
+
+  // --- 2. SUSPEND MUTATION (Using GET as per docs) ---
+  const suspendMutation = useMutation({
+    mutationFn: async (driverId) => {
+      // The docs say GET /suspend
+      const response = await api.get(`/v1/admin/driver/${driverId}/suspend`);
+      return response.data;
+    },
+    onSuccess: () => {
+      // 1. Refresh the list to show new status (Red/Green)
+      queryClient.invalidateQueries(["drivers"]);
+      
+      // 2. Show success message
+      toast.success("Driver status updated successfully");
+
+      // 3. If we have a driver selected (Modal open), close it or update it
+      // Closing it forces the user to reopen and see fresh data
+      if (selectedDriver) {
+         setSelectedDriver(null); 
+      }
+    },
+    onError: (err) => {
+      console.error("Suspend error:", err);
+      toast.error(err.response?.data?.message || "Failed to update driver status");
+    }
+  });
+
+  // Handler passed to children
+  const handleToggleStatus = (driverId) => {
+    if (confirm("Are you sure you want to change this driver's status?")) {
+       suspendMutation.mutate(driverId);
+    }
   };
 
+  // --- 3. REFRESH LOGIC ---
+  const refetch = useCallback(async () => {
+    await refetchQuery();
+  }, [refetchQuery]);
+
+  const handleRefresh = async () => {
+    if (isRefreshing) return;
+    const toastId = toast.loading("Refreshing driver list...");
+    setIsRefreshing(true);
+    try {
+      await refetch();
+      toast.success("Drivers list updated", { id: toastId });
+      setTimeout(() => setIsRefreshing(false), 1000);
+    } catch (error) {
+      setIsRefreshing(false);
+      toast.error("Failed to refresh data", { id: toastId });
+    }
+  };
+
+  const drivers = driversData?.items || [];
+  const pagination = driversData?.pagination || { total_pages: 1, page: 1 };
+
+  const lastUpdated = new Date(dataUpdatedAt || 0).toLocaleString("en-US", {
+    year: "numeric", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit",
+  });
+
+  const formatDate = (dateString) => {
+    if (!dateString) return "N/A";
+    return new Date(dateString).toLocaleDateString("en-US");
+  };
+
+  const handleCloseModal = useCallback(() => {
+    setSelectedDriver(null);
+  }, []);
+
+  const overlayStyle = {
+    position: "fixed", top: 0, left: 0, right: 0, bottom: 0,
+    backgroundColor: "rgba(255, 255, 255, 0.95)",
+    display: "flex", justifyContent: "center", alignItems: "center",
+    zIndex: 50, backdropFilter: "blur(4px)",
+  };
+
+  if (isError && (!driversData || drivers.length === 0)) {
+    return (
+      <div style={overlayStyle}>
+        <div className="flex flex-col items-center gap-4 p-8 bg-white rounded-xl shadow-xl max-w-md w-full mx-4">
+          <h3 className="text-xl font-semibold text-gray-800">Failed to Load Data</h3>
+          <button onClick={() => refetch()} className="mt-4 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2">
+            <RefreshCw className="w-5 h-5" /> Retry
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="w-full ">
+    <div className="w-full relative">
+      {isLoading && (
+        <div style={overlayStyle}>
+          <div className="flex flex-col items-center gap-4 p-8 bg-white rounded-xl shadow-xl">
+            <RefreshCw className="w-12 h-12 text-blue-600 animate-spin" />
+            <h3 className="text-xl font-medium text-gray-800">Loading Drivers</h3>
+          </div>
+        </div>
+      )}
+
       <div className="max-w-[1100px] w-full rounded-lg border border-gray-300 py-3 px-4 mx-auto">
-        <div className="flex flex-wrap justify-between">
-          <p className="text-[20px] font-semibold py-2">Driver List</p>
-          <div className="flex flex-wrap gap-2 items-center">
+        <div className="flex flex-wrap justify-between items-center">
+          <div>
+            <p className="text-[20px] font-semibold py-2">Driver List</p>
+            <p className="text-xs text-gray-500">Last Updated: {dataUpdatedAt ? lastUpdated : "Never"}</p>
+          </div>
+          
+          <div className="flex flex-wrap gap-2 items-center mt-2 sm:mt-0">
+            <button onClick={handleRefresh} disabled={isRefreshing} className={`bg-gray-100 hover:bg-gray-200 text-gray-700 transition-all duration-300 cursor-pointer flex items-center gap-2 px-3 py-2 rounded-lg disabled:opacity-50`}>
+              <RefreshCw className={`w-4 h-4 ${isRefreshing ? "animate-spin" : ""}`} />
+            </button>
             <Link to="/admin/RegisterDriver">
               <button className="bg-[#004AAD] hover:bg-[#004bade0] transition-all duration-300 cursor-pointer flex items-center gap-2 px-3 text-white py-2 rounded-lg ">
-                <span>
-                  <svg
-                    width="16"
-                    height="17"
-                    viewBox="0 0 16 17"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M15.8125 8.5C15.8125 8.74864 15.7137 8.9871 15.5379 9.16291C15.3621 9.33873 15.1236 9.4375 14.875 9.4375H8.9375V15.375C8.9375 15.6236 8.83873 15.8621 8.66291 16.0379C8.4871 16.2137 8.24864 16.3125 8 16.3125C7.75136 16.3125 7.5129 16.2137 7.33709 16.0379C7.16127 15.8621 7.0625 15.6236 7.0625 15.375V9.4375H1.125C0.87636 9.4375 0.637903 9.33873 0.462087 9.16291C0.286272 8.9871 0.1875 8.74864 0.1875 8.5C0.1875 8.25136 0.286272 8.0129 0.462087 7.83709C0.637903 7.66127 0.87636 7.5625 1.125 7.5625H7.0625V1.625C7.0625 1.37636 7.16127 1.1379 7.33709 0.962087C7.5129 0.786272 7.75136 0.6875 8 0.6875C8.24864 0.6875 8.4871 0.786272 8.66291 0.962087C8.83873 1.1379 8.9375 1.37636 8.9375 1.625V7.5625H14.875C15.1236 7.5625 15.3621 7.66127 15.5379 7.83709C15.7137 8.0129 15.8125 8.25136 15.8125 8.5Z"
-                      fill="white"
-                    />
-                  </svg>
-                </span>
+                <span>+</span>
                 <span>Register a Driver</span>
               </button>
             </Link>
-
-            <button
-              onClick={() => setShowAssignVehicle(true)}
-              className="bg-[#004AAD] hover:bg-[#004bade0] transition-all duration-300 cursor-pointer px-3 text-white py-2 rounded-lg"
-            >
+            <button onClick={() => setShowAssignVehicle(true)} className="bg-[#004AAD] hover:bg-[#004bade0] transition-all duration-300 cursor-pointer px-3 text-white py-2 rounded-lg">
               Assign / Reassign Vehicle
             </button>
           </div>
         </div>
 
-        <div className=" relative py-3 mb-2">
+        <div className="relative py-3 mb-2">
           <input
-            type="name"
-            name=""
-            id=""
-            className="w-full rounded-full border border-gray-300 outline-none px-10 py-[10px]  placeholder:text-[#6264A0]"
-            placeholder="Search user"
+            type="text"
+            value={localSearchTerm}
+            onChange={(e) => setLocalSearchTerm(e.target.value)}
+            className="w-full rounded-full border border-gray-300 outline-none px-10 py-[10px] placeholder:text-[#6264A0]"
+            placeholder="Search driver by name..."
           />
-          <div className="flex items-center gap-2 text-[#6264A0] absolute left-3 top-1/2 -translate-y-1/2">
-            <svg
-              width="22"
-              height="23"
-              viewBox="0 0 22 23"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M10.0269 2.606C7.84116 2.60967 5.74597 3.47958 4.2004 5.02515C2.65483 6.57072 1.78491 8.66591 1.78125 10.8517C1.78308 13.0393 2.65196 15.137 4.19753 16.6851C5.7431 18.2333 7.83932 19.1057 10.0269 19.1112C11.9671 19.1112 13.7548 18.4287 15.1683 17.2992L18.6017 20.7326C18.7757 20.8943 19.0055 20.9824 19.243 20.9782C19.4804 20.9741 19.7071 20.878 19.8752 20.7103C20.0434 20.5426 20.14 20.3162 20.1448 20.0788C20.1496 19.8413 20.0622 19.6112 19.9009 19.4369L16.4675 16C17.6402 14.5416 18.2794 12.7265 18.2795 10.8551C18.2795 6.30963 14.5724 2.606 10.0269 2.606ZM10.0269 4.44222C13.5816 4.44222 16.4433 7.30049 16.4433 10.8517C16.4433 14.4029 13.5816 17.2784 10.0269 17.2784C6.47227 17.2784 3.61401 14.4132 3.61401 10.8586C3.61401 7.30396 6.47227 4.44222 10.0269 4.44222Z"
-                fill="#6264A0"
-              />
-            </svg>
-          </div>
-          <div className="flex items-center gap-2 absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer ">
-            <svg
-              width="24"
-              height="25"
-              viewBox="0 0 24 25"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M9.84375 18.8359H3.75C3.55109 18.8359 3.36032 18.9149 3.21967 19.0556C3.07902 19.1962 3 19.387 3 19.5859C3 19.7848 3.07902 19.9756 3.21967 20.1162C3.36032 20.2569 3.55109 20.3359 3.75 20.3359H9.84375C10.009 20.9812 10.3843 21.5532 10.9105 21.9616C11.4367 22.3701 12.0839 22.5918 12.75 22.5918C13.4161 22.5918 14.0633 22.3701 14.5895 21.9616C15.1157 21.5532 15.491 20.9812 15.6562 20.3359L20.25 20.3359C20.4489 20.3359 20.6397 20.2569 20.7803 20.1162C20.921 19.9756 21 19.7848 21 19.5859C21 19.387 20.921 19.1962 20.7803 19.0556C20.6397 18.9149 20.4489 18.8359 20.25 18.8359L15.6562 18.8359C15.491 18.1906 15.1157 17.6186 14.5895 17.2102C14.0633 16.8017 13.4161 16.58 12.75 16.58C12.0839 16.58 11.4367 16.8017 10.9105 17.2102C10.3843 17.6186 10.009 18.1906 9.84375 18.8359ZM14.25 19.5859C14.25 19.8826 14.162 20.1726 13.9972 20.4193C13.8324 20.6659 13.5981 20.8582 13.324 20.9717C13.0499 21.0853 12.7483 21.115 12.4574 21.0571C12.1664 20.9992 11.8991 20.8564 11.6893 20.6466C11.4796 20.4368 11.3367 20.1695 11.2788 19.8785C11.2209 19.5876 11.2506 19.286 11.3642 19.0119C11.4777 18.7378 11.67 18.5035 11.9166 18.3387C12.1633 18.1739 12.4533 18.0859 12.75 18.0859C13.1478 18.0859 13.5294 18.244 13.8107 18.5253C14.092 18.8066 14.25 19.1881 14.25 19.5859ZM5.34375 12.0859H3.75C3.55109 12.0859 3.36032 12.1649 3.21967 12.3056C3.07902 12.4462 3 12.637 3 12.8359C3 13.0348 3.07902 13.2256 3.21967 13.3662C3.36032 13.5069 3.55109 13.5859 3.75 13.5859H5.34375C5.50898 14.2312 5.88428 14.8032 6.41048 15.2116C6.93669 15.6201 7.58387 15.8418 8.25 15.8418C8.91613 15.8418 9.56331 15.6201 10.0895 15.2116C10.6157 14.8032 10.991 14.2312 11.1562 13.5859L20.25 13.5859C20.4489 13.5859 20.6397 13.5069 20.7803 13.3662C20.921 13.2256 21 13.0348 21 12.8359C21 12.637 20.921 12.4462 20.7803 12.3056C20.6397 12.1649 20.4489 12.0859 20.25 12.0859L11.1562 12.0859C10.991 11.4406 10.6157 10.8686 10.0895 10.4602C9.56331 10.0517 8.91613 9.83003 8.25 9.83003C7.58387 9.83003 6.93669 10.0517 6.41048 10.4602C5.88428 10.8686 5.50898 11.4406 5.34375 12.0859ZM9.75 12.8359C9.75 13.1326 9.66203 13.4226 9.4972 13.6693C9.33238 13.9159 9.09811 14.1082 8.82403 14.2217C8.54994 14.3353 8.24834 14.365 7.95736 14.3071C7.66639 14.2492 7.39912 14.1064 7.18934 13.8966C6.97956 13.6868 6.8367 13.4195 6.77882 13.1285C6.72094 12.8376 6.75065 12.536 6.86418 12.2619C6.97771 11.9878 7.16997 11.7535 7.41665 11.5887C7.66332 11.4239 7.95333 11.3359 8.25 11.3359C8.64782 11.3359 9.02936 11.4939 9.31066 11.7753C9.59196 12.0566 9.75 12.4381 9.75 12.8359ZM15.75 3.08591C15.0849 3.08654 14.4388 3.30776 13.9129 3.71492C13.387 4.12208 13.011 4.69217 12.8438 5.33591H3.75C3.55109 5.33591 3.36032 5.41493 3.21967 5.55558C3.07902 5.69624 3 5.887 3 6.08591C3 6.28483 3.07902 6.47559 3.21967 6.61625C3.36032 6.7569 3.55109 6.83591 3.75 6.83591H12.8438C13.009 7.48123 13.3843 8.05319 13.9105 8.46164C14.4367 8.8701 15.0839 9.0918 15.75 9.0918C16.4161 9.0918 17.0633 8.8701 17.5895 8.46164C18.1157 8.05319 18.491 7.48123 18.6562 6.83591H20.25C20.4489 6.83591 20.6397 6.7569 20.7803 6.61625C20.921 6.47559 21 6.28483 21 6.08591C21 5.887 20.921 5.69624 20.7803 5.55558C20.6397 5.41493 20.4489 5.33591 20.25 5.33591H18.6562C18.489 4.69217 18.113 4.12208 17.5871 3.71492C17.0612 3.30776 16.4151 3.08654 15.75 3.08591ZM17.25 6.08591C17.25 6.38259 17.162 6.6726 16.9972 6.91927C16.8324 7.16594 16.5981 7.3582 16.324 7.47173C16.0499 7.58527 15.7483 7.61497 15.4574 7.55709C15.1664 7.49922 14.8991 7.35635 14.6893 7.14657C14.4796 6.9368 14.3367 6.66952 14.2788 6.37855C14.2209 6.08758 14.2506 5.78598 14.3642 5.51189C14.4777 5.2378 14.67 5.00353 14.9166 4.83871C15.1633 4.67389 15.4533 4.58591 15.75 4.58591C16.1478 4.58591 16.5294 4.74395 16.8107 5.02526C17.092 5.30656 17.25 5.68809 17.25 6.08591Z"
-                fill="black"
-              />
-            </svg>
-          </div>
         </div>
 
         <div className="overflow-x-auto">
           <table className="min-w-full w-full whitespace-nowrap">
             <thead className="bg-[#004AAD]">
               <tr className="text-white text-left">
-                <th className="py-2 pl-3 pr-3 w-[146px] font-normal">
-                  Full Name
-                </th>
-                <th className="py-2 pl-3 pr-3 w-[146px] font-normal">
-                  Total Trips
-                </th>
-                <th className="py-2 pl-3 pr-3 w-[146px] font-normal">
-                  Assigned Vehicle
-                </th>
-                <th className="py-2 pl-2 pr-3 w-[146px] font-normal">
-                  Phone Number
-                </th>
-                <th className="py-2 pl-2 pr-3 w-[146px] font-normal">
-                  Email Address
-                </th>
-                <th className="py-2 pl-2 pr-3 w-[146px] font-normal">Status</th>
-
-                <th className="py-2 pl-2 pr-3 w-[146px] font-normal">
-                  Date Joined
-                </th>
-
+                <th className="py-2 pl-3 pr-3 font-normal">Full Name</th>
+                <th className="py-2 pl-3 pr-3 font-normal">Total Trips</th>
+                <th className="py-2 pl-3 pr-3 font-normal">License No.</th>
+                <th className="py-2 pl-2 pr-3 font-normal">Phone Number</th>
+                <th className="py-2 pl-2 pr-3 font-normal">Email Address</th>
+                <th className="py-2 pl-2 pr-3 font-normal">Status</th>
+                <th className="py-2 pl-2 pr-3 font-normal">Date Joined</th>
                 <th className="py-2 pl-2 pr-4 font-normal">More</th>
               </tr>
             </thead>
 
             <tbody>
-              {[...Array(11)].map((_, i) => (
-                <tr className="border-b " key={i}>
-                  <td className="whitespace-nowrap border-r border-[#dbdbdb7e] py-4 pl-3 pr-10">
-                    David Godson
-                  </td>
-                  <td className="whitespace-nowrap border-r border-[#dbdbdb7e] py-4 pl-3 pr-10">
-                    50
-                  </td>
-                  <td className="whitespace-nowrap border-r border-[#dbdbdb7e] py-4 pl-3 pr-10">
-                    NSU-123-EN | Danraph <br /> Motors (15-Seater)
-                  </td>
-                  <td className="whitespace-nowrap border-r border-[#dbdbdb7e] py-4 pl-3 pr-10">
-                    0809992224445
-                  </td>
-                  <td className="whitespace-nowrap border-r border-[#dbdbdb7e] py-4 pl-3 pr-10">
-                    davidgo@email.com
-                  </td>
-                  <td className="whitespace-nowrap border-r border-[#dbdbdb7e] py-4 pl-3 pr-10">
-                    {" "}
-                    <span className="rounded-full w-[12px] h-[12px] bg-[#34C759] inline-block"></span>{" "}
-                    <span>Active</span>{" "}
-                  </td>
-                  <td className="whitespace-nowrap border-r text-[#5C5C5D] border-[#dbdbdb7e] py-4 pl-3 pr-10">
-                    4/4/2024
-                  </td>
-                  <td className="whitespace-nowrap  py-4 pl-3">
-                    <Taablemore
-                      onOpenDriverProfile={() => setIsModalOpen(true)}
-                    />
-                  </td>
-                </tr>
-              ))}
+              {drivers.length > 0 ? (
+                drivers.map((driver, i) => (
+                  <tr className="border-b" key={driver.id || i}>
+                    <td className="whitespace-nowrap border-r border-[#dbdbdb7e] py-4 pl-3 pr-10">{driver.first_name} {driver.last_name}</td>
+                    <td className="whitespace-nowrap border-r border-[#dbdbdb7e] py-4 pl-3 pr-10">0</td>
+                    <td className="whitespace-nowrap border-r border-[#dbdbdb7e] py-4 pl-3 pr-10">{driver.license_number || "N/A"}</td>
+                    <td className="whitespace-nowrap border-r border-[#dbdbdb7e] py-4 pl-3 pr-10">{driver.phone}</td>
+                    <td className="whitespace-nowrap border-r border-[#dbdbdb7e] py-4 pl-3 pr-10">{driver.email}</td>
+                    <td className="whitespace-nowrap border-r border-[#dbdbdb7e] py-4 pl-3 pr-10">
+                      <span className={`rounded-full w-[12px] h-[12px] inline-block mr-2 ${!driver.suspend ? "bg-[#34C759]" : "bg-[#F80B0B]"}`}></span>
+                      <span>{!driver.suspend ? "Active" : "Suspended"}</span>
+                    </td>
+                    <td className="whitespace-nowrap border-r text-[#5C5C5D] border-[#dbdbdb7e] py-4 pl-3 pr-10">{formatDate(driver.created_at)}</td>
+                    <td className="whitespace-nowrap py-4 pl-3">
+                      {/* PASS driver AND onToggleStatus */}
+                      <TableMore 
+                        driver={driver} 
+                        onViewDetails={() => setSelectedDriver(driver)}
+                        onToggleStatus={() => handleToggleStatus(driver.id)}
+                      />
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr><td colSpan="8" className="text-center py-10 text-gray-500">No drivers found</td></tr>
+              )}
             </tbody>
           </table>
         </div>
 
-        {/* Pagination */}
         <div className="flex flex-wrap items-center justify-between pt-6">
-          <p className="text-[#667085] text-[14px]">Showing 1 to 10 of 100</p>
+          <p className="text-[#667085] text-[14px]">Showing page {pagination.page} of {pagination.total_pages}</p>
           <div className="flex items-center gap-2">
-            <button className="border border-gray-300 rounded-lg py-2 px-3 text-[14px]">
-              Previous
-            </button>
-            <div className="flex items-center">
-              <button className="border border-gray-300 rounded-lg py-2 px-3 text-[14px] bg-[#004AAD] text-white">
-                1
-              </button>
-              <button className="border border-gray-300 rounded-lg py-2 px-3 text-[14px]">
-                2
-              </button>
-              <button className="border border-gray-300 rounded-lg py-2 px-3 text-[14px]">
-                ...
-              </button>
-              <button className="border border-gray-300 rounded-lg py-2 px-3 text-[14px]">
-                10
-              </button>
-            </div>
-            <button className="border border-gray-300 rounded-lg py-2 px-3 text-[14px]">
-              Next
-            </button>
+            <button onClick={() => setPage(old => Math.max(old - 1, 1))} disabled={page === 1} className="border border-gray-300 rounded-lg py-2 px-3 text-[14px] disabled:opacity-50">Previous</button>
+            <button className="border border-gray-300 rounded-lg py-2 px-3 text-[14px] bg-[#004AAD] text-white">{page}</button>
+            <button onClick={() => setPage(old => old + 1)} disabled={page === pagination.total_pages} className="border border-gray-300 rounded-lg py-2 px-3 text-[14px] disabled:opacity-50">Next</button>
           </div>
         </div>
       </div>
 
-      {isModalOpen && (
-        <div
-          className={`fixed inset-0 z-50 flex flex-col  justify-center transition-opacity duration-300 ${
-            isClosing ? "opacity-0" : "opacity-100"
-          }`}
-        >
-          <div
-            className="absolute inset-0 bg-black/40"
-            onClick={handleCloseModal}
-          />
-          <div
-            className={`relative z-10 transform transition-all duration-300 ${
-              isClosing ? "scale-95 opacity-0" : "scale-100 opacity-100"
-            }`}
-          >
-            <DriversProfile onClose={handleCloseModal} />
+      {selectedDriver && (
+        <div className="fixed inset-0 z-50 flex flex-col justify-center">
+          <div className="absolute inset-0 bg-black/40" onClick={handleCloseModal} />
+          <div className="relative z-10">
+            {/* PASS driver, onToggleStatus, isUpdating */}
+            <DriversProfile 
+              driver={selectedDriver} 
+              onClose={handleCloseModal}
+              onToggleStatus={() => handleToggleStatus(selectedDriver.id)}
+              isUpdating={suspendMutation.isPending}
+            />
           </div>
         </div>
       )}
 
-      {/* Assign Vehicle Overlay */}
-      {showAssignVehicle && (
-        <AssignVehicle onClose={() => setShowAssignVehicle(false)} />
-      )}
+      {showAssignVehicle && <AssignVehicle onClose={() => setShowAssignVehicle(false)} />}
     </div>
   );
 };
