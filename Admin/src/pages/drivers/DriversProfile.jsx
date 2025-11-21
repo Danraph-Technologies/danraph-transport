@@ -1,9 +1,10 @@
 import { Star, Loader2 } from "lucide-react";
 import React, { useState, useEffect } from "react";
+import EditDriver from "./Editdriver"; // <--- 1. IMPORT HERE
 
-// CHANGE: Accepts onToggleStatus and isUpdating
 function DriversProfile({ driver, onClose, onToggleStatus, isUpdating }) {
   const [zoomedImage, setZoomedImage] = useState(null); 
+  const [isEditOpen, setIsEditOpen] = useState(false); // <--- 2. ADD STATE
 
   useEffect(() => {
     document.body.style.overflow = zoomedImage ? "hidden" : "unset";
@@ -14,12 +15,13 @@ function DriversProfile({ driver, onClose, onToggleStatus, isUpdating }) {
     const handleEsc = (e) => {
       if (e.key === "Escape") {
         if (zoomedImage) setZoomedImage(null);
+        else if (isEditOpen) setIsEditOpen(false); // Close edit on ESC
         else onClose();
       }
     };
     window.addEventListener("keydown", handleEsc);
     return () => window.removeEventListener("keydown", handleEsc);
-  }, [zoomedImage, onClose]);
+  }, [zoomedImage, onClose, isEditOpen]);
 
   const openImage = (type) => setZoomedImage(type);
   const closeImage = () => setZoomedImage(null);
@@ -29,15 +31,31 @@ function DriversProfile({ driver, onClose, onToggleStatus, isUpdating }) {
   return (
     <div className="w-full max-w-4xl mx-auto">
       <div className="px-6 py-3 bg-white sm:max-h-[95vh] max-h-[100vh] overflow-y-auto rounded-lg relative shadow-xl">
-        <p className="text-right font-semibold text-[20px] cursor-pointer absolute top-3 right-3 hover:bg-gray-100 w-8 h-8 flex items-center justify-center rounded-full" onClick={onClose}>
+        <p
+          className="text-right font-semibold text-[20px] cursor-pointer absolute top-3 right-3 hover:bg-gray-100 w-8 h-8 flex items-center justify-center rounded-full"
+          onClick={onClose}
+        >
           X
         </p>
 
-        <h2 className="font-semibold text-[24px] pt-4">Driver Profile</h2>
+        <h2 className="font-semibold text-[24px] pt-4 flex items-center gap-3">
+            Driver Profile
+            {/* 3. EDIT BUTTON */}
+            <span 
+                onClick={() => setIsEditOpen(true)}
+                className="text-blue-600 text-sm cursor-pointer hover:underline font-normal"
+            >
+                Edit
+            </span>
+        </h2>
 
         <div className="flex flex-wrap gap-2 justify-between py-8 border-b border-gray-200">
           <div className="flex items-center gap-3">
-            <img src={driver.profile_img_url || "/userprofile.jpg"} alt="Profile" className="w-[80px] h-[80px] rounded-full object-cover"/>
+            <img 
+                src={driver.profile_img_url || "/userprofile.jpg"} 
+                alt="Profile" 
+                className="w-[80px] h-[80px] rounded-full object-cover"
+            />
             <div className="flex flex-col gap-2">
               <p className="flex items-center gap-2">
                 <span className={`rounded-full w-[13px] h-[13px] ${!driver.suspend ? "bg-[#34C759]" : "bg-[#E1C90F]"}`}></span>
@@ -73,8 +91,6 @@ function DriversProfile({ driver, onClose, onToggleStatus, isUpdating }) {
           </div>
         </div>
 
-        {/* ... Rest of the UI remains the same ... */}
-        
         <div>
           <h2 className="text-[20px] font-medium mt-6">Basic details</h2>
           <div className="flex flex-wrap justify-between">
@@ -107,7 +123,6 @@ function DriversProfile({ driver, onClose, onToggleStatus, isUpdating }) {
         </div>
         <div className="border border-[#58585880] sm:mt-[40px] mt-[30px]"></div>
 
-        {/* Trip History Placeholder */}
         <div className="py-6">
           <h2 className="font-medium text-[20px] mb-4"><span>Trips completed </span><span className="text-[#004AAD]">(0)</span></h2>
           <div className="text-center py-8 text-gray-500 border rounded-lg bg-gray-50">
@@ -116,7 +131,7 @@ function DriversProfile({ driver, onClose, onToggleStatus, isUpdating }) {
         </div>
       </div>
 
-      {/* Zoom Overlay */}
+      {/* ===== ZOOM MODAL OVERLAY ===== */}
       {zoomedImage && (
         <div className="fixed inset-0 z-[60] bg-black/90 flex items-center justify-center p-4 backdrop-blur-sm" onClick={closeImage}>
           <div className="relative flex flex-col items-center gap-4" onClick={(e) => e.stopPropagation()}>
@@ -124,6 +139,14 @@ function DriversProfile({ driver, onClose, onToggleStatus, isUpdating }) {
             <img src={zoomedImage === "license" ? driver.lincense_img_url : driver.nin_img_url} alt={zoomedImage} className="max-w-full max-h-[80vh] object-contain rounded-lg shadow-2xl border-2 border-white" />
           </div>
         </div>
+      )}
+
+      {/* ===== 4. EDIT DRIVER OVERLAY ===== */}
+      {isEditOpen && (
+        <EditDriver 
+            driver={driver} 
+            onClose={() => setIsEditOpen(false)} 
+        />
       )}
     </div>
   );
