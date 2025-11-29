@@ -13,7 +13,8 @@ import ProtectedRoute from "./components/ProtectedRoute";
 // Import your pages
 import Admin from "./pages/admin";
 import Dashboard from "./pages/Dashboard";
-import Manage from "./pages/Manage";
+import Pricing from "./pages/routes/pricing";
+import Manage from "./pages/routes/Manage"
 import Ride from "./pages/ride";
 import Charter from "./pages/charter";
 import Users from "./pages/users/users";
@@ -47,7 +48,8 @@ function App() {
         >
           <Route index element={<Navigate to="dashboard" replace />} />
           <Route path="dashboard" element={<Dashboard />} />
-          <Route path="Manage-location" element={<Manage />} />
+          <Route path="pricing-and-route" element={<Pricing />} />
+           <Route path="manage-route" element={<Manage />} />
           <Route path="Ride-Activities" element={<Ride />} />
           <Route path="Charter-Requests" element={<Charter />} />
           <Route path="User-Management" element={<Users />} />

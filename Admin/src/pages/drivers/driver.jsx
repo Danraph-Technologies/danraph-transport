@@ -62,36 +62,51 @@ const Driver = () => {
     cacheTime: CACHE_DURATION,
   });
 
-  // --- 2. SUSPEND MUTATION (Using GET as per docs) ---
-  const suspendMutation = useMutation({
-    mutationFn: async (driverId) => {
-      // The docs say GET /suspend
-      const response = await api.get(`/v1/admin/driver/${driverId}/suspend`);
-      return response.data;
+  // --- 2. TOGGLE STATUS MUTATION (Suspend/Activate) ---
+  const toggleStatusMutation = useMutation({
+    mutationFn: async (driver) => {
+      // Determine action based on current status
+      // If currently suspended (true) -> we want to 'activate'
+      // If currently active (false/null) -> we want to 'suspend'
+      const action = driver.suspend ? 'activate' : 'suspend';
+      
+      // API requires POST and a body (even if empty)
+      const response = await api.post(`/v1/admin/driver/${driver.id}/${action}`, {});
+      return { response: response.data, action, name: driver.first_name };
     },
-    onSuccess: () => {
-      // 1. Refresh the list to show new status (Red/Green)
+    onMutate: () => {
+      const toastId = toast.loading("Updating driver status...");
+      return { toastId };
+    },
+    onSuccess: (data, variables, context) => {
+      // 1. Refresh the list to show new status color
       queryClient.invalidateQueries(["drivers"]);
       
       // 2. Show success message
-      toast.success("Driver status updated successfully");
+      const statusText = data.action === 'suspend' ? 'suspended' : 'activated';
+      toast.success(`${data.name} has been ${statusText} successfully`, { 
+        id: context.toastId 
+      });
 
-      // 3. If we have a driver selected (Modal open), close it or update it
-      // Closing it forces the user to reopen and see fresh data
+      // 3. Update modal data if open (optional, closing it is safer)
       if (selectedDriver) {
          setSelectedDriver(null); 
       }
     },
-    onError: (err) => {
-      console.error("Suspend error:", err);
-      toast.error(err.response?.data?.message || "Failed to update driver status");
+    onError: (err, variables, context) => {
+      console.error("Status update error:", err);
+      toast.error(err.response?.data?.message || "Failed to update driver status", { 
+        id: context.toastId 
+      });
     }
   });
 
   // Handler passed to children
-  const handleToggleStatus = (driverId) => {
-    if (confirm("Are you sure you want to change this driver's status?")) {
-       suspendMutation.mutate(driverId);
+  const handleToggleStatus = (driver) => {
+    const actionText = driver.suspend ? "Activate" : "Suspend";
+    
+    if (window.confirm(`Are you sure you want to ${actionText} ${driver.first_name}?`)) {
+       toggleStatusMutation.mutate(driver);
     }
   };
 
@@ -161,7 +176,7 @@ const Driver = () => {
         </div>
       )}
 
-      <div className="max-w-[1100px] w-full rounded-lg border border-gray-300 py-3 px-4 mx-auto">
+      <div className="w-full rounded-lg border border-gray-300 py-3 px-4 mx-auto">
         <div className="flex flex-wrap justify-between items-center">
           <div>
             <p className="text-[20px] font-semibold py-2">Driver List</p>
@@ -219,16 +234,20 @@ const Driver = () => {
                     <td className="whitespace-nowrap border-r border-[#dbdbdb7e] py-4 pl-3 pr-10">{driver.phone}</td>
                     <td className="whitespace-nowrap border-r border-[#dbdbdb7e] py-4 pl-3 pr-10">{driver.email}</td>
                     <td className="whitespace-nowrap border-r border-[#dbdbdb7e] py-4 pl-3 pr-10">
+                      {/* Fix: Check boolean explicitly if driver.suspend is true */}
                       <span className={`rounded-full w-[12px] h-[12px] inline-block mr-2 ${!driver.suspend ? "bg-[#34C759]" : "bg-[#F80B0B]"}`}></span>
                       <span>{!driver.suspend ? "Active" : "Suspended"}</span>
                     </td>
                     <td className="whitespace-nowrap border-r text-[#5C5C5D] border-[#dbdbdb7e] py-4 pl-3 pr-10">{formatDate(driver.created_at)}</td>
                     <td className="whitespace-nowrap py-4 pl-3">
-                      {/* PASS driver AND onToggleStatus */}
+                      {/* 
+                          IMPORTANT FIX: 
+                          Pass the whole driver object to handleToggleStatus
+                      */}
                       <TableMore 
                         driver={driver} 
                         onViewDetails={() => setSelectedDriver(driver)}
-                        onToggleStatus={() => handleToggleStatus(driver.id)}
+                        onToggleStatus={() => handleToggleStatus(driver)}
                       />
                     </td>
                   </tr>
@@ -254,12 +273,12 @@ const Driver = () => {
         <div className="fixed inset-0 z-50 flex flex-col justify-center">
           <div className="absolute inset-0 bg-black/40" onClick={handleCloseModal} />
           <div className="relative z-10">
-            {/* PASS driver, onToggleStatus, isUpdating */}
             <DriversProfile 
               driver={selectedDriver} 
               onClose={handleCloseModal}
-              onToggleStatus={() => handleToggleStatus(selectedDriver.id)}
-              isUpdating={suspendMutation.isPending}
+              // Pass the driver object here too
+              onToggleStatus={() => handleToggleStatus(selectedDriver)}
+              isUpdating={toggleStatusMutation.isPending}
             />
           </div>
         </div>

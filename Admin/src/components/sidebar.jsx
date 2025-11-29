@@ -133,7 +133,7 @@ const Sidebar = ({ open, onClose }) => {
           </NavLink>
 
           <NavLink
-            to="/admin/manage-location"
+            to="/admin/pricing-and-route"
             className={({ isActive }) =>
               `pl-3 py-[10px] transition-all flex items-center gap-2 ${
                 isActive
@@ -155,7 +155,7 @@ const Sidebar = ({ open, onClose }) => {
                 fill="#585858"
               />
             </svg>
-            Manage Locations
+            Pricing & Routes
           </NavLink>
 
           <NavLink
@@ -181,10 +181,10 @@ const Sidebar = ({ open, onClose }) => {
                 fill="#585858"
               />
             </svg>
-            Ride Activities
+           Trips and Payment
           </NavLink>
 
-          <NavLink
+          {/*<NavLink
             to="/admin/Charter-Requests"
             className={({ isActive }) =>
               `pl-3 py-[10px] transition-all flex items-center gap-2 ${
@@ -208,7 +208,7 @@ const Sidebar = ({ open, onClose }) => {
               />
             </svg>
             Charter Requests
-          </NavLink>
+          </NavLink>*/}
 
           <NavLink
             to="/admin/Transaction-&-Wallet"

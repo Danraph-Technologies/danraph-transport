@@ -263,7 +263,7 @@ function Users() {
         </div>
       )}
 
-      <div className="max-w-[1105px] w-full rounded-lg border border-gray-300 py-5 px-4 ">
+      <div className=" w-full rounded-lg border border-gray-300 py-5 px-4 ">
         <div className="flex flex-wrap gap-y-3 justify-between items-center">
           <p className="text-[20px] font-semibold">User Management</p>
           <p>Last Updated: {dataUpdatedAt ? lastUpdated : "Never"}</p>

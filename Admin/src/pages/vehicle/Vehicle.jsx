@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 function Vehicle() {
   return (
     <div>
-      <div className="max-w-[1150px] w-full border rounded-lg p-3 ">
+      <div className="w-full border rounded-lg p-3 ">
         <div className="flex flex-wrap justify-between items-center ">
           <h2 className="text-[20px] font-semibold">Vehicle List</h2>
 

@@ -1,4 +1,12 @@
+
+
 import React from "react";
+// 1. Import React Query Hook
+import { useQuery } from "@tanstack/react-query";
+import api from "../services/api";
+import { RefreshCw } from "lucide-react";
+
+// Assets
 import img from "../assets/danraph-arrow.png";
 import img1 from "../assets/Natalia.png";
 import img2 from "../assets/drew.png";
@@ -6,215 +14,174 @@ import img3 from "../assets/Andy.png";
 import img4 from "../assets/korray.png";
 import img5 from "../assets/kate.png";
 import img6 from "../assets/melody.png";
-import RevenueGraph from "../components/RevenueGraph"
+import RevenueGraph from "../components/RevenueGraph";
 
 const Dashboard = () => {
+
+  // 2. THE NEW REACT QUERY LOGIC (Replaces useEffect & useState)
+  const {
+    data: stats, // We rename 'data' to 'stats' so your JSX works perfectly
+    isLoading: loading, // We rename 'isLoading' to 'loading' for your spinners
+    error
+  } = useQuery({
+    queryKey: ["dashboardStats"], // A unique key for caching
+    queryFn: async () => {
+      const response = await api.get("/v1/admin/dashboard/stats");
+      return response.data;
+    },
+    staleTime: 1000 * 60, // 1 Minute
+    refetchInterval: 1000 * 30, // 30 Seconds
+    refetchOnWindowFocus: true,
+  });
+
+  if (error) {
+    console.error("Dashboard fetch error:", error);
+    // You could return an error UI here if you wanted
+  }
+
+  // Helper to format money
+  const formatMoney = (amount) => {
+    return (amount || 0).toLocaleString();
+  };
+
   return (
     <div>
       <div className="flex flex-wrap leeee:justify-center">
-        <div className="max-w-[816px] leeee:max-w-[100%] w-full  flex-1 border border-gray-300 rounded-lg p-2 px-4">
+        <div className="max-w-[820px] leeee:max-w-[100%] w-full  flex-1 border border-gray-300 rounded-lg p-2 px-4">
           <div className="flex justify-between items-center">
             <p className="text-[20px] font-semibold">Overview</p>
             <p className="flex items-center gap-1">
               <span className="text-[20px] font-semibold">Today</span>
               <span className="cursor-pointer">
-                <svg
-                  width="16"
-                  height="16"
-                  viewBox="0 0 16 16"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    fillRule="evenodd"
-                    clipRule="evenodd"
-                    d="M3.64645 5.65967C3.84171 5.44678 4.15829 5.44678 4.35355 5.65967L7.64645 9.25C7.84171 9.4629 8.15829 9.4629 8.35355 9.25L11.6464 5.65968C11.8417 5.44678 12.1583 5.44678 12.3536 5.65968C12.5488 5.87257 12.5488 6.21775 12.3536 6.43065L9.06066 10.021C8.47487 10.6597 7.52513 10.6597 6.93934 10.021L3.64645 6.43065C3.45118 6.21775 3.45118 5.87257 3.64645 5.65967Z"
-                    fill="black"
-                    fillOpacity="0.4"
-                  />
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path fillRule="evenodd" clipRule="evenodd" d="M3.64645 5.65967C3.84171 5.44678 4.15829 5.44678 4.35355 5.65967L7.64645 9.25C7.84171 9.4629 8.15829 9.4629 8.35355 9.25L11.6464 5.65968C11.8417 5.44678 12.1583 5.44678 12.3536 5.65968C12.5488 5.87257 12.5488 6.21775 12.3536 6.43065L9.06066 10.021C8.47487 10.6597 7.52513 10.6597 6.93934 10.021L3.64645 6.43065C3.45118 6.21775 3.45118 5.87257 3.64645 5.65967Z" fill="black" fillOpacity="0.4" />
                 </svg>
               </span>
             </p>
           </div>
 
           <div className="md:grid-cols-3 mm:grid-cols-2 le:grid-cols-2 grid grid-cols-1 items-center gap-4 py-5">
-            <div className="w-full bg-[#EDEEFC] rounded-xl px-4 py-4 flex  flex-col gap-2 ">
-              <p className="sm:text-[17px] text-[15px] le:text-[16px]">
-                Total Registered Users
-              </p>
 
-              <div className="flex  flex-wrap gap-1 justify-between">
-                <p className="sm:text-[25px] text-[20px]  font-semibold">700</p>
+            {/* 1. Total Registered Users */}
+            <div className="w-full bg-[#EDEEFC] rounded-xl px-4 py-4 flex flex-col gap-2">
+              <p className="sm:text-[17px] text-[15px] le:text-[16px]">Total Registered Users</p>
+              <div className="flex flex-wrap gap-1 justify-between items-center h-[40px]">
+                {loading ? (
+                  <div className="h-8 w-24 bg-gray-300/50 rounded animate-pulse"></div>
+                ) : (
+                  <p className="sm:text-[25px] text-[20px] font-semibold">
+                    {stats?.kpis?.total_registered_users || 0}
+                  </p>
+                )}
                 <p className="flex items-center gap-2 hover:-translate-x-2 transition duration-500 cursor-pointer">
-                  <span>+15.03%</span>
+                  <span className="text-gray-500">0%</span>
                   <span>
-                    <svg
-                      width="20"
-                      height="20"
-                      viewBox="0 0 20 20"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        clipRule="evenodd"
-                        d="M10.2667 6.93992L16.7924 5.04785L15.1681 11.6453L13.1419 9.7001L9.87346 13.1047C9.7625 13.2203 9.60921 13.2857 9.44898 13.2857C9.28876 13.2857 9.13547 13.2203 9.02451 13.1047L6.62459 10.6048L3.09492 14.2816C2.86987 14.516 2.49738 14.5236 2.26295 14.2985C2.02852 14.0735 2.02092 13.701 2.24597 13.4666L6.20012 9.34767C6.31108 9.23209 6.46437 9.16675 6.62459 9.16675C6.78482 9.16675 6.93811 9.23209 7.04907 9.34767L9.44898 11.8476L12.293 8.8851L10.2667 6.93992Z"
-                        fill="black"
-                      />
-                    </svg>
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" clipRule="evenodd" d="M10.2667 6.93992L16.7924 5.04785L15.1681 11.6453L13.1419 9.7001L9.87346 13.1047C9.7625 13.2203 9.60921 13.2857 9.44898 13.2857C9.28876 13.2857 9.13547 13.2203 9.02451 13.1047L6.62459 10.6048L3.09492 14.2816C2.86987 14.516 2.49738 14.5236 2.26295 14.2985C2.02852 14.0735 2.02092 13.701 2.24597 13.4666L6.20012 9.34767C6.31108 9.23209 6.46437 9.16675 6.62459 9.16675C6.78482 9.16675 6.93811 9.23209 7.04907 9.34767L9.44898 11.8476L12.293 8.8851L10.2667 6.93992Z" fill="black" /></svg>
                   </span>
                 </p>
               </div>
             </div>
 
-            <div className="w-full bg-[#EDEEFC] rounded-xl px-4 py-4 flex  flex-col gap-2 ">
-              <p className="sm:text-[17px] text-[15px] le:text-[16px]">
-                Total Active Drivers
-              </p>
-
-              <div className="flex  flex-wrap gap-1 justify-between">
-                <p className="sm:text-[25px] text-[20px]  font-semibold">500</p>
+            {/* 2. Total Active Drivers */}
+            <div className="w-full bg-[#EDEEFC] rounded-xl px-4 py-4 flex flex-col gap-2">
+              <p className="sm:text-[17px] text-[15px] le:text-[16px]">Total Active Drivers</p>
+              <div className="flex flex-wrap gap-1 justify-between items-center h-[40px]">
+                {loading ? (
+                  <div className="h-8 w-24 bg-gray-300/50 rounded animate-pulse"></div>
+                ) : (
+                  <p className="sm:text-[25px] text-[20px] font-semibold">
+                    {stats?.kpis?.total_active_drivers || 0}
+                  </p>
+                )}
                 <p className="flex items-center gap-2 hover:-translate-x-2 transition duration-500 cursor-pointer">
-                  <span>+15.03%</span>
+                  <span className="text-gray-500">0%</span>
                   <span>
-                    <svg
-                      width="20"
-                      height="20"
-                      viewBox="0 0 20 20"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        clipRule="evenodd"
-                        d="M10.2667 6.93992L16.7924 5.04785L15.1681 11.6453L13.1419 9.7001L9.87346 13.1047C9.7625 13.2203 9.60921 13.2857 9.44898 13.2857C9.28876 13.2857 9.13547 13.2203 9.02451 13.1047L6.62459 10.6048L3.09492 14.2816C2.86987 14.516 2.49738 14.5236 2.26295 14.2985C2.02852 14.0735 2.02092 13.701 2.24597 13.4666L6.20012 9.34767C6.31108 9.23209 6.46437 9.16675 6.62459 9.16675C6.78482 9.16675 6.93811 9.23209 7.04907 9.34767L9.44898 11.8476L12.293 8.8851L10.2667 6.93992Z"
-                        fill="black"
-                      />
-                    </svg>
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" clipRule="evenodd" d="M10.2667 6.93992L16.7924 5.04785L15.1681 11.6453L13.1419 9.7001L9.87346 13.1047C9.7625 13.2203 9.60921 13.2857 9.44898 13.2857C9.28876 13.2857 9.13547 13.2203 9.02451 13.1047L6.62459 10.6048L3.09492 14.2816C2.86987 14.516 2.49738 14.5236 2.26295 14.2985C2.02852 14.0735 2.02092 13.701 2.24597 13.4666L6.20012 9.34767C6.31108 9.23209 6.46437 9.16675 6.62459 9.16675C6.78482 9.16675 6.93811 9.23209 7.04907 9.34767L9.44898 11.8476L12.293 8.8851L10.2667 6.93992Z" fill="black" /></svg>
                   </span>
                 </p>
               </div>
             </div>
 
-            <div className="w-full bg-[#EDEEFC] rounded-xl px-4 py-4 flex  flex-col gap-2 ">
-              <p className="sm:text-[17px] text-[15px] le:text-[16px]">
-                Total Rides Today
-              </p>
-
-              <div className="flex  flex-wrap gap-1 justify-between">
-                <p className="sm:text-[25px] text-[20px]  font-semibold">100</p>
+            {/* 3. Total Rides Today */}
+            <div className="w-full bg-[#EDEEFC] rounded-xl px-4 py-4 flex flex-col gap-2">
+              <p className="sm:text-[17px] text-[15px] le:text-[16px]">Total Rides Today</p>
+              <div className="flex flex-wrap gap-1 justify-between items-center h-[40px]">
+                {loading ? (
+                  <div className="h-8 w-24 bg-gray-300/50 rounded animate-pulse"></div>
+                ) : (
+                  <p className="sm:text-[25px] text-[20px] font-semibold">
+                    {stats?.kpis?.total_rides_today || 0}
+                  </p>
+                )}
                 <p className="flex items-center gap-2 hover:-translate-x-2 transition duration-500 cursor-pointer">
-                  <span>+15.03%</span>
+                  <span className="text-gray-500">0%</span>
                   <span>
-                    <svg
-                      width="20"
-                      height="20"
-                      viewBox="0 0 20 20"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        clipRule="evenodd"
-                        d="M10.2667 6.93992L16.7924 5.04785L15.1681 11.6453L13.1419 9.7001L9.87346 13.1047C9.7625 13.2203 9.60921 13.2857 9.44898 13.2857C9.28876 13.2857 9.13547 13.2203 9.02451 13.1047L6.62459 10.6048L3.09492 14.2816C2.86987 14.516 2.49738 14.5236 2.26295 14.2985C2.02852 14.0735 2.02092 13.701 2.24597 13.4666L6.20012 9.34767C6.31108 9.23209 6.46437 9.16675 6.62459 9.16675C6.78482 9.16675 6.93811 9.23209 7.04907 9.34767L9.44898 11.8476L12.293 8.8851L10.2667 6.93992Z"
-                        fill="black"
-                      />
-                    </svg>
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" clipRule="evenodd" d="M10.2667 6.93992L16.7924 5.04785L15.1681 11.6453L13.1419 9.7001L9.87346 13.1047C9.7625 13.2203 9.60921 13.2857 9.44898 13.2857C9.28876 13.2857 9.13547 13.2203 9.02451 13.1047L6.62459 10.6048L3.09492 14.2816C2.86987 14.516 2.49738 14.5236 2.26295 14.2985C2.02852 14.0735 2.02092 13.701 2.24597 13.4666L6.20012 9.34767C6.31108 9.23209 6.46437 9.16675 6.62459 9.16675C6.78482 9.16675 6.93811 9.23209 7.04907 9.34767L9.44898 11.8476L12.293 8.8851L10.2667 6.93992Z" fill="black" /></svg>
                   </span>
                 </p>
               </div>
             </div>
 
-            <div className="w-full bg-[#EDEEFC] rounded-xl px-4 py-4 flex  flex-col gap-2 ">
-              <p className="sm:text-[17px] text-[15px] le:text-[16px]">
-                Total Charters Today
-              </p>
-
-              <div className="flex  flex-wrap gap-1 justify-between">
-                <p className="sm:text-[25px] text-[20px]  font-semibold">60</p>
+            {/* 4. Total Charters Today */}
+            <div className="w-full bg-[#EDEEFC] rounded-xl px-4 py-4 flex flex-col gap-2">
+              <p className="sm:text-[17px] text-[15px] le:text-[16px]">Total Charters Today</p>
+              <div className="flex flex-wrap gap-1 justify-between items-center h-[40px]">
+                {loading ? (
+                  <div className="h-8 w-24 bg-gray-300/50 rounded animate-pulse"></div>
+                ) : (
+                  <p className="sm:text-[25px] text-[20px] font-semibold">
+                    {stats?.kpis?.total_charters_today || 0}
+                  </p>
+                )}
                 <p className="flex items-center gap-2 hover:-translate-x-2 transition duration-500 cursor-pointer">
-                  <span>+15.03%</span>
+                  <span className="text-gray-500">0%</span>
                   <span>
-                    <svg
-                      width="20"
-                      height="20"
-                      viewBox="0 0 20 20"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        clipRule="evenodd"
-                        d="M10.2667 6.93992L16.7924 5.04785L15.1681 11.6453L13.1419 9.7001L9.87346 13.1047C9.7625 13.2203 9.60921 13.2857 9.44898 13.2857C9.28876 13.2857 9.13547 13.2203 9.02451 13.1047L6.62459 10.6048L3.09492 14.2816C2.86987 14.516 2.49738 14.5236 2.26295 14.2985C2.02852 14.0735 2.02092 13.701 2.24597 13.4666L6.20012 9.34767C6.31108 9.23209 6.46437 9.16675 6.62459 9.16675C6.78482 9.16675 6.93811 9.23209 7.04907 9.34767L9.44898 11.8476L12.293 8.8851L10.2667 6.93992Z"
-                        fill="black"
-                      />
-                    </svg>
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" clipRule="evenodd" d="M10.2667 6.93992L16.7924 5.04785L15.1681 11.6453L13.1419 9.7001L9.87346 13.1047C9.7625 13.2203 9.60921 13.2857 9.44898 13.2857C9.28876 13.2857 9.13547 13.2203 9.02451 13.1047L6.62459 10.6048L3.09492 14.2816C2.86987 14.516 2.49738 14.5236 2.26295 14.2985C2.02852 14.0735 2.02092 13.701 2.24597 13.4666L6.20012 9.34767C6.31108 9.23209 6.46437 9.16675 6.62459 9.16675C6.78482 9.16675 6.93811 9.23209 7.04907 9.34767L9.44898 11.8476L12.293 8.8851L10.2667 6.93992Z" fill="black" /></svg>
                   </span>
                 </p>
               </div>
             </div>
 
-            <div className="w-full bg-[#EDEEFC] rounded-xl px-4 py-4 flex  flex-col gap-2 ">
-              <p className="sm:text-[17px] text-[15px] le:text-[16px]">
-                Wallet Balance
-              </p>
-
-              <div className="flex  flex-wrap gap-1 justify-between">
-                <p className="sm:text-[25px] text-[20px]  font-semibold">
-                  50,000
-                </p>
+            {/* 5. Wallet Balance */}
+            <div className="w-full bg-[#EDEEFC] rounded-xl px-4 py-4 flex flex-col gap-2">
+              <p className="sm:text-[17px] text-[15px] le:text-[16px]">Total Revenue this month</p>
+              <div className="flex flex-wrap gap-1 justify-between items-center h-[40px]">
+                {loading ? (
+                  <div className="h-8 w-32 bg-gray-300/50 rounded animate-pulse"></div>
+                ) : (
+                  <p className="sm:text-[25px] text-[20px] font-semibold">
+                    {formatMoney(stats?.kpis?.total_revenue_month)}
+                  </p>
+                )}
                 <p className="flex items-center gap-2 hover:-translate-x-2 transition duration-500 cursor-pointer">
-                  <span>+15.03%</span>
+                  <span className="text-gray-500">0%</span>
                   <span>
-                    <svg
-                      width="20"
-                      height="20"
-                      viewBox="0 0 20 20"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        clipRule="evenodd"
-                        d="M10.2667 6.93992L16.7924 5.04785L15.1681 11.6453L13.1419 9.7001L9.87346 13.1047C9.7625 13.2203 9.60921 13.2857 9.44898 13.2857C9.28876 13.2857 9.13547 13.2203 9.02451 13.1047L6.62459 10.6048L3.09492 14.2816C2.86987 14.516 2.49738 14.5236 2.26295 14.2985C2.02852 14.0735 2.02092 13.701 2.24597 13.4666L6.20012 9.34767C6.31108 9.23209 6.46437 9.16675 6.62459 9.16675C6.78482 9.16675 6.93811 9.23209 7.04907 9.34767L9.44898 11.8476L12.293 8.8851L10.2667 6.93992Z"
-                        fill="black"
-                      />
-                    </svg>
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" clipRule="evenodd" d="M10.2667 6.93992L16.7924 5.04785L15.1681 11.6453L13.1419 9.7001L9.87346 13.1047C9.7625 13.2203 9.60921 13.2857 9.44898 13.2857C9.28876 13.2857 9.13547 13.2203 9.02451 13.1047L6.62459 10.6048L3.09492 14.2816C2.86987 14.516 2.49738 14.5236 2.26295 14.2985C2.02852 14.0735 2.02092 13.701 2.24597 13.4666L6.20012 9.34767C6.31108 9.23209 6.46437 9.16675 6.62459 9.16675C6.78482 9.16675 6.93811 9.23209 7.04907 9.34767L9.44898 11.8476L12.293 8.8851L10.2667 6.93992Z" fill="black" /></svg>
                   </span>
                 </p>
               </div>
             </div>
 
-            <div className="w-full bg-[#EDEEFC] rounded-xl px-4 py-4 flex  flex-col gap-2 ">
-              <p className="sm:text-[17px] text-[15px] le:text-[16px]">
-                Income Today
-              </p>
-
-              <div className="flex  flex-wrap gap-1 justify-between">
-                <p className="sm:text-[25px] text-[20px]  font-semibold">
-                  100,000
-                </p>
+            {/* 6. Income Today */}
+            <div className="w-full bg-[#EDEEFC] rounded-xl px-4 py-4 flex flex-col gap-2">
+              <p className="sm:text-[17px] text-[15px] le:text-[16px]">Revenue Today</p>
+              <div className="flex flex-wrap gap-1 justify-between items-center h-[40px]">
+                {loading ? (
+                  <div className="h-8 w-32 bg-gray-300/50 rounded animate-pulse"></div>
+                ) : (
+                  <p className="sm:text-[25px] text-[20px] font-semibold">
+                    {formatMoney(stats?.kpis?.revenue_today)}
+                  </p>
+                )}
                 <p className="flex items-center gap-2 hover:-translate-x-2 transition duration-500 cursor-pointer">
-                  <span>+15.03%</span>
+                  <span className="text-gray-500">0%</span>
                   <span>
-                    <svg
-                      width="20"
-                      height="20"
-                      viewBox="0 0 20 20"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        clipRule="evenodd"
-                        d="M10.2667 6.93992L16.7924 5.04785L15.1681 11.6453L13.1419 9.7001L9.87346 13.1047C9.7625 13.2203 9.60921 13.2857 9.44898 13.2857C9.28876 13.2857 9.13547 13.2203 9.02451 13.1047L6.62459 10.6048L3.09492 14.2816C2.86987 14.516 2.49738 14.5236 2.26295 14.2985C2.02852 14.0735 2.02092 13.701 2.24597 13.4666L6.20012 9.34767C6.31108 9.23209 6.46437 9.16675 6.62459 9.16675C6.78482 9.16675 6.93811 9.23209 7.04907 9.34767L9.44898 11.8476L12.293 8.8851L10.2667 6.93992Z"
-                        fill="black"
-                      />
-                    </svg>
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" clipRule="evenodd" d="M10.2667 6.93992L16.7924 5.04785L15.1681 11.6453L13.1419 9.7001L9.87346 13.1047C9.7625 13.2203 9.60921 13.2857 9.44898 13.2857C9.28876 13.2857 9.13547 13.2203 9.02451 13.1047L6.62459 10.6048L3.09492 14.2816C2.86987 14.516 2.49738 14.5236 2.26295 14.2985C2.02852 14.0735 2.02092 13.701 2.24597 13.4666L6.20012 9.34767C6.31108 9.23209 6.46437 9.16675 6.62459 9.16675C6.78482 9.16675 6.93811 9.23209 7.04907 9.34767L9.44898 11.8476L12.293 8.8851L10.2667 6.93992Z" fill="black" /></svg>
                   </span>
                 </p>
               </div>
             </div>
+
           </div>
 
           <div>
@@ -222,7 +189,7 @@ const Dashboard = () => {
               Recent Activities Section
             </p>
             <div className="py-4 sm:px-3 px-1 grid grid-cols-1 leee:grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Latest Ride Requests & Charters */}
+              {/* Latest Ride Trends TABLE */}
               <div className="w-full border border-[#E1E1E1] rounded-[19px] px-4 pb-2 ">
                 <div className="flex justify-between gap-2 items-center font-medium pb-5 pt-3 ">
                   <p className="sm:text-[19.7px] text-[17px]  text-[#323132] font-medium mb-1">
@@ -234,123 +201,64 @@ const Dashboard = () => {
                 </div>
 
                 <hr className="border border-[#dbdbdb77]" />
-                <div className="overflow-x-auto">
-                  <table className="min-w-[340px] w-full">
+                <div className="overflow-x-auto overflow-y-auto max-h-[40vh] ">
+                  <table className="min-w-[340px]  w-full">
                     <thead>
                       <tr className="text-left text-[14.8px] text-[#8A929C]">
-                        <th className="py-2 pr-4 font-normal">user Name</th>
-                        <th className="py-2 pr-4 font-normal">To to</th>
+                        <th className="py-2 pr-4 font-normal">User Name</th>
+                        <th className="py-2 pr-4 font-normal">Route</th>
                         <th className="py-2 font-normal">Date</th>
                       </tr>
                     </thead>
+
+                    {/* ✅ DYNAMIC BODY WITH REACT QUERY */}
                     <tbody className="text-[15px] text-[#616161]">
-                      <tr className="border-t border-[#dbdbdb7e]">
-                        <td className="py-3 align-top whitespace-nowrap ">
-                          <p className="w-[130px] min-w-[20px] max-w-[130px] break-words whitespace-normal">
-                            Robert 0,12345
-                          </p>
 
-                          <div className="text-[13px] text-[#737478] font-light">
-                            Ride Request
-                          </div>
-                        </td>
-                        <td className="py-3 align-top whitespace-nowrap ">
-                          Main Gate
-                          <div className="flex items-center gap-1 text-[13px] text-[#737478]">
-                            <img
-                              src={img}
-                              alt=""
-                              className="max-w-[10px] w-full pt-[4px]"
-                            />
-                            Hostel A
-                          </div>
-                        </td>
-                        <td className="py-3 align-top whitespace-nowrap ">
-                          4/4/2024
-                          <div className="text-[13px] text-[#737478] font-light">
-                            10:00AM
-                          </div>
-                        </td>
-                      </tr>
-                      <tr className="border-t border-[#dbdbdb7e]">
-                        <td className="py-3 align-top whitespace-nowrap ">
-                          <p className="w-[130px] min-w-[20px] max-w-[130px] break-words whitespace-normal">
-                            SamanthaP, 23456
-                          </p>
-
-                          <div className="text-[13px] text-[#737478] font-light">
-                            Charter
-                          </div>
-                        </td>
-                        <td className="py-3 align-top whitespace-nowrap ">
-                          Library
-                          <div className="text-[13px] text-[#737478] font-light">
-                            Sports Complex
-                          </div>
-                        </td>
-                        <td className="py-3 align-top whitespace-nowrap ">
-                          4/3/2024
-                          <div className="text-[13px] text-[#737478] font-light">
-                            3:30PM
-                          </div>
-                        </td>
-                      </tr>
-                      <tr className="border-t border-[#dbdbdb7e]">
-                        <td className="py-3 align-top whitespace-nowrap ">
-                          <p className="w-[130px] min-w-[20px] max-w-[130px] break-words whitespace-normal">
-                            James M, 34567
-                          </p>
-
-                          <div className="text-[13px] text-[#737478] font-light">
-                            Ride Request
-                          </div>
-                        </td>
-                        <td className="py-3 align-top whitespace-nowrap ">
-                          Hostel B
-                          <div className="flex items-center gap-1 text-[13px] text-[#737478]">
-                            <img
-                              src={img}
-                              alt=""
-                              className="max-w-[10px] w-full pt-[4px]"
-                            />
-                            Main Gate
-                          </div>
-                        </td>
-                        <td className="py-3 align-top whitespace-nowrap ">
-                          4/3/2024
-                          <div className="text-[13px] text-[#737478] font-light">
-                            12:15 PM
-                          </div>
-                        </td>
-                      </tr>
-                      <tr className="border-t border-[#dbdbdb7e]">
-                        <td className="py-3 align-top whitespace-nowrap ">
-                          <p className="w-[130px] min-w-[20px] max-w-[130px] break-words whitespace-normal">
-                            Ashley T., 45678
-                          </p>
-
-                          <div className="text-[13px] text-[#737478] font-light">
-                            Charter
-                          </div>
-                        </td>
-                        <td className="py-3 align-top whitespace-nowrap ">
-                          Charter
-                          <div className="flex items-center gap-1 text-[13px] text-[#737478]">
-                            <img
-                              src={img}
-                              alt=""
-                              className="max-w-[10px] w-full pt-[4px]"
-                            />
-                            North Lot
-                          </div>
-                        </td>
-                        <td className="py-3 align-top whitespace-nowrap ">
-                          4/2/2024
-                          <div className="text-[13px] text-[#737478] font-light">
-                            6:45 PM
-                          </div>
-                        </td>
-                      </tr>
+                      {loading ? (
+                        // STATE 1: LOADING SPINNER
+                        <tr>
+                          <td colSpan="3" className="py-10">
+                            <div className="flex flex-col items-center justify-center gap-2 text-gray-400">
+                              <RefreshCw className="animate-spin w-6 h-6 text-[#004AAD]" />
+                              <span className="text-sm">Loading activity...</span>
+                            </div>
+                          </td>
+                        </tr>
+                      ) : stats?.latest_rides?.length > 0 ? (
+                        // STATE 2: DATA EXISTS
+                        stats.latest_rides.map((ride, index) => (
+                          <tr key={index} className="border-t border-[#dbdbdb7e]">
+                            <td className="py-3 align-top whitespace-nowrap">
+                              <p className="w-[130px] min-w-[20px] max-w-[130px] break-words whitespace-normal font-medium">
+                                {ride.user.name}
+                              </p>
+                              <div className="text-[13px] text-[#737478] font-light capitalize">
+                                {ride.type}
+                              </div>
+                            </td>
+                            <td className="py-3 align-top whitespace-nowrap">
+                              {ride.from_}
+                              <div className="flex items-center gap-1 text-[13px] text-[#737478]">
+                                <img src={img} alt="arrow" className="max-w-[10px] w-full pt-[4px]" />
+                                {ride.to}
+                              </div>
+                            </td>
+                            <td className="py-3 align-top whitespace-nowrap">
+                              {new Date(ride.date).toLocaleDateString()}
+                              <div className="text-[13px] text-[#737478] font-light">
+                                {new Date(ride.date).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+                              </div>
+                            </td>
+                          </tr>
+                        ))
+                      ) : (
+                        // STATE 3: EMPTY
+                        <tr>
+                          <td colSpan="3" className="py-6 text-center text-gray-400 text-sm">
+                            No recent rides found.
+                          </td>
+                        </tr>
+                      )}
                     </tbody>
                   </table>
                   <p className="text-[16px] text-[#004AAD] font-medium mt-2 cursor-pointer">
@@ -359,15 +267,15 @@ const Dashboard = () => {
                 </div>
               </div>
 
-              {/* Recent Wallet Transactions */}
+              {/* Recent Wallet Transactions Graph */}
               <div className="w-full">
-              <RevenueGraph/>
-                
+                <RevenueGraph data={stats?.revenue_graph} />
               </div>
             </div>
           </div>
         </div>
 
+        {/* Static Sidebar */}
         <div className="max-w-[260px] w-full hidden lee:block py-3 border-l border-gray-300 mx-5 px-4">
           <div className="flex justify-between items-center w-full">
             <p className="text-[20px]">Notification</p>
@@ -377,58 +285,6 @@ const Dashboard = () => {
           </div>
 
           <div className="py-3 px-2 flex flex-col gap-4">
-            <div className="flex gap-[6px] ">
-              <div className="translate-y-1">
-                <svg
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M0 12C0 8.27247 0 6.4087 0.608964 4.93853C1.42092 2.97831 2.97831 1.42092 4.93853 0.608964C6.4087 0 8.27247 0 12 0C15.7275 0 17.5913 0 19.0615 0.608964C21.0217 1.42092 22.5791 2.97831 23.391 4.93853C24 6.4087 24 8.27247 24 12C24 15.7275 24 17.5913 23.391 19.0615C22.5791 21.0217 21.0217 22.5791 19.0615 23.391C17.5913 24 15.7275 24 12 24C8.27247 24 6.4087 24 4.93853 23.391C2.97831 22.5791 1.42092 21.0217 0.608964 19.0615C0 17.5913 0 15.7275 0 12Z"
-                    fill="#EDEEFC"
-                  />
-                  <path
-                    d="M17 13.0003H18C18.1326 13.0003 18.2598 12.9476 18.3536 12.8538C18.4473 12.7601 18.5 12.6329 18.5 12.5003C18.5 12.3677 18.4473 12.2405 18.3536 12.1467C18.2598 12.053 18.1326 12.0003 18 12.0003H17V11.0003H18C18.1326 11.0003 18.2598 10.9476 18.3536 10.8538C18.4473 10.7601 18.5 10.6329 18.5 10.5003C18.5 10.3677 18.4473 10.2405 18.3536 10.1467C18.2598 10.053 18.1326 10.0003 18 10.0003H16.975C16.8646 8.90287 16.3933 7.87308 15.635 7.07215L16.8538 5.85403C16.9002 5.80757 16.9371 5.75242 16.9622 5.69173C16.9873 5.63103 17.0003 5.56598 17.0003 5.50028C17.0003 5.43458 16.9873 5.36953 16.9622 5.30883C16.9371 5.24813 16.9002 5.19298 16.8538 5.14653C16.8073 5.10007 16.7521 5.06322 16.6914 5.03808C16.6308 5.01294 16.5657 5 16.5 5C16.4343 5 16.3692 5.01294 16.3086 5.03808C16.2479 5.06322 16.1927 5.10007 16.1462 5.14653L14.8781 6.41528C14.0365 5.81992 13.0309 5.50021 12 5.50021C10.9691 5.50021 9.96351 5.81992 9.12187 6.41528L7.85375 5.14653C7.75993 5.05271 7.63268 5 7.5 5C7.36732 5 7.24007 5.05271 7.14625 5.14653C7.05243 5.24035 6.99972 5.3676 6.99972 5.50028C6.99972 5.63296 7.05243 5.76021 7.14625 5.85403L8.365 7.07215C7.6067 7.87308 7.13544 8.90287 7.025 10.0003H6C5.86739 10.0003 5.74021 10.053 5.64645 10.1467C5.55268 10.2405 5.5 10.3677 5.5 10.5003C5.5 10.6329 5.55268 10.7601 5.64645 10.8538C5.74021 10.9476 5.86739 11.0003 6 11.0003H7V12.0003H6C5.86739 12.0003 5.74021 12.053 5.64645 12.1467C5.55268 12.2405 5.5 12.3677 5.5 12.5003C5.5 12.6329 5.55268 12.7601 5.64645 12.8538C5.74021 12.9476 5.86739 13.0003 6 13.0003H7V13.5003C7 13.669 7.00875 13.8359 7.025 14.0003H6C5.86739 14.0003 5.74021 14.053 5.64645 14.1467C5.55268 14.2405 5.5 14.3677 5.5 14.5003C5.5 14.6329 5.55268 14.7601 5.64645 14.8538C5.74021 14.9476 5.86739 15.0003 6 15.0003H7.23C7.54904 16.0155 8.18366 16.9024 9.04155 17.5321C9.89944 18.1617 10.9358 18.5012 12 18.5012C13.0642 18.5012 14.1006 18.1617 14.9584 17.5321C15.8163 16.9024 16.451 16.0155 16.77 15.0003H18C18.1326 15.0003 18.2598 14.9476 18.3536 14.8538C18.4473 14.7601 18.5 14.6329 18.5 14.5003C18.5 14.3677 18.4473 14.2405 18.3536 14.1467C18.2598 14.053 18.1326 14.0003 18 14.0003H16.975C16.9913 13.8359 17 13.669 17 13.5003V13.0003ZM12 6.50028C12.9738 6.50149 13.9138 6.85752 14.6441 7.50174C15.3744 8.14596 15.8448 9.03422 15.9675 10.0003H8.03C8.15271 9.03379 8.62356 8.14519 9.35435 7.50092C10.0851 6.85664 11.0258 6.50088 12 6.50028ZM12.5 17.4678V12.5003C12.5 12.3677 12.4473 12.2405 12.3536 12.1467C12.2598 12.053 12.1326 12.0003 12 12.0003C11.8674 12.0003 11.7402 12.053 11.6464 12.1467C11.5527 12.2405 11.5 12.3677 11.5 12.5003V17.4678C10.5339 17.3451 9.64568 16.8746 9.00146 16.1444C8.35724 15.4141 8.00121 14.4741 8 13.5003V11.0003H16V13.5003C15.9988 14.4741 15.6428 15.4141 14.9985 16.1444C14.3543 16.8746 13.4661 17.3451 12.5 17.4678Z"
-                    fill="black"
-                  />
-                </svg>
-              </div>
-
-              <div>
-                <p>a ride was booked</p>
-                <p className="text-[12px] text-[#00000066] ">just now</p>
-              </div>
-            </div>
-
-            <div className="flex gap-[6px] ">
-              <div className="translate-y-1">
-                <svg
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M0 12C0 8.27247 0 6.4087 0.608964 4.93853C1.42092 2.97831 2.97831 1.42092 4.93853 0.608964C6.4087 0 8.27247 0 12 0C15.7275 0 17.5913 0 19.0615 0.608964C21.0217 1.42092 22.5791 2.97831 23.391 4.93853C24 6.4087 24 8.27247 24 12C24 15.7275 24 17.5913 23.391 19.0615C22.5791 21.0217 21.0217 22.5791 19.0615 23.391C17.5913 24 15.7275 24 12 24C8.27247 24 6.4087 24 4.93853 23.391C2.97831 22.5791 1.42092 21.0217 0.608964 19.0615C0 17.5913 0 15.7275 0 12Z"
-                    fill="#E6F1FD"
-                  />
-                  <path
-                    d="M18.4325 17.2497C17.4806 15.6041 16.0137 14.4241 14.3019 13.8647C15.1486 13.3607 15.8065 12.5925 16.1745 11.6784C16.5425 10.7642 16.6002 9.7545 16.3388 8.80435C16.0774 7.85419 15.5113 7.01612 14.7275 6.41883C13.9437 5.82153 12.9854 5.49805 12 5.49805C11.0145 5.49805 10.0563 5.82153 9.2725 6.41883C8.48869 7.01612 7.92261 7.85419 7.6612 8.80435C7.39979 9.7545 7.4575 10.7642 7.82548 11.6784C8.19345 12.5925 8.85134 13.3607 9.69811 13.8647C7.98624 14.4235 6.51936 15.6035 5.56749 17.2497C5.53258 17.3067 5.50943 17.37 5.49939 17.436C5.48936 17.502 5.49265 17.5694 5.50906 17.6341C5.52548 17.6988 5.55469 17.7596 5.59498 17.8128C5.63527 17.8661 5.68581 17.9107 5.74363 17.9441C5.80144 17.9775 5.86536 17.999 5.93162 18.0073C5.99787 18.0156 6.06511 18.0105 6.12937 17.9924C6.19364 17.9743 6.25362 17.9435 6.30579 17.9018C6.35796 17.8601 6.40125 17.8084 6.43311 17.7497C7.61061 15.7147 9.69186 14.4997 12 14.4997C14.3081 14.4997 16.3894 15.7147 17.5669 17.7497C17.5987 17.8084 17.642 17.8601 17.6942 17.9018C17.7463 17.9435 17.8063 17.9743 17.8706 17.9924C17.9349 18.0105 18.0021 18.0156 18.0684 18.0073C18.1346 17.999 18.1985 17.9775 18.2563 17.9441C18.3142 17.9107 18.3647 17.8661 18.405 17.8128C18.4453 17.7596 18.4745 17.6988 18.4909 17.6341C18.5073 17.5694 18.5106 17.502 18.5006 17.436C18.4905 17.37 18.4674 17.3067 18.4325 17.2497ZM8.49999 9.99975C8.49999 9.30751 8.70526 8.63082 9.08984 8.05525C9.47443 7.47968 10.0211 7.03108 10.6606 6.76617C11.3001 6.50126 12.0039 6.43195 12.6828 6.567C13.3617 6.70205 13.9854 7.03539 14.4749 7.52487C14.9643 8.01436 15.2977 8.638 15.4327 9.31693C15.5678 9.99586 15.4985 10.6996 15.2336 11.3391C14.9687 11.9787 14.5201 12.5253 13.9445 12.9099C13.3689 13.2945 12.6922 13.4997 12 13.4997C11.072 13.4988 10.1824 13.1297 9.52621 12.4735C8.87005 11.8174 8.50098 10.9277 8.49999 9.99975Z"
-                    fill="black"
-                  />
-                </svg>
-              </div>
-
-              <div>
-                <p>New user registered.</p>
-                <p className="text-[12px] text-[#00000066] ">59 minutes ago</p>
-              </div>
-            </div>
-
             <div className="flex gap-[6px] ">
               <div className="translate-y-1">
                 <svg
