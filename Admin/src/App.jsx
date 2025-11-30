@@ -15,7 +15,7 @@ import Admin from "./pages/admin";
 import Dashboard from "./pages/Dashboard";
 import Pricing from "./pages/routes/pricing";
 import Manage from "./pages/routes/Manage"
-import Ride from "./pages/ride";
+import Trips  from "./pages/trips-and-Payments";
 import Charter from "./pages/charter";
 import Users from "./pages/users/users";
 import Driver from "./pages/drivers/driver";
@@ -50,7 +50,7 @@ function App() {
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="pricing-and-route" element={<Pricing />} />
            <Route path="manage-route" element={<Manage />} />
-          <Route path="Ride-Activities" element={<Ride />} />
+          <Route path="Ride-Activities" element={<Trips />} />
           <Route path="Charter-Requests" element={<Charter />} />
           <Route path="User-Management" element={<Users />} />
           <Route path="Driver-list" element={<Driver />} />

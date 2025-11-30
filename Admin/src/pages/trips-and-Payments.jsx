@@ -1,11 +1,21 @@
 import React from 'react'
 
-const ride = () => {
+const Trips = () => {
   return (
     <div className='sm:px-5'>
       <div className='max-w-[860px]  flex flex-col sm:justify-start justify-center w-full border border-gray-300 rounded-lg py-2 px-4'>
         <div>
-          <p className='text-[20px] font-[semi-bold] py-4'>Ride Activities</p>
+          <p className='text-[20px] font-semibold py-4'>Trips & Payments</p>
+          <div className='py-3 relative'>
+            <input type="search" name="" id="" placeholder='Search' className=' pl-10 w-full border rounded-full outline-none p-2 placeholder:text-[#6264A0]' />
+
+            <div className='absolute left-3 top-1/2 -translate-y-1/2'>
+              <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M10.0269 1.77007C7.84116 1.77373 5.74597 2.64364 4.2004 4.18921C2.65483 5.73478 1.78491 7.82997 1.78125 10.0157C1.78308 12.2033 2.65196 14.301 4.19753 15.8492C5.7431 17.3974 7.83932 18.2698 10.0269 18.2753C11.9671 18.2753 13.7548 17.5927 15.1683 16.4633L18.6017 19.8967C18.7757 20.0584 19.0055 20.1464 19.243 20.1423C19.4804 20.1381 19.7071 20.0421 19.8752 19.8744C20.0434 19.7067 20.14 19.4803 20.1448 19.2428C20.1496 19.0054 20.0622 18.7753 19.9009 18.6009L16.4675 15.1641C17.6402 13.7057 18.2794 11.8905 18.2795 10.0192C18.2795 5.47369 14.5724 1.77007 10.0269 1.77007ZM10.0269 3.60629C13.5816 3.60629 16.4433 6.46455 16.4433 10.0157C16.4433 13.5669 13.5816 16.4425 10.0269 16.4425C6.47227 16.4425 3.61401 13.5773 3.61401 10.0227C3.61401 6.46802 6.47227 3.60629 10.0269 3.60629Z" fill="#6264A0" />
+              </svg>
+
+            </div>
+          </div>
           <div className='overflow-x-auto max-w-full'>
             <table className='min-w-full whitespace-nowrap'>
               <thead className='bg-[#004AAD]'>
@@ -190,4 +200,4 @@ const ride = () => {
   )
 }
 
-export default ride
+export default Trips

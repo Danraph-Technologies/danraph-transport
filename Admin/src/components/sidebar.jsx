@@ -236,7 +236,7 @@ const Sidebar = ({ open, onClose }) => {
             Transaction & Wallet
           </NavLink>
 
-          <NavLink
+          {/*<NavLink
             to="/admin/Notifications"
             className={({ isActive }) =>
               `pl-3 py-[10px] transition-all flex items-center gap-2 ${
@@ -267,7 +267,7 @@ const Sidebar = ({ open, onClose }) => {
               />
             </svg>
             Notifications
-          </NavLink>
+          </NavLink>*/}
 
           <NavLink
             to="/admin/Settings"
