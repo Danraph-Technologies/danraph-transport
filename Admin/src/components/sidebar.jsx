@@ -210,7 +210,7 @@ const Sidebar = ({ open, onClose }) => {
             Charter Requests
           </NavLink>*/}
 
-          <NavLink
+          {/*<NavLink
             to="/admin/Transaction-&-Wallet"
             className={({ isActive }) =>
               `pl-3 py-[10px] transition-all flex items-center gap-2 ${
@@ -234,7 +234,7 @@ const Sidebar = ({ open, onClose }) => {
               />
             </svg>
             Transaction & Wallet
-          </NavLink>
+          </NavLink>*/}
 
           {/*<NavLink
             to="/admin/Notifications"
