@@ -1,40 +1,48 @@
 import axios from 'axios';
+import { toast } from 'sonner'; 
 
-// Create axios instance with default config
 const api = axios.create({
   baseURL: 'https://backend-services--davetechinnovation1440-53kce6gj.leapcell.dev',
-  withCredentials: true, // Important for cookies
+  withCredentials: true,
   headers: {
     'Content-Type': 'application/json',
     'Accept': 'application/json',
   },
 });
 
-// Add a request interceptor to include auth token if it exists
 api.interceptors.request.use(
-  (config) => {
-    // You can add auth headers here if needed in the future
-    // const token = localStorage.getItem('token');
-    // if (token) {
-    //   config.headers.Authorization = `Bearer ${token}`;
-    // }
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
-  }
+  (config) => config,
+  (error) => Promise.reject(error)
 );
 
-// Add a response interceptor to handle common errors
+let isRedirecting = false;
+
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    // Handle common errors (e.g., 401 Unauthorized)
-    if (error.response?.status === 401) {
-      // Handle unauthorized access (e.g., redirect to login)
-      console.error('Unauthorized access - please login again');
-      // You can add redirect logic here if needed
+    // 👇 THE FIX: Check for 401 AND 403
+    const status = error.response?.status;
+    
+    if (status === 401 || status === 403) {
+      
+      // Prevent redirect loop if already on login
+      if (!window.location.pathname.includes('/login') && !isRedirecting) {
+        isRedirecting = true;
+
+        toast.error("Session expired. Redirecting to login...", {
+          duration: 2000,
+        });
+
+        // Clear local storage to be safe
+        localStorage.removeItem('user');
+
+        setTimeout(() => {
+          window.location.href = '/login';
+          isRedirecting = false;
+        }, 2000);
+      }
     }
+    
     return Promise.reject(error);
   }
 );

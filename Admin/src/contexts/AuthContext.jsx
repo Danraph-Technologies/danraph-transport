@@ -1,66 +1,83 @@
-// src/context/AuthContext.jsx
-
 import React, { createContext, useState, useContext, useEffect } from 'react';
-import api from '../services/api'; // Your configured axios instance
+import api from '../services/api'; 
+import { toast } from 'sonner'; // 1. Import Toast
 
-// Create the context that our components will use
 const AuthContext = createContext(null);
 
-// Create the Provider component that will wrap our app
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [isLoading, setIsLoading] = useState(true); // We start in a loading state
+  const [isLoading, setIsLoading] = useState(true);
 
-  // This effect runs ONCE when the app first loads.
-  // Its job is to check if a valid session cookie already exists.
   useEffect(() => {
     const checkLoggedInStatus = async () => {
       try {
-        // Use the /v1/users/me endpoint you provided.
-        // The cookie is sent automatically by our configured api instance.
         const response = await api.get('/v1/users/me');
         
-        // The docs say user data is in response.data, not response.data.data
         if (response.data && response.data.user_id) {
-          setUser(response.data); // Store the user object in state
-          console.log("Session restored for user:", response.data.email);
+          setUser(response.data); 
         } else {
-          // If we get a response but it's not a user object, treat as logged out
           setUser(null);
         }
       } catch (error) {
-        // A 401 error here means the user is not logged in. This is expected.
         console.log('No active session found.');
         setUser(null);
+
+        // --- SMART REDIRECT LOGIC START ---
+        // 2. Check if the error is a 401 (Unauthorized)
+        if (error.response?.status === 401) {
+            
+            // 3. Don't show error if user is already on Login or Home page
+            const currentPath = window.location.pathname;
+            const isPublicPage = currentPath === '/login' || currentPath === '/';
+
+            if (!isPublicPage) {
+                // 4. Show the "Big App" Toast
+                toast.error("Session expired. Redirecting to login...", {
+                    duration: 2000, // Show for 2 seconds
+                });
+
+                // 5. Kick them out after a short delay so they can read the message
+                setTimeout(() => {
+                    window.location.href = '/login';
+                }, 2000);
+            }
+        }
+        // --- SMART REDIRECT LOGIC END ---
+
       } finally {
-        // We're done checking, so the initial loading is complete.
         setIsLoading(false);
       }
     };
 
     checkLoggedInStatus();
-  }, []); // The empty dependency array `[]` ensures this runs only once.
+  }, []); 
 
-  // This function will be called from your Login page
   const login = (userData) => {
     setUser(userData);
   };
 
-  // This function can be called from a "Logout" button
   const logout = async () => {
-    setUser(null); // Immediately clear the user state for a fast UI update
+    const toastId = toast.loading("Logging out...");
+    setUser(null); 
     try {
-      // It's good practice to tell the backend to invalidate the session/cookie
       await api.post('/v1/auth/logout'); 
+      toast.success("Logged out successfully", { id: toastId });
+      
+      // Optional: Full reload to clear any lingering app states
+      setTimeout(() => {
+          window.location.href = '/login';
+      }, 500);
+      
     } catch (error) {
-      console.error("Logout API call failed, but user is logged out on the frontend.", error);
+      console.error("Logout failed", error);
+      toast.dismiss(toastId);
+      window.location.href = '/login'; // Force logout anyway
     }
   };
 
-  // The value that will be available to all children components
   const value = {
     user,
-    isAuthenticated: !!user, // A handy boolean: true if `user` is an object, false if `null`
+    isAuthenticated: !!user, 
     isLoading,
     login,
     logout,
@@ -73,7 +90,6 @@ export const AuthProvider = ({ children }) => {
   );
 };
 
-// A custom hook to make it easy to access the auth context in any component
 export const useAuth = () => {
   return useContext(AuthContext);
 };
