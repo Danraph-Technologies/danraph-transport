@@ -1,10 +1,11 @@
+// DriversProfile.jsx
 import { Star, Loader2 } from "lucide-react";
 import React, { useState, useEffect } from "react";
-import EditDriver from "./Editdriver"; // <--- 1. IMPORT HERE
+import EditDriver from "./Editdriver";
 
 function DriversProfile({ driver, onClose, onToggleStatus, isUpdating }) {
   const [zoomedImage, setZoomedImage] = useState(null); 
-  const [isEditOpen, setIsEditOpen] = useState(false); // <--- 2. ADD STATE
+  const [isEditOpen, setIsEditOpen] = useState(false);
 
   useEffect(() => {
     document.body.style.overflow = zoomedImage ? "hidden" : "unset";
@@ -15,7 +16,7 @@ function DriversProfile({ driver, onClose, onToggleStatus, isUpdating }) {
     const handleEsc = (e) => {
       if (e.key === "Escape") {
         if (zoomedImage) setZoomedImage(null);
-        else if (isEditOpen) setIsEditOpen(false); // Close edit on ESC
+        else if (isEditOpen) setIsEditOpen(false);
         else onClose();
       }
     };
@@ -25,6 +26,20 @@ function DriversProfile({ driver, onClose, onToggleStatus, isUpdating }) {
 
   const openImage = (type) => setZoomedImage(type);
   const closeImage = () => setZoomedImage(null);
+
+  // Format date helper
+  const formatDate = (dateString) => {
+    if (!dateString) return "N/A";
+    try {
+      return new Date(dateString).toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "short",
+        day: "numeric"
+      });
+    } catch {
+      return "N/A";
+    }
+  };
 
   if (!driver) return null;
 
@@ -40,7 +55,6 @@ function DriversProfile({ driver, onClose, onToggleStatus, isUpdating }) {
 
         <h2 className="font-semibold text-[24px] pt-4 flex items-center gap-3">
             Driver Profile
-            {/* 3. EDIT BUTTON */}
             <span 
                 onClick={() => setIsEditOpen(true)}
                 className="text-blue-600 text-sm cursor-pointer hover:underline font-normal"
@@ -97,9 +111,15 @@ function DriversProfile({ driver, onClose, onToggleStatus, isUpdating }) {
             <div className="flex flex-col gap-4 py-3">
               <p className="text-[#666666]"><span className="font-medium">Name </span> - {driver.first_name} {driver.last_name}</p>
               <p className="text-[#666666]"><span className="font-medium">Contact </span> - {driver.email} ({driver.phone})</p>
+              <p className="text-[#666666]"><span className="font-medium">Date of Birth </span> - {formatDate(driver.date_of_birth)}</p>
               <p className="text-[#666666]"><span className="font-medium">License No </span> - {driver.license_number || "N/A"}</p>
+              <p className="text-[#666666]"><span className="font-medium">License Expiry </span> - {formatDate(driver.license_expiry)}</p>
               <p className="text-[#666666]"><span className="font-medium">Assigned Vehicle </span> - {driver.vehicle_details ? `${driver.vehicle_details.plate_number} | ${driver.vehicle_details.model}` : "No vehicle assigned"}</p>
               <p className="text-[#666666]"><span className="font-medium">Wallet Balance </span> - ₦{driver.balance?.toLocaleString() || 0}</p>
+              <p className="text-[#666666]"><span className="font-medium">Address </span> - {driver.residential_address || "N/A"}</p>
+              <p className="text-[#666666]"><span className="font-medium">Location </span> - {driver.city || "N/A"}, {driver.lga || "N/A"}, {driver.state || "N/A"}</p>
+              <p className="text-[#666666]"><span className="font-medium">Availability </span> - {driver.is_available ? "Available" : "Unavailable"}</p>
+              <p className="text-[#666666]"><span className="font-medium">Joined </span> - {formatDate(driver.created_at)}</p>
             </div>
 
             <div className="sm:translate-y-[20px] mt-4 sm:mt-0">
@@ -109,7 +129,7 @@ function DriversProfile({ driver, onClose, onToggleStatus, isUpdating }) {
                   {driver.lincense_img_url ? (
                       <img src={driver.lincense_img_url} alt="Driver License" className="w-[113px] h-[70px] object-cover cursor-pointer hover:opacity-80 transition border rounded" onClick={() => openImage("license")} />
                   ) : ( <div className="w-[113px] h-[70px] bg-gray-200 flex items-center justify-center rounded text-xs text-gray-500">No Image</div> )}
-                  <p className="underline text-center cursor-pointer py-1 text-sm" onClick={() => driver.lincense_img_url && openImage("license")}>View License</p>
+                  <p className="underline text-center cursor-pointer py-1 text-sm" onClick={() => driver.lincense_img_url && openImage("license")}>View Drivers licence</p>
                 </div>
                 <div className="flex flex-col items-center">
                   {driver.nin_img_url ? (
@@ -141,7 +161,7 @@ function DriversProfile({ driver, onClose, onToggleStatus, isUpdating }) {
         </div>
       )}
 
-      {/* ===== 4. EDIT DRIVER OVERLAY ===== */}
+      {/* ===== EDIT DRIVER OVERLAY ===== */}
       {isEditOpen && (
         <EditDriver 
             driver={driver} 
