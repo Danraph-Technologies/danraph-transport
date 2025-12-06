@@ -5,15 +5,12 @@ import api from "../../services/api";
 import { RefreshCw } from "lucide-react";
 import { toast } from "sonner";
 
-// Cache duration (30 minutes)
 const CACHE_DURATION = 30 * 60 * 1000;
 
-// Components
 import TableMore from "./tablemore"; 
 import DriversProfile from "./DriversProfile";
 import AssignVehicle from "./assignVerhicle";
 
-// Debounce Hook
 function useDebounce(value, delay) {
   const [debouncedValue, setDebouncedValue] = useState(value);
   useEffect(() => {
@@ -30,7 +27,6 @@ function useDebounce(value, delay) {
 const Driver = () => {
   const queryClient = useQueryClient();
   
-  // State
   const [selectedDriver, setSelectedDriver] = useState(null);
   const [showAssignVehicle, setShowAssignVehicle] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -46,7 +42,6 @@ const Driver = () => {
     data: driversData,
     isLoading,
     isError,
-    error,
     refetch: refetchQuery,
     dataUpdatedAt,
   } = useQuery({
@@ -62,15 +57,10 @@ const Driver = () => {
     cacheTime: CACHE_DURATION,
   });
 
-  // --- 2. TOGGLE STATUS MUTATION (Suspend/Activate) ---
+  // --- 2. TOGGLE STATUS MUTATION ---
   const toggleStatusMutation = useMutation({
     mutationFn: async (driver) => {
-      // Determine action based on current status
-      // If currently suspended (true) -> we want to 'activate'
-      // If currently active (false/null) -> we want to 'suspend'
       const action = driver.suspend ? 'activate' : 'suspend';
-      
-      // API requires POST and a body (even if empty)
       const response = await api.post(`/v1/admin/driver/${driver.id}/${action}`, {});
       return { response: response.data, action, name: driver.first_name };
     },
@@ -79,38 +69,52 @@ const Driver = () => {
       return { toastId };
     },
     onSuccess: (data, variables, context) => {
-      // 1. Refresh the list to show new status color
       queryClient.invalidateQueries(["drivers"]);
-      
-      // 2. Show success message
       const statusText = data.action === 'suspend' ? 'suspended' : 'activated';
-      toast.success(`${data.name} has been ${statusText} successfully`, { 
-        id: context.toastId 
-      });
-
-      // 3. Update modal data if open (optional, closing it is safer)
-      if (selectedDriver) {
-         setSelectedDriver(null); 
-      }
+      toast.success(`${data.name} has been ${statusText} successfully`, { id: context.toastId });
+      if (selectedDriver) setSelectedDriver(null);
     },
     onError: (err, variables, context) => {
-      console.error("Status update error:", err);
-      toast.error(err.response?.data?.message || "Failed to update driver status", { 
-        id: context.toastId 
-      });
+      toast.error(err.response?.data?.message || "Failed to update driver status", { id: context.toastId });
     }
   });
 
-  // Handler passed to children
+  // --- 3. DELETE DRIVER MUTATION ---
+  const deleteMutation = useMutation({
+    mutationFn: async (driver) => {
+      const response = await api.delete(`/v1/admin/driver/${driver.id}/delete`);
+      return { response: response.data, name: driver.first_name };
+    },
+    onMutate: () => {
+      const toastId = toast.loading("Deleting driver...");
+      return { toastId };
+    },
+    onSuccess: (data, variables, context) => {
+      queryClient.invalidateQueries(["drivers"]);
+      toast.success(`${data.name} has been deleted successfully`, { id: context.toastId });
+      if (selectedDriver) setSelectedDriver(null);
+    },
+    onError: (err, variables, context) => {
+      toast.error(err.response?.data?.message || "Failed to delete driver", { id: context.toastId });
+    }
+  });
+
+  // Handler for toggle status
   const handleToggleStatus = (driver) => {
     const actionText = driver.suspend ? "Activate" : "Suspend";
-    
     if (window.confirm(`Are you sure you want to ${actionText} ${driver.first_name}?`)) {
-       toggleStatusMutation.mutate(driver);
+      toggleStatusMutation.mutate(driver);
     }
   };
 
-  // --- 3. REFRESH LOGIC ---
+  // Handler for delete
+  const handleDeleteDriver = (driver) => {
+    if (window.confirm(`Are you sure you want to DELETE ${driver.first_name} ${driver.last_name}? This action cannot be undone.`)) {
+      deleteMutation.mutate(driver);
+    }
+  };
+
+  // --- REFRESH LOGIC ---
   const refetch = useCallback(async () => {
     await refetchQuery();
   }, [refetchQuery]);
@@ -234,20 +238,17 @@ const Driver = () => {
                     <td className="whitespace-nowrap border-r border-[#dbdbdb7e] py-4 pl-3 pr-10">{driver.phone}</td>
                     <td className="whitespace-nowrap border-r border-[#dbdbdb7e] py-4 pl-3 pr-10">{driver.email}</td>
                     <td className="whitespace-nowrap border-r border-[#dbdbdb7e] py-4 pl-3 pr-10">
-                      {/* Fix: Check boolean explicitly if driver.suspend is true */}
                       <span className={`rounded-full w-[12px] h-[12px] inline-block mr-2 ${!driver.suspend ? "bg-[#34C759]" : "bg-[#F80B0B]"}`}></span>
                       <span>{!driver.suspend ? "Active" : "Suspended"}</span>
                     </td>
                     <td className="whitespace-nowrap border-r text-[#5C5C5D] border-[#dbdbdb7e] py-4 pl-3 pr-10">{formatDate(driver.created_at)}</td>
                     <td className="whitespace-nowrap py-4 pl-3">
-                      {/* 
-                          IMPORTANT FIX: 
-                          Pass the whole driver object to handleToggleStatus
-                      */}
                       <TableMore 
                         driver={driver} 
                         onViewDetails={() => setSelectedDriver(driver)}
                         onToggleStatus={() => handleToggleStatus(driver)}
+                        onDelete={() => handleDeleteDriver(driver)}
+                        isDeleting={deleteMutation.isPending}
                       />
                     </td>
                   </tr>
@@ -276,7 +277,6 @@ const Driver = () => {
             <DriversProfile 
               driver={selectedDriver} 
               onClose={handleCloseModal}
-              // Pass the driver object here too
               onToggleStatus={() => handleToggleStatus(selectedDriver)}
               isUpdating={toggleStatusMutation.isPending}
             />

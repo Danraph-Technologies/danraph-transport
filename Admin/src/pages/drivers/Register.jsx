@@ -10,6 +10,7 @@ function Register() {
   const navigate = useNavigate();
 
   // --- STATE MANAGEMENT ---
+  // Using exact field names the backend expects
   const [formData, setFormData] = useState({
     first_name: "",
     last_name: "",
@@ -24,9 +25,9 @@ function Register() {
     state: "",
     lga: "",
     city: "",
-    passport_url: "",
-    nin_url: "",
-    license_url: ""
+    profile_img_url: "",      // Profile/Passport image URL
+    nin_img_url: "",          // NIN image URL
+    lincense_img_url: ""      // License image URL (backend spelling)
   });
 
   const statesData = nigerianStatesData;
@@ -66,16 +67,16 @@ function Register() {
   const passportMutation = useMutation({
     mutationFn: uploadFile,
     onSuccess: (data) => {
-      setFormData(prev => ({ ...prev, passport_url: data.url }));
-      toast.success("Passport uploaded!");
+      setFormData(prev => ({ ...prev, profile_img_url: data.url }));
+      toast.success("Profile image uploaded!");
     },
-    onError: () => toast.error("Passport upload failed. Please try again.")
+    onError: () => toast.error("Profile image upload failed. Please try again.")
   });
 
   const ninMutation = useMutation({
     mutationFn: uploadFile,
     onSuccess: (data) => {
-      setFormData(prev => ({ ...prev, nin_url: data.url }));
+      setFormData(prev => ({ ...prev, nin_img_url: data.url }));
       toast.success("NIN uploaded!");
     },
     onError: () => toast.error("NIN upload failed. Please try again.")
@@ -84,7 +85,7 @@ function Register() {
   const licenseMutation = useMutation({
     mutationFn: uploadFile,
     onSuccess: (data) => {
-      setFormData(prev => ({ ...prev, license_url: data.url }));
+      setFormData(prev => ({ ...prev, lincense_img_url: data.url }));
       toast.success("Driver's License uploaded!");
     },
     onError: () => toast.error("License upload failed. Please try again.")
@@ -109,7 +110,6 @@ function Register() {
     const file = e.target.files[0];
     if (!file) return;
 
-    // Use the correct mutation based on type
     if (type === 'passport') {
       passportMutation.mutate(file);
     } else if (type === 'nin') {
@@ -124,10 +124,17 @@ function Register() {
     if (!formData.first_name || !formData.last_name || !formData.email || !formData.password) {
       return toast.error("Please fill in all required fields (Name, Email, Password)");
     }
+
+    // DEBUG: Log what we're sending
+    console.log("=== SUBMITTING FORM DATA ===");
+    console.log("profile_img_url:", formData.profile_img_url);
+    console.log("nin_img_url:", formData.nin_img_url);
+    console.log("lincense_img_url:", formData.lincense_img_url);
+    console.log("Full payload:", formData);
+
     registerMutation.mutate(formData);
   };
 
-  // Check if any upload is in progress
   const isAnyUploading = passportMutation.isPending || ninMutation.isPending || licenseMutation.isPending;
 
   // --- SKELETON UPLOAD CARD COMPONENT ---
@@ -143,7 +150,6 @@ function Register() {
             disabled={isUploading}
           />
 
-          {/* Card Container */}
           <div className={`
             relative border-2 border-dashed rounded-lg overflow-hidden
             transition-all duration-300 h-[140px] w-full
@@ -152,7 +158,6 @@ function Register() {
               : 'border-gray-300 bg-gray-50 hover:border-[#004AAD] hover:bg-blue-50'
             }
           `}>
-            {/* Loading Overlay */}
             {isUploading && (
               <div className="absolute inset-0 bg-black/50 flex flex-col items-center justify-center z-10">
                 <Loader2 className="animate-spin text-white w-8 h-8" />
@@ -160,22 +165,18 @@ function Register() {
               </div>
             )}
 
-            {/* Content */}
             {imageUrl ? (
-              // Uploaded Image Preview
               <div className="w-full h-full relative">
                 <img
                   src={imageUrl}
                   alt={label}
                   className="w-full h-full object-cover"
                 />
-                {/* Overlay on hover to change */}
                 <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                   <p className="text-white text-sm font-medium">Click to change</p>
                 </div>
               </div>
             ) : (
-              // Skeleton/Placeholder
               <div className="flex flex-col items-center justify-center h-full p-4">
                 <div className="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center mb-2 group-hover:bg-[#004AAD]/10 transition-colors">
                   <Upload className="w-6 h-6 text-gray-400 group-hover:text-[#004AAD] transition-colors" />
@@ -189,10 +190,8 @@ function Register() {
           </div>
         </label>
 
-        {/* Label below card */}
         <p className="mt-2 text-sm font-medium text-gray-700">{label}</p>
 
-        {/* View link if uploaded */}
         {imageUrl && (
           <a
             href={imageUrl}
@@ -215,11 +214,11 @@ function Register() {
           <p className="font-semibold">Register New Driver</p>
         </div>
 
-        {/* --- PASSPORT UPLOAD SECTION --- */}
+        {/* --- PROFILE IMAGE UPLOAD SECTION --- */}
         <div className="flex items-center gap-3 py-5">
           <div className="w-[60px] h-[60px] rounded-full overflow-hidden border border-gray-200 relative">
-            {formData.passport_url ? (
-              <img src={formData.passport_url} alt="Passport" className="w-full h-full object-cover" />
+            {formData.profile_img_url ? (
+              <img src={formData.profile_img_url} alt="Profile" className="w-full h-full object-cover" />
             ) : (
               <div className="w-full h-full bg-gray-100 flex items-center justify-center">
                 <Upload className="w-5 h-5 text-gray-400" />
@@ -246,7 +245,7 @@ function Register() {
               className="sm:w-[26px] w-[19px]"
             />
             <p className="text-[15px] sm:text-[16px]">
-              {passportMutation.isPending ? "Uploading..." : "Upload Passport Image"}
+              {passportMutation.isPending ? "Uploading..." : "Upload Profile Image"}
             </p>
           </label>
         </div>
@@ -440,12 +439,11 @@ function Register() {
               Please upload both NIN and Driver's License
             </p>
 
-            {/* --- TWO DOCUMENT UPLOAD CARDS --- */}
             <div className="grid grid-cols-2 gap-4 mt-4">
               {/* NIN Upload Card */}
               <UploadCard
                 label="NIN"
-                imageUrl={formData.nin_url}
+                imageUrl={formData.nin_img_url}
                 isUploading={ninMutation.isPending}
                 onFileChange={handleFileChange}
                 type="nin"
@@ -454,7 +452,7 @@ function Register() {
               {/* Driver's License Upload Card */}
               <UploadCard
                 label="Driver's License"
-                imageUrl={formData.license_url}
+                imageUrl={formData.lincense_img_url}
                 isUploading={licenseMutation.isPending}
                 onFileChange={handleFileChange}
                 type="license"
@@ -463,17 +461,15 @@ function Register() {
 
             {/* Upload Status Summary */}
             <div className="mt-4 p-3 bg-gray-50 rounded-lg">
-              <p className="text-sm text-gray-600">
-                Upload Status:
-              </p>
+              <p className="text-sm text-gray-600">Upload Status:</p>
               <div className="flex gap-4 mt-2">
-                <span className={`text-sm flex items-center gap-1 ${formData.nin_url ? 'text-green-600' : 'text-gray-400'}`}>
-                  <span className={`w-2 h-2 rounded-full ${formData.nin_url ? 'bg-green-500' : 'bg-gray-300'}`}></span>
-                  NIN {formData.nin_url ? '✓' : ninMutation.isPending ? '(uploading...)' : '(pending)'}
+                <span className={`text-sm flex items-center gap-1 ${formData.nin_img_url ? 'text-green-600' : 'text-gray-400'}`}>
+                  <span className={`w-2 h-2 rounded-full ${formData.nin_img_url ? 'bg-green-500' : 'bg-gray-300'}`}></span>
+                  NIN {formData.nin_img_url ? '✓' : ninMutation.isPending ? '(uploading...)' : '(pending)'}
                 </span>
-                <span className={`text-sm flex items-center gap-1 ${formData.license_url ? 'text-green-600' : 'text-gray-400'}`}>
-                  <span className={`w-2 h-2 rounded-full ${formData.license_url ? 'bg-green-500' : 'bg-gray-300'}`}></span>
-                  License {formData.license_url ? '✓' : licenseMutation.isPending ? '(uploading...)' : '(pending)'}
+                <span className={`text-sm flex items-center gap-1 ${formData.lincense_img_url ? 'text-green-600' : 'text-gray-400'}`}>
+                  <span className={`w-2 h-2 rounded-full ${formData.lincense_img_url ? 'bg-green-500' : 'bg-gray-300'}`}></span>
+                  License {formData.lincense_img_url ? '✓' : licenseMutation.isPending ? '(uploading...)' : '(pending)'}
                 </span>
               </div>
             </div>

@@ -1,10 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
+import { Loader2 } from "lucide-react";
 
-// Props: 
-// driver: The driver object
-// onViewDetails: function
-// onToggleStatus: function
-function TableMore({ driver, onViewDetails, onToggleStatus }) {
+function TableMore({ driver, onViewDetails, onToggleStatus, onDelete, isDeleting }) {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
 
@@ -30,13 +27,19 @@ function TableMore({ driver, onViewDetails, onToggleStatus }) {
     setIsOpen(false);
   };
 
+  const handleDeleteClick = (e) => {
+    e.stopPropagation();
+    if (onDelete) onDelete();
+    setIsOpen(false);
+  };
+
   return (
     <div className="relative" ref={dropdownRef}>
       <button
         className="flex items-center justify-center w-8 h-8 rounded-full hover:bg-gray-100 cursor-pointer"
         onClick={(e) => {
-            e.stopPropagation();
-            setIsOpen(!isOpen);
+          e.stopPropagation();
+          setIsOpen(!isOpen);
         }}
       >
         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -47,19 +50,34 @@ function TableMore({ driver, onViewDetails, onToggleStatus }) {
       {isOpen && (
         <div className="absolute right-0 mt-1 w-[180px] bg-white rounded-[5px] shadow-lg z-50 border border-gray-200" onClick={(e) => e.stopPropagation()}>
           <div className="flex flex-col">
-            <p className="px-4 py-2 hover:bg-gray-50 cursor-pointer text-sm text-gray-700" onClick={handleViewDetails}>
+            <p 
+              className="px-4 py-2 hover:bg-gray-50 cursor-pointer text-sm text-gray-700" 
+              onClick={handleViewDetails}
+            >
               View Details
             </p>
-            
-            {/* Dynamic Status Button */}
+
             {driver && (
-                <p 
-                    className={`px-4 py-2 hover:bg-gray-50 cursor-pointer text-sm border-t border-gray-100 ${driver.suspend ? 'text-green-600' : 'text-red-600'}`}
-                    onClick={handleStatusClick}
-                >
-                  {driver.suspend ? "Activate Driver" : "Suspend Driver"}
-                </p>
+              <p
+                className={`px-4 py-2 hover:bg-gray-50 cursor-pointer text-sm border-t border-gray-100 ${driver.suspend ? 'text-green-600' : 'text-orange-600'}`}
+                onClick={handleStatusClick}
+              >
+                {driver.suspend ? "Activate Driver" : "Suspend Driver"}
+              </p>
             )}
+
+            <p 
+              className="px-4 py-2 hover:bg-red-50 cursor-pointer text-sm text-red-600 border-t border-gray-100 flex items-center gap-2" 
+              onClick={handleDeleteClick}
+            >
+              {isDeleting ? (
+                <>
+                  <Loader2 className="w-3 h-3 animate-spin" /> Deleting...
+                </>
+              ) : (
+                "Delete Driver"
+              )}
+            </p>
           </div>
         </div>
       )}
