@@ -361,8 +361,10 @@ function Pricing() {
             </div>
           </div>
 
-          {/* Sort by Date Dropdown */}
-          <div className="flex justify-end mb-4" ref={dropdownRef}>
+          {/* 
+          
+          by Date Dropdown */}
+          <div className="flex justify-end " ref={dropdownRef}>
             <div className="relative inline-block text-left">
               <button
                 type="button"
