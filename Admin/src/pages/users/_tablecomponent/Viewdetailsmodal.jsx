@@ -9,10 +9,10 @@ import EditUser from "./edituser";
 // CONFIG: Cache this modal for 5 minutes
 const CACHE_DURATION = 5 * 60 * 1000;
 
-// Loading spinner component
+// Loading spinner component using RefreshCw for consistency
 const ModalSpinner = () => (
   <div className="flex justify-center items-center h-64">
-    <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+    <RefreshCw className="w-8 h-8 text-blue-500 animate-spin" />
   </div>
 );
 
@@ -252,10 +252,23 @@ function Viewdetailsmodal({ userId, onClose, isClosing }) {
                 Wallet Information
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                <div className="border rounded-lg p-4">
-                  <h3 className="text-[#666666] text-sm mb-2">
-                    Wallet Balance
-                  </h3>
+                <div className="border rounded-lg p-4 relative">
+                  <div className="flex justify-between items-start">
+                    <h3 className="text-[#666666] text-sm mb-2">
+                      Wallet Balance
+                    </h3>
+                    <button 
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        refetch();
+                      }}
+                      className="text-blue-500 hover:text-blue-700 p-1 -mt-1 -mr-1"
+                      disabled={isRefetching}
+                      title="Refresh balance"
+                    >
+                      <RefreshCw className={`w-4 h-4 ${isRefetching ? 'animate-spin' : ''}`} />
+                    </button>
+                  </div>
                   <p className="text-2xl font-semibold">
                     ₦{user.balance?.toLocaleString() || "0"}
                   </p>
